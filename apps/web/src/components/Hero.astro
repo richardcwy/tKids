@@ -1,0 +1,137 @@
+---
+import WordMark from "./WordMark.astro";
+import Countdown from "./Countdown.astro";
+---
+
+<section class="hero">
+  <WordMark size="hero" />
+
+  <div class="hero-slogan">
+    <p class="slogan-en">Ignite and shine!</p>
+    <p class="slogan-zh" lang="zh-TW">
+      今夏夜空因我們的星芒而閃亮
+      <span class="zh-sep sep-a" aria-hidden="true">✦</span>
+      <span class="product">Chat</span> 串起了每個晝與夜的對話
+      <span class="zh-sep sep-b" aria-hidden="true">✦</span>
+      <span class="product">Doc</span> 守護著我們最深的秘密與信仰
+      <span class="zh-sep sep-c" aria-hidden="true">✦</span>
+      <span class="product">Task</span> 標記各個約定的想像
+      <span class="zh-sep sep-d" aria-hidden="true">✦</span>
+      <span class="product">File</span> 承載著旅途上所有的重量
+    </p>
+  </div>
+
+  <Countdown />
+
+  <div class="release-meta">
+    <div class="rm-item">
+      <span class="rm-label">release</span>
+      <span class="rm-val">06.01.26</span>
+    </div>
+    <div class="rm-item">
+      <span class="rm-label">origin</span>
+      <span class="rm-val">Taipei · Hsinchu · US · JP · EU</span>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    padding: 100px 40px 150px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .hero-slogan {
+    max-width: 880px;
+    margin-bottom: 36px;
+  }
+  .slogan-en {
+    font-family: "DM Serif Display", serif;
+    font-size: clamp(36px, 4.5vw, 62px);
+    color: var(--white);
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+    margin-bottom: 22px;
+    text-shadow: 0 2px 30px rgba(46, 95, 255, 0.22);
+  }
+  .slogan-zh {
+    font-family: "Noto Sans TC", sans-serif;
+    font-weight: 400;
+    font-size: clamp(13.5px, 1.05vw, 16px);
+    line-height: 1.95;
+    letter-spacing: 0.12em;
+    color: var(--ice);
+    max-width: 880px;
+    margin: 0 auto;
+  }
+  .zh-sep {
+    display: inline-block;
+    color: var(--gold);
+    margin: 0 10px;
+    font-size: 0.85em;
+    animation: textTwinkle 3.8s ease-in-out infinite;
+  }
+  .zh-sep.sep-b { animation-delay: 0.8s; animation-duration: 4.4s; }
+  .zh-sep.sep-c { animation-delay: 1.6s; animation-duration: 3.2s; }
+  .zh-sep.sep-d { animation-delay: 2.4s; animation-duration: 4.1s; }
+
+  .product {
+    font-family: "Unbounded", sans-serif;
+    font-weight: 600;
+    color: var(--electric);
+    letter-spacing: -0.02em;
+    font-size: 0.92em;
+    margin-right: 2px;
+  }
+
+  .release-meta {
+    display: flex;
+    gap: 40px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    color: var(--ice);
+    opacity: 0.75;
+  }
+  .rm-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .rm-label {
+    opacity: 0.6;
+  }
+  .rm-val {
+    font-family: "Unbounded", sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--white);
+    letter-spacing: -0.01em;
+    text-transform: none;
+  }
+
+  @media (max-width: 900px) {
+    .release-meta {
+      flex-direction: column;
+      gap: 12px;
+    }
+  }
+  @media (max-width: 600px) {
+    .hero {
+      padding: 120px 20px 140px;
+    }
+    .hero-slogan {
+      margin-bottom: 40px;
+    }
+  }
+</style>

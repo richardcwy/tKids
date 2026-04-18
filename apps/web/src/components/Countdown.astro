@@ -1,0 +1,129 @@
+---
+// Countdown to the EP drop.
+// Target is pinned to Taipei time (UTC+8) so every visitor sees the same
+// number regardless of their local timezone.
+interface Props {
+  /** ISO 8601 target. Default: EP "Ignite!" drop, 2026-06-01 00:00 Taipei. */
+  target?: string;
+}
+const { target = "2026-06-01T00:00:00+08:00" } = Astro.props;
+---
+
+<div class="countdown" data-target={target} aria-label="Time until EP release">
+  <div class="cd-unit"><div class="cd-num" data-unit="d">--</div><div class="cd-unit-label">days</div></div>
+  <div class="cd-sep" aria-hidden="true">:</div>
+  <div class="cd-unit"><div class="cd-num" data-unit="h">--</div><div class="cd-unit-label">hours</div></div>
+  <div class="cd-sep" aria-hidden="true">:</div>
+  <div class="cd-unit"><div class="cd-num" data-unit="m">--</div><div class="cd-unit-label">minutes</div></div>
+  <div class="cd-sep" aria-hidden="true">:</div>
+  <div class="cd-unit"><div class="cd-num" data-unit="s">--</div><div class="cd-unit-label">seconds</div></div>
+</div>
+
+<script>
+  // Countdown: one instance per page (or multiple if ever reused).
+  // All instances pull their target from `data-target` attr so the server
+  // can inject a different ISO string without a JS rebuild.
+  const instances = document.querySelectorAll<HTMLElement>(".countdown");
+  instances.forEach((el) => {
+    const targetIso = el.dataset.target;
+    if (!targetIso) return;
+    const target = new Date(targetIso).getTime();
+    const cells = {
+      d: el.querySelector<HTMLElement>('[data-unit="d"]'),
+      h: el.querySelector<HTMLElement>('[data-unit="h"]'),
+      m: el.querySelector<HTMLElement>('[data-unit="m"]'),
+      s: el.querySelector<HTMLElement>('[data-unit="s"]'),
+    };
+    function tick() {
+      const diff = target - Date.now();
+      if (diff <= 0) {
+        cells.d!.textContent = "00";
+        cells.h!.textContent = "00";
+        cells.m!.textContent = "00";
+        cells.s!.textContent = "00";
+        return true;
+      }
+      const d = Math.floor(diff / 86_400_000);
+      const h = Math.floor((diff % 86_400_000) / 3_600_000);
+      const m = Math.floor((diff % 3_600_000) / 60_000);
+      const s = Math.floor((diff % 60_000) / 1000);
+      cells.d!.textContent = String(d).padStart(2, "0");
+      cells.h!.textContent = String(h).padStart(2, "0");
+      cells.m!.textContent = String(m).padStart(2, "0");
+      cells.s!.textContent = String(s).padStart(2, "0");
+      return false;
+    }
+    if (!tick()) {
+      const iv = window.setInterval(() => {
+        if (tick()) window.clearInterval(iv);
+      }, 1000);
+    }
+  });
+</script>
+
+<style>
+  .countdown {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 20px;
+    align-items: stretch;
+  }
+  .cd-unit {
+    min-width: 64px;
+    text-align: center;
+    padding: 2px 6px;
+  }
+  .cd-num {
+    font-family: "Unbounded", sans-serif;
+    font-weight: 800;
+    font-size: clamp(28px, 3.4vw, 50px);
+    color: var(--white);
+    letter-spacing: -0.05em;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    text-shadow:
+      0 0 22px rgba(46, 95, 255, 0.3),
+      0 0 48px rgba(46, 95, 255, 0.12);
+  }
+  .cd-unit-label {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    color: var(--ice);
+    margin-top: 6px;
+    opacity: 0.55;
+  }
+  .cd-sep {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Unbounded", sans-serif;
+    font-weight: 300;
+    font-size: clamp(22px, 2.8vw, 42px);
+    color: var(--electric);
+    line-height: 1;
+    opacity: 0.55;
+    padding-bottom: 14px;
+  }
+
+  @media (max-width: 900px) {
+    .countdown {
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .cd-unit {
+      min-width: 56px;
+      padding: 2px 4px;
+    }
+  }
+  @media (max-width: 600px) {
+    .cd-unit {
+      min-width: 52px;
+    }
+    .cd-num {
+      font-size: 26px;
+    }
+  }
+</style>

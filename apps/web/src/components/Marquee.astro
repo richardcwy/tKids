@@ -1,0 +1,57 @@
+---
+// Scrolling ticker at the bottom, above the player dock.
+// Duplicated once inline so the -50% translate looks seamless.
+---
+
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track">
+    <span>IGNITE!</span><span class="sep">★</span>
+    <span><em>out 06.01.26</em></span><span class="sep">★</span>
+    <span>tKids</span><span class="sep">★</span>
+    <span lang="zh-TW">點亮宇宙</span><span class="sep">★</span>
+    <span><em>ignite the universe</em></span><span class="sep">★</span>
+    <span lang="zh-TW">世界巡演</span><span class="sep">★</span>
+    <span>IGNITE!</span><span class="sep">★</span>
+    <span><em>out 06.01.26</em></span><span class="sep">★</span>
+    <span>tKids</span><span class="sep">★</span>
+    <span lang="zh-TW">點亮宇宙</span><span class="sep">★</span>
+    <span><em>ignite the universe</em></span><span class="sep">★</span>
+    <span lang="zh-TW">世界巡演</span><span class="sep">★</span>
+  </div>
+</div>
+
+<style>
+  .marquee {
+    position: relative;
+    z-index: 1;
+    background: var(--electric);
+    color: var(--white);
+    overflow: hidden;
+    padding: 14px 0;
+  }
+  .marquee-track {
+    display: flex;
+    gap: 56px;
+    white-space: nowrap;
+    animation: slide 35s linear infinite;
+    font-family: "Unbounded", sans-serif;
+    font-weight: 700;
+    font-size: 26px;
+    letter-spacing: -0.02em;
+  }
+  .marquee-track :global(em) {
+    font-family: "Instrument Serif", serif;
+    font-style: italic;
+    font-weight: 400;
+  }
+  .marquee-track .sep {
+    font-family: "Unbounded", sans-serif;
+    color: var(--gold);
+  }
+
+  @media (max-width: 600px) {
+    .marquee-track {
+      font-size: 20px;
+    }
+  }
+</style>

@@ -1,0 +1,90 @@
+---
+// Reusable SEO + social preview + structured-data component.
+// Included in the shared Layout; per-page props override defaults.
+interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+  canonical?: string;
+  type?: "website" | "music.album" | "music.musician" | "article";
+  noindex?: boolean;
+}
+const {
+  title = "tKids · Ignite!",
+  description = "tKids — three kids, one collective. Debut EP 'Ignite!' drops June 1, 2026. Taipei · Hsinchu · US · JP · EU.",
+  ogImage = "/og/default.png",
+  canonical = Astro.url.href,
+  type = "website",
+  noindex = false,
+} = Astro.props;
+
+const site = Astro.site?.href ?? "https://t.kids/";
+const ogImageAbs = new URL(ogImage, site).href;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "MusicGroup",
+  name: "tKids",
+  alternateName: "t★Kids",
+  url: "https://t.kids",
+  genre: ["K-Pop", "Mandopop"],
+  foundingLocation: {
+    "@type": "Place",
+    name: "Taipei, Taiwan",
+  },
+  member: [
+    { "@type": "Person", name: "Ethan", jobTitle: "Lead Vocalist" },
+    { "@type": "Person", name: "Alan", jobTitle: "Rap, Producer" },
+    { "@type": "Person", name: "Albert", jobTitle: "Dance, Visuals" },
+  ],
+  album: [
+    {
+      "@type": "MusicAlbum",
+      name: "Ignite!",
+      alternateName: "點亮宇宙",
+      datePublished: "2026-06-01",
+      numTracks: 5,
+    },
+  ],
+};
+---
+
+<!-- Primary meta -->
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+{noindex && <meta name="robots" content="noindex,nofollow" />}
+
+<!-- Open Graph -->
+<meta property="og:type" content={type} />
+<meta property="og:url" content={canonical} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={ogImageAbs} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:locale" content="zh_TW" />
+<meta property="og:locale:alternate" content="en_US" />
+<meta property="og:site_name" content="tKids" />
+
+<!-- Twitter / X -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImageAbs} />
+
+<!-- Theme color / brand -->
+<meta name="theme-color" content="#03061a" />
+
+<!-- Structured data -->
+<script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+<!-- Preload hero font for LCP budget. Only the critical weight. -->
+<link
+  rel="preload"
+  href="/unbounded-800.woff2"
+  as="font"
+  type="font/woff2"
+  crossorigin
+  onerror="this.remove()"
+/>

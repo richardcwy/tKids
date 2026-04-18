@@ -1,25 +1,43 @@
 ---
 import "../styles/global.css";
-import Header from "../components/Header.astro";
+import SEO from "../components/SEO.astro";
 
 interface Props {
   title?: string;
+  description?: string;
+  ogImage?: string;
+  /** Default html lang is zh-TW since the core audience is Mandarin-speaking. */
+  lang?: string;
+  type?: "website" | "music.album" | "music.musician" | "article";
+  noindex?: boolean;
 }
 
-const { title = "my-better-t-app" } = Astro.props;
+const {
+  title,
+  description,
+  ogImage,
+  lang = "zh-TW",
+  type,
+  noindex,
+} = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en" class="dark">
+<html lang={lang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
-    <title>{title}</title>
+    <SEO
+      title={title}
+      description={description}
+      ogImage={ogImage}
+      type={type}
+      noindex={noindex}
+    />
   </head>
-  <body class="min-h-screen bg-neutral-950 text-white">
-    <Header />
+  <body>
     <slot />
   </body>
 </html>

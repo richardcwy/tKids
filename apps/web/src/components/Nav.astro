@@ -1,0 +1,70 @@
+---
+import WordMark from "./WordMark.astro";
+---
+
+<nav aria-label="Main">
+  <WordMark size="nav" href="/" ariaLabel="tKids home" />
+  <ul>
+    <li><a href="#lineup">lineup</a></li>
+    <li><a href="#music">music</a></li>
+    <li><a href="#shop">shop</a></li>
+  </ul>
+  <a href="/signup" class="nav-cta">join fanclub</a>
+</nav>
+
+<style>
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding: 24px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  ul {
+    list-style: none;
+    display: flex;
+    gap: 32px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    margin: 0;
+    padding: 0;
+  }
+  a {
+    color: var(--ice);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  a:hover {
+    color: var(--white);
+  }
+  .nav-cta {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    padding: 8px 16px;
+    border: 1px solid var(--electric);
+    color: var(--electric);
+    border-radius: 999px;
+    background: rgba(46, 95, 255, 0.1);
+    transition: all 0.2s;
+  }
+  .nav-cta:hover {
+    background: var(--electric);
+    color: var(--white);
+    box-shadow: 0 0 20px rgba(46, 95, 255, 0.6);
+  }
+
+  @media (max-width: 600px) {
+    nav {
+      padding: 20px;
+    }
+    ul {
+      display: none;
+    }
+  }
+</style>

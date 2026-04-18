@@ -1,0 +1,64 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer>
+  <div>© {year} tKids · all rights reserved</div>
+  <div class="socials">
+    <a href="https://open.spotify.com/" target="_blank" rel="noopener noreferrer">Spotify</a>
+    <a href="https://music.apple.com/" target="_blank" rel="noopener noreferrer">Apple Music</a>
+    <a href="https://instagram.com/" target="_blank" rel="noopener noreferrer">Instagram</a>
+    <a href="https://tiktok.com/" target="_blank" rel="noopener noreferrer">TikTok</a>
+    <a href="https://youtube.com/" target="_blank" rel="noopener noreferrer">YouTube</a>
+    <a href="/privacy">Privacy</a>
+  </div>
+  <div class="fn-tag" lang="zh-TW">點亮宇宙 · ignite the universe</div>
+</footer>
+
+<style>
+  footer {
+    position: relative;
+    z-index: 1;
+    padding: 40px;
+    border-top: 1px solid rgba(184, 204, 255, 0.15);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--ice);
+    opacity: 0.75;
+  }
+  .socials {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  a:hover {
+    color: var(--gold);
+  }
+  .fn-tag {
+    font-family: "Noto Sans TC", sans-serif;
+    font-weight: 400;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: none;
+    color: var(--gold);
+  }
+
+  @media (max-width: 600px) {
+    footer {
+      padding: 30px 20px;
+      flex-direction: column;
+      text-align: center;
+    }
+  }
+</style>

@@ -80,3 +80,51 @@ body {
   outline-offset: 2px;
   border-radius: 4px;
 }
+
+/* =============================================================
+   Animations (declared globally so component-scoped styles can
+   reference them by name without Astro renaming).
+   ============================================================= */
+@keyframes sweep1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25%      { transform: translate(280px, 160px) scale(1.1); }
+  50%      { transform: translate(460px, 60px) scale(0.95); }
+  75%      { transform: translate(220px, -100px) scale(1.08); }
+}
+@keyframes sweep2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%      { transform: translate(-320px, 180px) scale(1.05); }
+  66%      { transform: translate(-520px, 40px) scale(0.92); }
+}
+@keyframes sweep3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(220px, -140px) scale(1.2); }
+}
+@keyframes breathShine {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(0.85) rotate(0deg);
+    filter: drop-shadow(0 0 6px currentColor) drop-shadow(0 0 14px currentColor);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2) rotate(12deg);
+    filter: drop-shadow(0 0 14px currentColor) drop-shadow(0 0 30px currentColor);
+  }
+}
+@keyframes textTwinkle {
+  0%, 100% {
+    opacity: 0.5;
+    text-shadow: 0 0 4px currentColor;
+    transform: scale(0.9);
+  }
+  50% {
+    opacity: 1;
+    text-shadow: 0 0 12px currentColor, 0 0 22px currentColor;
+    transform: scale(1.15);
+  }
+}
+@keyframes slide {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}

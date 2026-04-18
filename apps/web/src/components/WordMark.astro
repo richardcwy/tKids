@@ -1,0 +1,75 @@
+---
+// Reusable tKids wordmark. Gold star glyph replaces the dot on the `i`.
+// Variant toggles sizing (hero vs. nav vs. inline).
+interface Props {
+  size?: "nav" | "hero" | "inline";
+  href?: string;
+  ariaLabel?: string;
+}
+const { size = "inline", href, ariaLabel = "tKids" } = Astro.props;
+const Tag = href ? "a" : "span";
+---
+
+<Tag class:list={["wordmark", `wordmark--${size}`]} href={href} aria-label={ariaLabel}>
+  <span>t</span>
+  <span class="wm-star" aria-hidden="true">
+    <svg viewBox="0 0 24 24">
+      <polygon
+        points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"
+      ></polygon>
+    </svg>
+  </span>
+  <span>Kids</span>
+</Tag>
+
+<style>
+  .wordmark {
+    display: inline-flex;
+    align-items: center;
+    font-family: "Unbounded", sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.05em;
+    line-height: 0.85;
+    color: inherit;
+    white-space: nowrap;
+    text-decoration: none;
+  }
+  .wordmark > :global(span) {
+    display: inline-block;
+  }
+  .wm-star {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 0.62em;
+    height: 0.62em;
+    margin: 0 0.015em;
+    color: var(--electric);
+    flex-shrink: 0;
+    filter: drop-shadow(0 0 0.25em rgba(46, 95, 255, 0.55));
+    transform: translateY(-0.02em);
+  }
+  .wm-star :global(svg) {
+    width: 100%;
+    height: 100%;
+    fill: currentColor;
+    display: block;
+  }
+
+  .wordmark--nav {
+    font-size: 22px;
+    color: var(--white);
+  }
+  .wordmark--hero {
+    font-size: clamp(90px, 14vw, 220px);
+    color: var(--white);
+    margin-bottom: 20px;
+    text-shadow:
+      0 0 60px rgba(46, 95, 255, 0.3),
+      0 0 120px rgba(46, 95, 255, 0.15);
+  }
+  .wordmark--inline {
+    font-size: 16px;
+    color: inherit;
+  }
+</style>

@@ -1,0 +1,125 @@
+---
+// Site-wide atmospheric background: gradient + spotlight sweeps + breathing stars.
+// Purely decorative: aria-hidden, position:fixed, pointer-events:none.
+// All animation disabled under prefers-reduced-motion via global.css rule.
+
+const stars = [
+  { cls: "star-a", top: "12%", left: "6%", size: 42, duration: 4.5, delay: 0 },
+  { cls: "star-b", top: "22%", right: "5%", size: 28, duration: 3.2, delay: 0.8, warm: true },
+  { cls: "star-c", top: "70%", left: "10%", size: 52, duration: 5.2, delay: 1.4 },
+  { cls: "star-d", bottom: "8%", right: "12%", size: 32, duration: 3.8, delay: 2 },
+  { cls: "star-e", top: "45%", left: "45%", size: 18, duration: 2.8, delay: 0.4, warm: true },
+  { cls: "star-f", top: "85%", left: "32%", size: 22, duration: 3.6, delay: 1.2 },
+  { cls: "star-g", top: "8%", left: "38%", size: 24, duration: 4.2, delay: 2.2, warm: true },
+  { cls: "star-h", top: "55%", right: "18%", size: 36, duration: 4.8, delay: 0.6 },
+];
+
+const STAR_SVG = `<svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>`;
+---
+
+<div class="bg-atmosphere" aria-hidden="true"></div>
+<div class="spotlight-stage" aria-hidden="true">
+  <div class="spotlight sl-1"></div>
+  <div class="spotlight sl-2"></div>
+  <div class="spotlight sl-3"></div>
+</div>
+<div class="stars-layer" aria-hidden="true">
+  {stars.map((s) => (
+    <div
+      class:list={["shine-star", s.cls]}
+      style={{
+        top: s.top,
+        left: s.left,
+        right: s.right,
+        bottom: s.bottom,
+        width: `${s.size}px`,
+        height: `${s.size}px`,
+        animationDuration: `${s.duration}s`,
+        animationDelay: `${s.delay}s`,
+        color: s.warm ? "var(--gold-warm)" : "var(--gold)",
+      }}
+      set:html={STAR_SVG}
+    />
+  ))}
+</div>
+
+<style>
+  .bg-atmosphere {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse 1200px 800px at 75% 30%, rgba(46,95,255,0.4) 0%, transparent 55%),
+      radial-gradient(ellipse 900px 600px at 15% 75%, rgba(91,133,255,0.25) 0%, transparent 50%),
+      radial-gradient(ellipse 700px 500px at 50% 0%, rgba(17,34,128,0.45) 0%, transparent 60%),
+      radial-gradient(ellipse 500px 400px at 90% 90%, rgba(255,179,71,0.08) 0%, transparent 60%),
+      linear-gradient(180deg, var(--midnight) 0%, #050930 100%);
+  }
+  .bg-atmosphere::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    opacity: 0.08;
+    mix-blend-mode: overlay;
+  }
+
+  .spotlight-stage {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .spotlight {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    mix-blend-mode: screen;
+    will-change: transform;
+  }
+  .sl-1 {
+    width: 720px;
+    height: 720px;
+    top: -80px;
+    left: 12%;
+    background: radial-gradient(circle, rgba(46, 95, 255, 0.55) 0%, rgba(46, 95, 255, 0.2) 35%, transparent 65%);
+    animation: sweep1 22s ease-in-out infinite;
+  }
+  .sl-2 {
+    width: 620px;
+    height: 620px;
+    top: 40px;
+    right: 10%;
+    background: radial-gradient(circle, rgba(91, 133, 255, 0.5) 0%, transparent 65%);
+    animation: sweep2 28s ease-in-out infinite;
+  }
+  .sl-3 {
+    width: 520px;
+    height: 520px;
+    top: 25%;
+    left: 38%;
+    background: radial-gradient(circle, rgba(255, 216, 74, 0.2) 0%, transparent 65%);
+    animation: sweep3 34s ease-in-out infinite;
+  }
+
+  .stars-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .shine-star {
+    position: absolute;
+    will-change: transform, opacity, filter;
+    animation: breathShine 4s ease-in-out infinite;
+  }
+  .shine-star :global(svg) {
+    width: 100%;
+    height: 100%;
+    fill: currentColor;
+    display: block;
+  }
+</style>
