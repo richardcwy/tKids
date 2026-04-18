@@ -1,10 +1,31 @@
 ---
-import SignUpForm from "../components/SignUpForm.astro";
 import Layout from "../layouts/Layout.astro";
+import AtmosphereBg from "../components/AtmosphereBg.astro";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+import SignUpForm from "../components/SignUpForm.astro";
 ---
 
-<Layout title="Sign Up - my-better-t-app">
-  <div class="flex min-h-[calc(100vh-4rem)] items-center justify-center">
+<Layout
+  title="Join the fanclub · tKids"
+  description="Be the first to hear tKids' debut EP 'Ignite!' when it drops 06.01.26."
+>
+  <AtmosphereBg />
+  <Nav />
+  <main class="signup-page">
     <SignUpForm />
-  </div>
+  </main>
+  <Footer />
 </Layout>
+
+<style>
+  .signup-page {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 100px);
+    padding: 120px 20px 80px;
+  }
+</style>

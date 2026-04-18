@@ -1,106 +1,411 @@
 ---
-import { authClient } from "../lib/auth-client";
+// tKids fanclub signup form.
+// Goes through the `subscribe` oRPC procedure (NOT authClient.signUp.email
+// directly) so Turnstile + rate limit + audit + Resend welcome happen on
+// the server in one place.
+import { PUBLIC_TURNSTILE_SITE_KEY } from "astro:env/client";
+
+const currentYear = new Date().getUTCFullYear();
+const maxYear = currentYear - 13; // must be at least 13 to sign up
+const minYear = 1920;
 ---
 
-<div class="mx-auto mt-10 w-full max-w-md p-6">
-  <h1 class="mb-6 text-center font-bold text-3xl text-white">Create Account</h1>
+<form id="signup-form" class="fanclub-form" novalidate>
+  <h1 class="form-title">
+    Join the fanclub
+    <small lang="zh-TW">加入後援會</small>
+  </h1>
+  <p class="form-lede">
+    Be the first to hear <em>Ignite!</em> when it drops on 06.01.26.
+  </p>
 
-  <form id="signup-form" class="space-y-4">
-    <div class="space-y-1">
-      <label for="name" class="block text-sm font-medium text-neutral-300">Name</label>
-      <input
-        id="name"
-        name="name"
-        type="text"
-        required
-        class="w-full rounded-lg border border-neutral-700 bg-neutral-800 px-4 py-2.5 text-white placeholder-neutral-500 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-        placeholder="John Doe"
-      />
-    </div>
-
-    <div class="space-y-1">
-      <label for="email" class="block text-sm font-medium text-neutral-300">Email</label>
-      <input
-        id="email"
-        name="email"
-        type="email"
-        required
-        class="w-full rounded-lg border border-neutral-700 bg-neutral-800 px-4 py-2.5 text-white placeholder-neutral-500 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-        placeholder="you@example.com"
-      />
-    </div>
-
-    <div class="space-y-1">
-      <label for="password" class="block text-sm font-medium text-neutral-300">Password</label>
-      <input
-        id="password"
-        name="password"
-        type="password"
-        required
-        minlength="8"
-        class="w-full rounded-lg border border-neutral-700 bg-neutral-800 px-4 py-2.5 text-white placeholder-neutral-500 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-        placeholder="••••••••"
-      />
-      <p class="text-xs text-neutral-500">Must be at least 8 characters</p>
-    </div>
-
-    <p id="form-error" class="text-sm text-red-500 hidden"></p>
-
-    <button
-      type="submit"
-      class="w-full rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-neutral-900 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-    >
-      Sign Up
-    </button>
-  </form>
-
-  <div class="mt-4 text-center">
-    <a href="/login" class="text-indigo-400 hover:text-indigo-300 text-sm">
-      Already have an account? Sign In
-    </a>
+  <div class="field">
+    <label for="name">Name <span class="optional">(optional)</span></label>
+    <input
+      id="name"
+      name="name"
+      type="text"
+      maxlength="80"
+      autocomplete="name"
+      placeholder="What should we call you?"
+    />
   </div>
-</div>
+
+  <div class="field">
+    <label for="email">Email</label>
+    <input
+      id="email"
+      name="email"
+      type="email"
+      required
+      autocomplete="email"
+      placeholder="you@example.com"
+    />
+  </div>
+
+  <div class="field">
+    <label for="password">
+      Password <span class="optional">· min 8 chars</span>
+    </label>
+    <input
+      id="password"
+      name="password"
+      type="password"
+      required
+      minlength="8"
+      autocomplete="new-password"
+      placeholder="••••••••"
+    />
+  </div>
+
+  <div class="field">
+    <label for="birthYear">Year you were born</label>
+    <input
+      id="birthYear"
+      name="birthYear"
+      type="number"
+      required
+      min={minYear}
+      max={maxYear}
+      step="1"
+      inputmode="numeric"
+      autocomplete="bday-year"
+      placeholder={String(maxYear - 5)}
+    />
+    <p class="hint">You must be {currentYear - maxYear} or older to sign up.</p>
+  </div>
+
+  <div class="checkbox-field">
+    <input id="over13" name="over13Consent" type="checkbox" required />
+    <label for="over13">
+      I'm 13 or older and I've read the
+      <a href="/privacy" target="_blank" rel="noopener">privacy policy</a>.
+    </label>
+  </div>
+
+  <!-- Honeypot: hidden from humans, visible in DOM for bots. -->
+  <div aria-hidden="true" class="honeypot" tabindex="-1">
+    <label for="website">Website</label>
+    <input id="website" name="honeypot" type="text" autocomplete="off" tabindex="-1" />
+  </div>
+
+  <!-- Cloudflare Turnstile widget. -->
+  <div
+    class="cf-turnstile"
+    data-sitekey={PUBLIC_TURNSTILE_SITE_KEY}
+    data-callback="tKidsTurnstileCb"
+    data-theme="dark"
+    data-size="flexible"
+  ></div>
+
+  <p id="form-error" class="error" hidden></p>
+  <p id="form-success" class="success" hidden>
+    You're in. Check your inbox for a hello from us.
+  </p>
+
+  <button type="submit" class="submit">
+    <span>Notify me</span>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h14m-5-6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+
+  <p class="login-link">
+    Already a fan? <a href="/login">Sign in</a>.
+  </p>
+</form>
+
+<script
+  src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+  async
+  defer
+  is:inline></script>
 
 <script>
-  import { authClient } from "../lib/auth-client";
+  import { orpc } from "../lib/orpc";
 
-  const form = document.getElementById("signup-form") as HTMLFormElement;
-  const nameInput = document.getElementById("name") as HTMLInputElement;
-  const emailInput = document.getElementById("email") as HTMLInputElement;
-  const passwordInput = document.getElementById("password") as HTMLInputElement;
-  const formError = document.getElementById("form-error") as HTMLParagraphElement;
-  const submitButton = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+  const form = document.getElementById("signup-form") as HTMLFormElement | null;
+  if (form) {
+    const err = document.getElementById("form-error")!;
+    const ok = document.getElementById("form-success")!;
+    const btn = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    
-    formError.classList.add("hidden");
-    submitButton.disabled = true;
-    submitButton.textContent = "Creating account...";
+    let turnstileToken = "";
+    (window as any).tKidsTurnstileCb = (token: string) => {
+      turnstileToken = token;
+    };
 
-    try {
-      await authClient.signUp.email(
-        {
-          name: nameInput.value,
-          email: emailInput.value,
-          password: passwordInput.value,
-        },
-        {
-          onSuccess: () => {
-            window.location.href = "/dashboard";
-          },
-          onError: (ctx) => {
-            formError.textContent = ctx.error.message || "Sign up failed. Please try again.";
-            formError.classList.remove("hidden");
-          },
-        }
-      );
-    } catch (error) {
-      formError.textContent = "An unexpected error occurred.";
-      formError.classList.remove("hidden");
-    } finally {
-      submitButton.disabled = false;
-      submitButton.textContent = "Sign Up";
+    function showError(message: string) {
+      err.textContent = message;
+      err.hidden = false;
+      ok.hidden = true;
     }
-  });
+    function showSuccess(message: string) {
+      ok.textContent = message;
+      ok.hidden = false;
+      err.hidden = true;
+    }
+
+    const errorMessages: Record<string, string> = {
+      rate_limited: "Too many attempts from your network. Try again in a minute.",
+      under_age: "Sorry, you need to be 13 or older to join.",
+      consent_required: "Please confirm you're 13 or older.",
+      turnstile_failed: "We couldn't verify you're human. Refresh the challenge.",
+      missing_turnstile: "Please complete the verification challenge above.",
+      signup_failed: "Something went wrong on our end. Try again in a moment.",
+      honeypot_tripped: "That submission looked off. Please try again.",
+    };
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      err.hidden = true;
+      ok.hidden = true;
+      btn.disabled = true;
+      btn.dataset.state = "loading";
+
+      const fd = new FormData(form);
+      const email = String(fd.get("email") ?? "").trim().toLowerCase();
+      const name = String(fd.get("name") ?? "").trim();
+      const password = String(fd.get("password") ?? "");
+      const birthYearRaw = String(fd.get("birthYear") ?? "");
+      const honeypot = String(fd.get("honeypot") ?? "");
+
+      const birthYear = Number(birthYearRaw);
+      if (!Number.isFinite(birthYear)) {
+        showError("Please enter a valid year.");
+        btn.disabled = false;
+        btn.dataset.state = "idle";
+        return;
+      }
+
+      try {
+        const res = await orpc.subscribe({
+          email,
+          name,
+          password,
+          birthYear,
+          over13Consent: true as const,
+          source: "join" as const,
+          turnstileToken: turnstileToken || "dev-token",
+          honeypot,
+        });
+
+        if (res.state === "already_subscribed") {
+          showSuccess("You're already on the list. We'll see you at drop day.");
+        } else if (res.state === "queued_for_retry") {
+          showSuccess("You're in. Your welcome email is on its way.");
+        } else {
+          showSuccess("You're in. Check your inbox for a hello from us.");
+        }
+        form.reset();
+        (window as any).turnstile?.reset();
+        turnstileToken = "";
+      } catch (e: any) {
+        const code = String(e?.message ?? e?.code ?? "signup_failed");
+        const key = code.replace(/^ORPCError: /, "").split(":")[0].trim();
+        showError(errorMessages[key] ?? "Something went wrong. Please try again.");
+      } finally {
+        btn.disabled = false;
+        btn.dataset.state = "idle";
+      }
+    });
+  }
 </script>
+
+<style>
+  .fanclub-form {
+    max-width: 520px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 40px;
+    background: rgba(10, 19, 64, 0.6);
+    border: 1px solid rgba(184, 204, 255, 0.15);
+    border-radius: 20px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 0 60px rgba(46, 95, 255, 0.15);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .form-title {
+    font-family: "Unbounded", sans-serif;
+    font-weight: 800;
+    font-size: 36px;
+    letter-spacing: -0.04em;
+    color: var(--white);
+    line-height: 1;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .form-title small {
+    font-family: "Noto Sans TC", sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    letter-spacing: 0.18em;
+    color: var(--gold);
+    opacity: 0.9;
+  }
+  .form-lede {
+    font-family: "DM Serif Display", serif;
+    font-size: 18px;
+    color: var(--ice);
+    line-height: 1.4;
+    margin: 0 0 4px;
+  }
+  .form-lede em {
+    font-family: "Instrument Serif", serif;
+    color: var(--white);
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .field label {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ice);
+  }
+  .field label .optional {
+    opacity: 0.5;
+    text-transform: none;
+    letter-spacing: 0.08em;
+  }
+  .field input {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 14px;
+    padding: 12px 14px;
+    background: rgba(3, 6, 26, 0.7);
+    border: 1px solid rgba(184, 204, 255, 0.2);
+    border-radius: 10px;
+    color: var(--white);
+    width: 100%;
+  }
+  .field input::placeholder {
+    color: var(--ice);
+    opacity: 0.35;
+  }
+  .field input:focus {
+    outline: none;
+    border-color: var(--electric);
+    box-shadow: 0 0 0 3px rgba(46, 95, 255, 0.25);
+  }
+  .field .hint {
+    font-size: 11px;
+    color: var(--ice);
+    opacity: 0.6;
+    margin: 0;
+  }
+
+  .checkbox-field {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 13px;
+    color: var(--ice);
+    line-height: 1.5;
+  }
+  .checkbox-field input {
+    margin-top: 3px;
+    width: 16px;
+    height: 16px;
+    accent-color: var(--electric);
+  }
+  .checkbox-field label {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+    color: var(--ice);
+  }
+  .checkbox-field a {
+    color: var(--glow);
+    text-decoration: underline;
+  }
+
+  /* Off-screen honeypot. display:none would be skipped by many bots. */
+  .honeypot {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .cf-turnstile {
+    min-height: 65px;
+  }
+
+  .error {
+    color: #ff6a85;
+    font-size: 13px;
+    margin: 0;
+    padding: 10px 12px;
+    background: rgba(255, 106, 133, 0.08);
+    border: 1px solid rgba(255, 106, 133, 0.3);
+    border-radius: 8px;
+  }
+  .success {
+    color: #98ffc5;
+    font-size: 13px;
+    margin: 0;
+    padding: 10px 12px;
+    background: rgba(152, 255, 197, 0.08);
+    border: 1px solid rgba(152, 255, 197, 0.3);
+    border-radius: 8px;
+  }
+
+  .submit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 22px;
+    font-family: "Unbounded", sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    border: 1px solid var(--white);
+    background: var(--white);
+    color: var(--midnight);
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 0 24px rgba(46, 95, 255, 0.25);
+  }
+  .submit:hover:not(:disabled) {
+    background: var(--gold);
+    border-color: var(--gold);
+    box-shadow: 0 0 40px rgba(255, 216, 74, 0.4);
+  }
+  .submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  .submit svg {
+    width: 14px;
+    height: 14px;
+  }
+  .submit[data-state="loading"] span::after {
+    content: "…";
+  }
+
+  .login-link {
+    text-align: center;
+    font-size: 12px;
+    color: var(--ice);
+    opacity: 0.8;
+    margin: 0;
+  }
+  .login-link a {
+    color: var(--glow);
+    text-decoration: none;
+    border-bottom: 1px dotted currentColor;
+  }
+  .login-link a:hover {
+    color: var(--white);
+  }
+</style>

@@ -1,0 +1,191 @@
+---
+import Layout from "../layouts/Layout.astro";
+import AtmosphereBg from "../components/AtmosphereBg.astro";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+
+const lastUpdated = "2026-04-18";
+---
+
+<Layout
+  title="Privacy Policy · tKids"
+  description="How tKids handles your information when you join the fanclub."
+  lang="en"
+  noindex={false}
+>
+  <AtmosphereBg />
+  <Nav />
+
+  <main class="privacy">
+    <h1>Privacy Policy</h1>
+    <p class="meta">Last updated: {lastUpdated}</p>
+
+    <p class="lede">
+      tKids (<strong>"we"</strong>, <strong>"us"</strong>) respects your
+      privacy. This policy explains what data we collect when you join
+      the fanclub at <a href="https://t.kids">t.kids</a>, why we collect
+      it, and how to get in touch.
+    </p>
+
+    <h2>Who this site is for</h2>
+    <p>
+      The fanclub signup on <a href="https://t.kids">t.kids</a> is intended
+      for people aged 13 and older. If you are under 13, please do not
+      submit your email or any personal information.
+    </p>
+
+    <h2>What we collect</h2>
+    <ul>
+      <li>
+        <strong>Email address.</strong> Used only to send you updates about
+        tKids. You can unsubscribe at any time by replying to any email or
+        using the unsubscribe link.
+      </li>
+      <li>
+        <strong>Birth year and 13+ consent.</strong> Required to confirm you
+        meet the minimum age. We store only the year, never your full
+        birthdate.
+      </li>
+      <li>
+        <strong>IP address hash and user-agent hash.</strong> Stored as
+        one-way SHA-256 hashes for abuse prevention and audit. We never
+        store your raw IP or user-agent string.
+      </li>
+      <li>
+        <strong>Name (optional).</strong> Used to personalize emails. You
+        can leave this blank.
+      </li>
+    </ul>
+
+    <h2>What we don't do</h2>
+    <ul>
+      <li>We don't sell or rent your personal information.</li>
+      <li>We don't run third-party advertising on the site.</li>
+      <li>We don't use tracking cookies. Analytics are cookieless via Cloudflare Web Analytics.</li>
+    </ul>
+
+    <h2>Who we share data with</h2>
+    <p>We share your email only with the vendors we use to run the service:</p>
+    <ul>
+      <li><strong>Cloudflare</strong> (hosting + bot mitigation via Turnstile).</li>
+      <li><strong>Turso</strong> (database).</li>
+      <li><strong>Resend</strong> (transactional email).</li>
+    </ul>
+    <p>Each of these vendors is bound by a data-processing agreement.</p>
+
+    <h2>How long we keep your data</h2>
+    <p>
+      We keep your email and account until you unsubscribe. When you
+      unsubscribe we delete your email from active records within 30 days.
+      Audit-log entries (hashed IP + timestamp) are retained for up to 12
+      months for abuse investigation, then deleted.
+    </p>
+
+    <h2>Your rights</h2>
+    <p>
+      You can ask us to access, correct, or delete your data at any time
+      by emailing <a href="mailto:privacy@t.kids">privacy@t.kids</a>. We
+      will respond within 30 days.
+    </p>
+
+    <h2>Cross-border transfers</h2>
+    <p>
+      We use providers based in the US and the EU. If you are based in
+      Taiwan, Japan, the EU, the UK, or elsewhere outside the US, your
+      data may be processed outside your country. All providers are
+      contractually required to protect your data to at least the
+      standard of the EU General Data Protection Regulation (GDPR).
+    </p>
+
+    <h2>Changes</h2>
+    <p>
+      We may update this policy. When we do, we'll post the new version
+      here and update the "last updated" date. Material changes to how we
+      use your data will be emailed to subscribers.
+    </p>
+
+    <h2>Contact</h2>
+    <address>
+      tKids · Taipei, Taiwan<br />
+      <a href="mailto:hello@t.kids">hello@t.kids</a><br />
+      <a href="mailto:privacy@t.kids">privacy@t.kids</a>
+    </address>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .privacy {
+    position: relative;
+    z-index: 1;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 140px 40px 120px;
+    color: var(--chrome);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+  .privacy h1 {
+    font-family: "Unbounded", sans-serif;
+    font-weight: 800;
+    font-size: clamp(40px, 5vw, 64px);
+    letter-spacing: -0.04em;
+    color: var(--white);
+    margin-bottom: 8px;
+  }
+  .privacy h2 {
+    font-family: "Unbounded", sans-serif;
+    font-weight: 600;
+    font-size: 18px;
+    color: var(--white);
+    margin-top: 36px;
+    margin-bottom: 12px;
+  }
+  .privacy .meta {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    color: var(--ice);
+    opacity: 0.65;
+    margin-bottom: 40px;
+  }
+  .privacy .lede {
+    font-family: "DM Serif Display", serif;
+    font-size: 22px;
+    line-height: 1.45;
+    color: var(--white);
+    margin-bottom: 32px;
+  }
+  .privacy p,
+  .privacy ul {
+    margin-bottom: 18px;
+  }
+  .privacy ul {
+    padding-left: 22px;
+  }
+  .privacy li {
+    margin-bottom: 10px;
+  }
+  .privacy a {
+    color: var(--glow);
+    text-decoration: underline;
+  }
+  .privacy a:hover {
+    color: var(--gold);
+  }
+  .privacy address {
+    font-style: normal;
+    margin-top: 12px;
+    padding: 20px;
+    border: 1px solid rgba(184, 204, 255, 0.15);
+    border-radius: 12px;
+  }
+
+  @media (max-width: 600px) {
+    .privacy {
+      padding: 120px 20px 100px;
+    }
+  }
+</style>
