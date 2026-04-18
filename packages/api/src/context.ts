@@ -1,17 +1,22 @@
 import { auth } from "@my-better-t-app/auth";
-import type { Context as HonoContext } from "hono";
 
+// Context passed by the Astro /api/rpc/[...path].ts handler.
+// Web-standard Request + extracted IP (Cloudflare sets cf-connecting-ip)
+// + UA for rate-limit and audit logging without re-parsing headers per
+// procedure.
 export type CreateContextOptions = {
-  context: HonoContext;
+  request: Request;
+  ip: string;
+  userAgent: string;
 };
 
-export async function createContext({ context }: CreateContextOptions) {
-  const session = await auth.api.getSession({
-    headers: context.req.raw.headers,
-  });
+export async function createContext(opts: CreateContextOptions) {
+  const session = await auth.api.getSession({ headers: opts.request.headers });
   return {
-    auth: null,
     session,
+    request: opts.request,
+    ip: opts.ip,
+    userAgent: opts.userAgent,
   };
 }
 

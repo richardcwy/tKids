@@ -1,11 +1,13 @@
 import type { RouterClient } from "@orpc/server";
 
 import { protectedProcedure, publicProcedure } from "../index";
+import { subscribe } from "./subscribe";
 
 export const appRouter = {
   healthCheck: publicProcedure.handler(() => {
     return "OK";
   }),
+  subscribe,
   privateData: protectedProcedure.handler(({ context }) => {
     return {
       message: "This is private",
