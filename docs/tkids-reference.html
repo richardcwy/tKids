@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>tKids — Ignite!</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Unbounded:wght@300;400;600;800;900&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@300;400;600&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --midnight: #03061a;
+    --navy: #0a1340;
+    --deep-blue: #112280;
+    --electric: #2e5fff;
+    --glow: #5b85ff;
+    --ice: #b8ccff;
+    --chrome: #e8ecff;
+    --white: #ffffff;
+    --gold: #ffd84a;
+    --gold-warm: #ffb347;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--midnight);
+    color: var(--chrome);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 13px;
+    line-height: 1.5;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    padding-bottom: 130px;
+  }
+
+  /* ================= BACKGROUND ================= */
+  .bg-atmosphere {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse 1200px 800px at 75% 30%, rgba(46,95,255,0.4) 0%, transparent 55%),
+      radial-gradient(ellipse 900px 600px at 15% 75%, rgba(91,133,255,0.25) 0%, transparent 50%),
+      radial-gradient(ellipse 700px 500px at 50% 0%, rgba(17,34,128,0.45) 0%, transparent 60%),
+      radial-gradient(ellipse 500px 400px at 90% 90%, rgba(255,179,71,0.08) 0%, transparent 60%),
+      linear-gradient(180deg, var(--midnight) 0%, #050930 100%);
+  }
+  .bg-atmosphere::before {
+    content: "";
+    position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    opacity: 0.08;
+    mix-blend-mode: overlay;
+  }
+
+  /* animated stage spotlights — drift over tKids */
+  .spotlight-stage {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .spotlight {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    mix-blend-mode: screen;
+    will-change: transform;
+  }
+  .sl-1 {
+    width: 720px; height: 720px;
+    top: -80px; left: 12%;
+    background: radial-gradient(circle, rgba(46, 95, 255, 0.55) 0%, rgba(46, 95, 255, 0.2) 35%, transparent 65%);
+    animation: sweep1 22s ease-in-out infinite;
+  }
+  .sl-2 {
+    width: 620px; height: 620px;
+    top: 40px; right: 10%;
+    background: radial-gradient(circle, rgba(91, 133, 255, 0.5) 0%, transparent 65%);
+    animation: sweep2 28s ease-in-out infinite;
+  }
+  .sl-3 {
+    width: 520px; height: 520px;
+    top: 25%; left: 38%;
+    background: radial-gradient(circle, rgba(255, 216, 74, 0.2) 0%, transparent 65%);
+    animation: sweep3 34s ease-in-out infinite;
+  }
+  @keyframes sweep1 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    25% { transform: translate(280px, 160px) scale(1.1); }
+    50% { transform: translate(460px, 60px) scale(0.95); }
+    75% { transform: translate(220px, -100px) scale(1.08); }
+  }
+  @keyframes sweep2 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(-320px, 180px) scale(1.05); }
+    66% { transform: translate(-520px, 40px) scale(0.92); }
+  }
+  @keyframes sweep3 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(220px, -140px) scale(1.2); }
+  }
+
+  /* yellow breathing stars */
+  .stars-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .shine-star {
+    position: absolute;
+    color: var(--gold);
+    will-change: transform, opacity, filter;
+    animation: breathShine 4s ease-in-out infinite;
+  }
+  .shine-star svg {
+    width: 100%;
+    height: 100%;
+    fill: currentColor;
+    display: block;
+  }
+  @keyframes breathShine {
+    0%, 100% {
+      opacity: 0.35;
+      transform: scale(0.85) rotate(0deg);
+      filter: drop-shadow(0 0 6px currentColor) drop-shadow(0 0 14px currentColor);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.2) rotate(12deg);
+      filter: drop-shadow(0 0 14px currentColor) drop-shadow(0 0 30px currentColor);
+    }
+  }
+  /* star positions */
+  .star-a { top: 12%; left: 6%; width: 42px; height: 42px; animation-duration: 4.5s; animation-delay: 0s; }
+  .star-b { top: 22%; right: 5%; width: 28px; height: 28px; animation-duration: 3.2s; animation-delay: 0.8s; color: var(--gold-warm); }
+  .star-c { top: 70%; left: 10%; width: 52px; height: 52px; animation-duration: 5.2s; animation-delay: 1.4s; }
+  .star-d { bottom: 8%; right: 12%; width: 32px; height: 32px; animation-duration: 3.8s; animation-delay: 2s; }
+  .star-e { top: 45%; left: 45%; width: 18px; height: 18px; animation-duration: 2.8s; animation-delay: 0.4s; color: var(--gold-warm); }
+  .star-f { top: 85%; left: 32%; width: 22px; height: 22px; animation-duration: 3.6s; animation-delay: 1.2s; }
+  .star-g { top: 8%; left: 38%; width: 24px; height: 24px; animation-duration: 4.2s; animation-delay: 2.2s; color: var(--gold-warm); }
+  .star-h { top: 55%; right: 18%; width: 36px; height: 36px; animation-duration: 4.8s; animation-delay: 0.6s; }
+  /* stars for second frame */
+  .star-i { top: 8%; left: 8%; width: 38px; height: 38px; animation-duration: 4s; animation-delay: 1s; }
+  .star-j { top: 35%; right: 6%; width: 24px; height: 24px; animation-duration: 3.4s; animation-delay: 0.2s; color: var(--gold-warm); }
+  .star-k { bottom: 15%; left: 48%; width: 20px; height: 20px; animation-duration: 3s; animation-delay: 1.8s; }
+  .star-l { bottom: 30%; right: 30%; width: 30px; height: 30px; animation-duration: 4.4s; animation-delay: 2.4s; }
+
+  /* ================= WORDMARK ================= */
+  .wordmark {
+    display: inline-flex;
+    align-items: center;
+    font-family: "Unbounded", sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.05em;
+    line-height: 0.85;
+    color: inherit;
+    white-space: nowrap;
+    text-decoration: none;
+  }
+  .wordmark > span { display: inline-block; }
+  .wordmark .wm-star {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 0.62em;
+    height: 0.62em;
+    margin: 0 0.015em;
+    color: var(--electric);
+    flex-shrink: 0;
+    filter: drop-shadow(0 0 0.25em rgba(46, 95, 255, 0.55));
+    transform: translateY(-0.02em);
+  }
+  .wordmark .wm-star svg {
+    width: 100%; height: 100%;
+    fill: currentColor;
+    display: block;
+  }
+
+  /* ================= NAV ================= */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 24px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  nav .logo { font-size: 22px; color: var(--white); }
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: 32px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+  }
+  nav a {
+    color: var(--ice);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  nav a:hover { color: var(--white); }
+  nav .nav-cta {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    padding: 8px 16px;
+    border: 1px solid var(--electric);
+    color: var(--electric);
+    border-radius: 999px;
+    background: rgba(46,95,255,0.1);
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  nav .nav-cta:hover {
+    background: var(--electric);
+    color: var(--white);
+    box-shadow: 0 0 20px rgba(46,95,255,0.6);
+  }
+
+  /* ================= HERO ================= */
+  .hero {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    padding: 100px 40px 150px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .hero-wordmark {
+    font-size: clamp(90px, 14vw, 220px);
+    color: var(--white);
+    margin-bottom: 20px;
+    text-shadow:
+      0 0 60px rgba(46, 95, 255, 0.3),
+      0 0 120px rgba(46, 95, 255, 0.15);
+  }
+
+  .hero-slogan { max-width: 880px; margin-bottom: 36px; }
+  .slogan-en {
+    font-family: "DM Serif Display", serif;
+    font-size: clamp(36px, 4.5vw, 62px);
+    color: var(--white);
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+    margin-bottom: 22px;
+    text-shadow: 0 2px 30px rgba(46,95,255,0.22);
+  }
+  .slogan-zh {
+    font-family: "Noto Sans TC", sans-serif;
+    font-weight: 400;
+    font-size: clamp(13.5px, 1.05vw, 16px);
+    line-height: 1.95;
+    letter-spacing: 0.12em;
+    color: var(--ice);
+    max-width: 880px;
+    margin: 0 auto;
+  }
+  .slogan-zh .zh-sep {
+    display: inline-block;
+    color: var(--gold);
+    margin: 0 10px;
+    font-size: 0.85em;
+    animation: textTwinkle 3.8s ease-in-out infinite;
+  }
+  .slogan-zh .zh-sep.sep-b { animation-delay: 0.8s; animation-duration: 4.4s; }
+  .slogan-zh .zh-sep.sep-c { animation-delay: 1.6s; animation-duration: 3.2s; }
+  .slogan-zh .zh-sep.sep-d { animation-delay: 2.4s; animation-duration: 4.1s; }
+  @keyframes textTwinkle {
+    0%, 100% {
+      opacity: 0.5;
+      text-shadow: 0 0 4px currentColor;
+      transform: scale(0.9);
+    }
+    50% {
+      opacity: 1;
+      text-shadow: 0 0 12px currentColor, 0 0 22px currentColor;
+      transform: scale(1.15);
+    }
+  }
+  .slogan-zh .product {
+    font-family: "Unbounded", sans-serif;
+    font-weight: 600;
+    color: var(--electric);
+    letter-spacing: -0.02em;
+    font-size: 0.92em;
+    margin-right: 2px;
+  }
+
+  /* countdown - big dramatic */
+  .countdown {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 20px;
+    align-items: stretch;
+  }
+  .cd-unit {
+    min-width: 64px;
+    text-align: center;
+    padding: 2px 6px;
+  }
+  .cd-num {
+    font-family: "Unbounded", sans-serif;
+    font-weight: 800;
+    font-size: clamp(28px, 3.4vw, 50px);
+    color: var(--white);
+    letter-spacing: -0.05em;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    text-shadow:
+      0 0 22px rgba(46,95,255,0.3),
+      0 0 48px rgba(46,95,255,0.12);
+  }
+  .cd-unit-label {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    color: var(--ice);
+    margin-top: 6px;
+    opacity: 0.55;
+  }
+  .cd-sep {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Unbounded", sans-serif;
+    font-weight: 300;
+    font-size: clamp(22px, 2.8vw, 42px);
+    color: var(--electric);
+    line-height: 1;
+    opacity: 0.55;
+    padding-bottom: 14px;
+  }
+
+  .release-meta {
+    display: flex;
+    gap: 40px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    color: var(--ice);
+    opacity: 0.75;
+  }
+  .release-meta .rm-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .release-meta .rm-label { opacity: 0.6; }
+  .release-meta .rm-val {
+    font-family: "Unbounded", sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--white);
+    letter-spacing: -0.01em;
+    text-transform: none;
+  }
+
+  /* ================= PLAYER DOCK (fixed bottom) ================= */
+  .player-dock {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    z-index: 50;
+  }
+
+  /* ================= PLAYER BAR (slim single row) ================= */
+  .player-bar {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 9px 22px;
+    background: rgba(3, 6, 26, 0.88);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(184, 204, 255, 0.15);
+  }
+  .pb-cluster {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    flex-shrink: 0;
+  }
+  .pb-divider {
+    width: 1px;
+    height: 18px;
+    background: rgba(184, 204, 255, 0.18);
+    flex-shrink: 0;
+    margin: 0 4px;
+  }
+
+  /* unified button */
+  .pb-btn {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: transparent;
+    border: none;
+    color: var(--ice);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s, background 0.2s, transform 0.15s;
+    flex-shrink: 0;
+  }
+  .pb-btn:hover {
+    color: var(--white);
+    background: rgba(255, 255, 255, 0.06);
+  }
+  .pb-btn:active { transform: scale(0.92); }
+  .pb-btn svg {
+    width: 18px; height: 18px;
+    fill: currentColor;
+    display: block;
+  }
+  .pb-btn.is-active { color: var(--electric); }
+  .pb-btn.is-active:hover { color: var(--glow); }
+
+  /* play button - white filled, slight glow */
+  .pb-play {
+    width: 38px; height: 38px;
+    background: var(--white);
+    color: var(--midnight);
+    box-shadow: 0 0 18px rgba(46, 95, 255, 0.35);
+  }
+  .pb-play:hover {
+    background: var(--white);
+    color: var(--midnight);
+    transform: scale(1.06);
+    box-shadow: 0 0 28px rgba(46, 95, 255, 0.55);
+  }
+  .pb-play svg { width: 14px; height: 14px; }
+
+  /* mute colors */
+  .pb-mute.muted { color: var(--gold-warm); }
+
+  /* time labels */
+  .pb-time-label {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    color: var(--ice);
+    letter-spacing: 0.04em;
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+    opacity: 0.7;
+  }
+  .pb-time-label.current { color: var(--white); opacity: 1; }
+
+  /* progress bar */
+  .pb-progress {
+    flex: 1;
+    min-width: 0;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+  }
+  .pb-progress-track {
+    width: 100%;
+    height: 2px;
+    background: rgba(184, 204, 255, 0.18);
+    border-radius: 999px;
+    position: relative;
+  }
+  .pb-progress-fill {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 38%;
+    background: linear-gradient(90deg, var(--electric), var(--glow));
+    border-radius: 999px;
+    box-shadow: 0 0 10px rgba(46, 95, 255, 0.55);
+  }
+  .pb-progress-dot {
+    position: absolute;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--white);
+    top: 50%;
+    left: 38%;
+    transform: translate(-50%, -50%);
+    box-shadow:
+      0 0 0 2px var(--electric),
+      0 0 14px rgba(46, 95, 255, 0.85);
+    transition: transform 0.15s;
+  }
+  .pb-progress:hover .pb-progress-dot { transform: translate(-50%, -50%) scale(1.2); }
+  .player-bar.is-muted .pb-progress-fill {
+    background: rgba(184, 204, 255, 0.35);
+    box-shadow: none;
+  }
+  .player-bar.is-muted .pb-progress-dot {
+    background: var(--ice);
+    box-shadow: 0 0 0 2px rgba(184, 204, 255, 0.4);
+  }
+
+  /* right side: thumb + track info */
+  .pb-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+    min-width: 0;
+    max-width: 240px;
+  }
+  .pb-thumb {
+    width: 36px; height: 36px;
+    flex-shrink: 0;
+    border-radius: 6px;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 30% 30%, var(--glow) 0%, transparent 55%),
+      linear-gradient(135deg, var(--electric) 0%, var(--navy) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(184, 204, 255, 0.22);
+    box-shadow: 0 2px 10px rgba(46, 95, 255, 0.3);
+    position: relative;
+  }
+  .pb-thumb::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    opacity: 0.15;
+    mix-blend-mode: overlay;
+  }
+  .pb-thumb-star {
+    width: 15px; height: 15px;
+    color: var(--gold);
+    filter: drop-shadow(0 0 7px rgba(255, 216, 74, 0.65));
+    position: relative;
+    z-index: 1;
+    animation: breathShine 3.5s ease-in-out infinite;
+  }
+  .pb-thumb-star svg { width: 100%; height: 100%; fill: currentColor; display: block; }
+
+  .pb-track-info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    line-height: 1.15;
+  }
+  .pb-artist {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    color: var(--glow);
+    white-space: nowrap;
+  }
+  .pb-song-title {
+    font-family: "Unbounded", sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--white);
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 2px;
+  }
+
+  /* ================= MARQUEE ================= */
+  .marquee {
+    position: relative;
+    z-index: 1;
+    background: var(--electric);
+    color: var(--white);
+    overflow: hidden;
+    padding: 14px 0;
+  }
+  .marquee-track {
+    display: flex;
+    gap: 56px;
+    white-space: nowrap;
+    animation: slide 35s linear infinite;
+    font-family: "Unbounded", sans-serif;
+    font-weight: 700;
+    font-size: 26px;
+    letter-spacing: -0.02em;
+  }
+  .marquee-track em {
+    font-family: "Instrument Serif", serif;
+    font-style: italic;
+    font-weight: 400;
+  }
+  .marquee-track .sep {
+    font-family: "Unbounded", sans-serif;
+    color: var(--gold);
+  }
+  @keyframes slide {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
+  /* ================= FRAME TWO : LINEUP ================= */
+  .frame-two {
+    position: relative;
+    z-index: 1;
+    padding: 120px 40px;
+    overflow: hidden;
+  }
+
+  .lineup-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 60px;
+    gap: 30px;
+    flex-wrap: wrap;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-bottom: 0;
+  }
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    color: var(--ice);
+    margin-bottom: 14px;
+  }
+  .section-label::before {
+    content: "";
+    width: 40px; height: 1px;
+    background: var(--electric);
+  }
+  .section-title {
+    font-family: "Unbounded", sans-serif;
+    font-weight: 800;
+    font-size: clamp(56px, 7.5vw, 120px);
+    line-height: 0.88;
+    letter-spacing: -0.045em;
+    color: var(--white);
+  }
+  .section-title em {
+    font-family: "Instrument Serif", serif;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--electric);
+  }
+  .section-mini {
+    font-family: "Instrument Serif", serif;
+    font-style: italic;
+    font-size: 18px;
+    color: var(--ice);
+    max-width: 280px;
+    text-align: right;
+    line-height: 1.35;
+  }
+  .section-mini small {
+    display: block;
+    font-family: "Noto Sans TC", sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 13px;
+    color: var(--gold);
+    letter-spacing: 0.12em;
+    margin-top: 8px;
+    opacity: 0.9;
+  }
+
+  /* member cards - typographic / atmospheric */
+  .members {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  .member {
+    position: relative;
+    aspect-ratio: 3/4;
+    border-radius: 20px;
+    overflow: hidden;
+    cursor: pointer;
+    border: 1px solid rgba(184,204,255,0.18);
+    transition: transform 0.4s cubic-bezier(0.2,0.8,0.2,1), border-color 0.3s;
+    isolation: isolate;
+  }
+  .member:hover {
+    transform: translateY(-8px);
+    border-color: var(--electric);
+  }
+  .member-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+  .member:nth-child(1) .member-bg {
+    background:
+      radial-gradient(ellipse 80% 60% at 30% 20%, rgba(46,95,255,0.6) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 70% at 80% 80%, rgba(17,34,128,0.8) 0%, transparent 65%),
+      linear-gradient(165deg, #1a2a80 0%, var(--midnight) 100%);
+  }
+  .member:nth-child(2) .member-bg {
+    background:
+      radial-gradient(ellipse 80% 60% at 70% 30%, rgba(91,133,255,0.55) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 80% at 20% 80%, rgba(10,19,64,0.9) 0%, transparent 60%),
+      linear-gradient(195deg, #2a3aa0 0%, var(--navy) 100%);
+  }
+  .member:nth-child(3) .member-bg {
+    background:
+      radial-gradient(ellipse 70% 70% at 50% 30%, rgba(141,167,255,0.5) 0%, transparent 55%),
+      radial-gradient(ellipse 70% 60% at 50% 90%, rgba(3,6,26,0.9) 0%, transparent 65%),
+      linear-gradient(180deg, #3040b0 0%, var(--midnight) 100%);
+  }
+  /* aura orb inside each card */
+  .member-aura {
+    position: absolute;
+    z-index: 2;
+    width: 65%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    filter: blur(30px);
+    opacity: 0.7;
+    transition: opacity 0.4s, transform 0.6s;
+  }
+  .member:nth-child(1) .member-aura {
+    top: 22%; left: 18%;
+    background: radial-gradient(circle, var(--electric) 0%, transparent 70%);
+  }
+  .member:nth-child(2) .member-aura {
+    top: 28%; left: 30%;
+    background: radial-gradient(circle, var(--glow) 0%, transparent 70%);
+  }
+  .member:nth-child(3) .member-aura {
+    top: 20%; left: 25%;
+    background: radial-gradient(circle, #8da7ff 0%, transparent 70%);
+  }
+  .member:hover .member-aura {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+  /* noise texture on cards */
+  .member::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    opacity: 0.12;
+    mix-blend-mode: overlay;
+  }
+  .member-content {
+    position: relative;
+    z-index: 5;
+    height: 100%;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .member-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .member-num {
+    font-family: "Unbounded", sans-serif;
+    font-weight: 800;
+    font-size: 44px;
+    color: var(--white);
+    letter-spacing: -0.06em;
+    line-height: 1;
+  }
+  .member-num .slash {
+    font-family: "Instrument Serif", serif;
+    font-weight: 300;
+    color: var(--ice);
+    opacity: 0.6;
+    margin-left: 2px;
+    font-size: 0.6em;
+  }
+  .member-star {
+    width: 28px; height: 28px;
+    color: var(--gold);
+    animation: breathShine 3.5s ease-in-out infinite;
+  }
+  .member:nth-child(2) .member-star { animation-delay: 0.6s; }
+  .member:nth-child(3) .member-star { animation-delay: 1.2s; }
+  .member-star svg { width: 100%; height: 100%; fill: currentColor; }
+
+  .member-bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .member-name {
+    font-family: "Unbounded", sans-serif;
+    font-weight: 800;
+    font-size: clamp(40px, 5vw, 72px);
+    color: var(--white);
+    letter-spacing: -0.05em;
+    line-height: 0.9;
+  }
+  .member-role {
+    font-family: "Instrument Serif", serif;
+    font-style: italic;
+    font-size: 17px;
+    color: var(--ice);
+    line-height: 1.3;
+  }
+  .member-role-zh {
+    font-family: "Noto Sans TC", sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    color: var(--gold);
+    letter-spacing: 0.18em;
+    margin-top: 4px;
+    opacity: 0.9;
+  }
+
+  .lineup-foot {
+    display: flex;
+    justify-content: center;
+    margin-top: 70px;
+  }
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 40px;
+    font-family: "Unbounded", sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    text-decoration: none;
+    border: 1px solid var(--white);
+    background: var(--white);
+    color: var(--midnight);
+    border-radius: 999px;
+    transition: all 0.3s;
+    box-shadow: 0 0 40px rgba(46,95,255,0.3);
+  }
+  .cta-btn:hover {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: var(--midnight);
+    box-shadow: 0 0 60px rgba(255,216,74,0.5);
+    transform: translateY(-2px);
+  }
+  .cta-btn svg { width: 14px; height: 14px; fill: currentColor; }
+
+  /* ================= FOOTER ================= */
+  footer {
+    position: relative;
+    z-index: 1;
+    padding: 40px;
+    border-top: 1px solid rgba(184,204,255,0.15);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--ice);
+    opacity: 0.75;
+  }
+  footer .socials { display: flex; gap: 20px; }
+  footer a { color: inherit; text-decoration: none; transition: color 0.2s; }
+  footer a:hover { color: var(--gold); }
+  footer .fn-tag {
+    font-family: "Noto Sans TC", sans-serif;
+    font-weight: 400;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: none;
+    color: var(--gold);
+  }
+
+  /* ================= RESPONSIVE ================= */
+  @media (max-width: 900px) {
+    .members { grid-template-columns: 1fr 1fr; gap: 14px; }
+    .member:nth-child(3) { grid-column: span 2; aspect-ratio: 16/9; }
+    .section-mini { text-align: left; }
+    .countdown { gap: 8px; flex-wrap: wrap; justify-content: center; }
+    .cd-unit { min-width: 56px; padding: 2px 4px; }
+    .release-meta { flex-direction: column; gap: 12px; }
+    .pb-secondary, .pb-divider { display: none; }
+    .player-bar { gap: 10px; padding: 9px 16px; }
+  }
+  @media (max-width: 600px) {
+    nav { padding: 20px; }
+    nav ul { display: none; }
+    .hero { padding: 120px 20px 140px; }
+    .hero-slogan { margin-bottom: 40px; }
+    .frame-two { padding: 80px 20px; }
+    .members { grid-template-columns: 1fr; }
+    .member:nth-child(3) { grid-column: span 1; aspect-ratio: 3/4; }
+    .marquee-track { font-size: 20px; }
+    .pb-prev, .pb-next { display: none; }
+    .pb-right { max-width: 130px; }
+    .pb-artist { font-size: 8px; letter-spacing: 0.2em; }
+    .pb-song-title { font-size: 12px; }
+    .cd-unit { min-width: 52px; }
+    .cd-num { font-size: 26px; }
+    footer { padding: 30px 20px; flex-direction: column; text-align: center; }
+  }
+  @media (max-width: 440px) {
+    .pb-right { max-width: 80px; }
+    .pb-artist { display: none; }
+    .pb-time-label { font-size: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- atmospheric background with yellow breathing stars -->
+<div class="bg-atmosphere"></div>
+
+<!-- moving stage spotlights on tKids -->
+<div class="spotlight-stage">
+  <div class="spotlight sl-1"></div>
+  <div class="spotlight sl-2"></div>
+  <div class="spotlight sl-3"></div>
+</div>
+
+<div class="stars-layer">
+  <div class="shine-star star-a"><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></div>
+  <div class="shine-star star-b"><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></div>
+  <div class="shine-star star-c"><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></div>
+  <div class="shine-star star-d"><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></div>
+  <div class="shine-star star-e"><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></div>
+  <div class="shine-star star-f"><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></div>
+  <div class="shine-star star-g"><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></div>
+  <div class="shine-star star-h"><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></div>
+</div>
+
+<nav>
+  <a href="#" class="wordmark logo" aria-label="tKids home">
+    <span>t</span>
+    <span class="wm-star"><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></span>
+    <span>Kids</span>
+  </a>
+  <ul>
+    <li><a href="#lineup">lineup</a></li>
+    <li><a href="#">music</a></li>
+    <li><a href="#">shop</a></li>
+  </ul>
+  <a href="#" class="nav-cta">join fanclub</a>
+</nav>
+
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <h1 class="wordmark hero-wordmark">
+    <span>t</span>
+    <span class="wm-star"><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></span>
+    <span>Kids</span>
+  </h1>
+
+  <div class="hero-slogan">
+    <p class="slogan-en">Ignite and shine!</p>
+    <p class="slogan-zh">
+      今夏夜空因我們的星芒而閃亮
+      <span class="zh-sep sep-a">✦</span>
+      <span class="product">Chat</span> 串起了每個晝與夜的對話
+      <span class="zh-sep sep-b">✦</span>
+      <span class="product">Doc</span> 守護著我們最深的秘密與信仰
+      <span class="zh-sep sep-c">✦</span>
+      <span class="product">Task</span> 標記各個約定的想像
+      <span class="zh-sep sep-d">✦</span>
+      <span class="product">File</span> 承載著旅途上所有的重量
+    </p>
+  </div>
+
+  <div class="countdown" id="countdown">
+    <div class="cd-unit">
+      <div class="cd-num" id="cd-d">44</div>
+      <div class="cd-unit-label">days</div>
+    </div>
+    <div class="cd-sep">:</div>
+    <div class="cd-unit">
+      <div class="cd-num" id="cd-h">00</div>
+      <div class="cd-unit-label">hours</div>
+    </div>
+    <div class="cd-sep">:</div>
+    <div class="cd-unit">
+      <div class="cd-num" id="cd-m">00</div>
+      <div class="cd-unit-label">minutes</div>
+    </div>
+    <div class="cd-sep">:</div>
+    <div class="cd-unit">
+      <div class="cd-num" id="cd-s">00</div>
+      <div class="cd-unit-label">seconds</div>
+    </div>
+  </div>
+
+  <div class="release-meta">
+    <div class="rm-item">
+      <span class="rm-label">release</span>
+      <span class="rm-val">06.01.26</span>
+    </div>
+    <div class="rm-item">
+      <span class="rm-label">origin</span>
+      <span class="rm-val">Taipei · Hsinchu · US · JP · EU</span>
+    </div>
+  </div>
+</section>
+
+<!-- ================= MARQUEE ================= -->
+<!-- (player bar + marquee moved into fixed dock at end of body) -->
+
+<!-- ================= FRAME 2 : LINEUP ================= -->
+<section class="frame-two" id="lineup">
+  <div class="stars-layer">
+    <div class="shine-star star-i"><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></div>
+    <div class="shine-star star-j"><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></div>
+    <div class="shine-star star-k"><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></div>
+    <div class="shine-star star-l"><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></div>
+  </div>
+
+  <div class="lineup-head">
+    <div>
+      <div class="section-label">the lineup</div>
+      <h2 class="section-title">three <em>kids</em></h2>
+    </div>
+    <p class="section-mini">
+      Ethan · Alan · Albert
+      <small>點亮宇宙的三個男孩</small>
+    </p>
+  </div>
+
+  <div class="members">
+    <div class="member">
+      <div class="member-bg"></div>
+      <div class="member-aura"></div>
+      <div class="member-content">
+        <div class="member-top">
+          <div class="member-num">01<span class="slash">/03</span></div>
+          <div class="member-star">
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+          </div>
+        </div>
+        <div class="member-bottom">
+          <div class="member-name">ETHAN</div>
+          <div class="member-role">lead vocals</div>
+          <div class="member-role-zh">主唱 · 隊長</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="member">
+      <div class="member-bg"></div>
+      <div class="member-aura"></div>
+      <div class="member-content">
+        <div class="member-top">
+          <div class="member-num">02<span class="slash">/03</span></div>
+          <div class="member-star">
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+          </div>
+        </div>
+        <div class="member-bottom">
+          <div class="member-name">ALAN</div>
+          <div class="member-role">rap · producer</div>
+          <div class="member-role-zh">饒舌 · 製作</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="member">
+      <div class="member-bg"></div>
+      <div class="member-aura"></div>
+      <div class="member-content">
+        <div class="member-top">
+          <div class="member-num">03<span class="slash">/03</span></div>
+          <div class="member-star">
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+          </div>
+        </div>
+        <div class="member-bottom">
+          <div class="member-name">ALBERT</div>
+          <div class="member-role">dance · visuals</div>
+          <div class="member-role-zh">舞蹈 · 視覺</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lineup-foot">
+    <a href="#" class="cta-btn">
+      <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+      listen to "Ignite!" · 聆聽
+    </a>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div>© 2026 tKids · all rights reserved</div>
+  <div class="socials">
+    <a href="#">Spotify</a>
+    <a href="#">Apple Music</a>
+    <a href="#">Instagram</a>
+    <a href="#">TikTok</a>
+    <a href="#">YouTube</a>
+  </div>
+  <div class="fn-tag">點亮宇宙 · ignite the universe</div>
+</footer>
+
+<!-- ================= FIXED BOTTOM DOCK ================= -->
+<div class="player-dock">
+  <div class="player-bar" id="playerBar">
+    <!-- transport cluster -->
+    <div class="pb-cluster pb-transport">
+      <button class="pb-btn pb-prev" aria-label="previous">
+        <svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zM9.5 12l8.5 6V6z"/></svg>
+      </button>
+      <button class="pb-btn pb-play" id="pbPlay" aria-label="pause">
+        <svg id="pbPlayIcon" viewBox="0 0 24 24"><path d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg>
+      </button>
+      <button class="pb-btn pb-next" aria-label="next">
+        <svg viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6h2v12h-2z"/></svg>
+      </button>
+    </div>
+
+    <div class="pb-divider"></div>
+
+    <!-- secondary cluster -->
+    <div class="pb-cluster pb-secondary">
+      <button class="pb-btn" id="pbShuffle" aria-label="shuffle">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="16 3 21 3 21 8"></polyline>
+          <line x1="4" y1="20" x2="21" y2="3"></line>
+          <polyline points="21 16 21 21 16 21"></polyline>
+          <line x1="15" y1="15" x2="21" y2="21"></line>
+          <line x1="4" y1="4" x2="9" y2="9"></line>
+        </svg>
+      </button>
+      <button class="pb-btn" id="pbLoop" aria-label="loop">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="17 1 21 5 17 9"></polyline>
+          <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
+          <polyline points="7 23 3 19 7 15"></polyline>
+          <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- current time -->
+    <span class="pb-time-label current" id="pbCur">1:24</span>
+
+    <!-- progress bar -->
+    <div class="pb-progress" id="pbProgress">
+      <div class="pb-progress-track">
+        <div class="pb-progress-fill"></div>
+        <div class="pb-progress-dot"></div>
+      </div>
+    </div>
+
+    <!-- total time -->
+    <span class="pb-time-label">3:42</span>
+
+    <!-- mute -->
+    <button class="pb-btn pb-mute" id="pbMute" aria-label="mute">
+      <svg id="pbMuteIcon" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+    </button>
+
+    <!-- thumb + track info on the right -->
+    <div class="pb-right">
+      <div class="pb-thumb">
+        <div class="pb-thumb-star">
+          <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+        </div>
+      </div>
+      <div class="pb-track-info">
+        <span class="pb-artist">tKids</span>
+        <span class="pb-song-title">Ignite!</span>
+      </div>
+    </div>
+  </div>
+  <div class="marquee">
+    <div class="marquee-track">
+      <span>IGNITE!</span><span class="sep">★</span>
+      <span><em>out 06.01.26</em></span><span class="sep">★</span>
+      <span>tKids</span><span class="sep">★</span>
+      <span>點亮宇宙</span><span class="sep">★</span>
+      <span><em>ignite the universe</em></span><span class="sep">★</span>
+      <span>世界巡演</span><span class="sep">★</span>
+      <span>IGNITE!</span><span class="sep">★</span>
+      <span><em>out 06.01.26</em></span><span class="sep">★</span>
+      <span>tKids</span><span class="sep">★</span>
+      <span>點亮宇宙</span><span class="sep">★</span>
+      <span><em>ignite the universe</em></span><span class="sep">★</span>
+      <span>世界巡演</span><span class="sep">★</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Toggle play/pause
+  const playBtn = document.getElementById('pbPlay');
+  const playIcon = document.getElementById('pbPlayIcon');
+  const ICON_PLAY = '<path d="M8 5v14l11-7z"/>';
+  const ICON_PAUSE = '<path d="M6 4h4v16H6zM14 4h4v16h-4z"/>';
+  let playing = true;
+  playBtn.addEventListener('click', () => {
+    playing = !playing;
+    playIcon.innerHTML = playing ? ICON_PAUSE : ICON_PLAY;
+    playBtn.setAttribute('aria-label', playing ? 'pause' : 'play');
+  });
+
+  // Toggle mute
+  const muteBtn = document.getElementById('pbMute');
+  const muteIcon = document.getElementById('pbMuteIcon');
+  const playerBar = document.getElementById('playerBar');
+  const ICON_UNMUTED = '<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>';
+  const ICON_MUTED = '<path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zM19 12c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.17v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>';
+  let muted = false;
+  muteBtn.addEventListener('click', () => {
+    muted = !muted;
+    muteBtn.classList.toggle('muted', muted);
+    playerBar.classList.toggle('is-muted', muted);
+    muteIcon.innerHTML = muted ? ICON_MUTED : ICON_UNMUTED;
+    muteBtn.setAttribute('aria-label', muted ? 'unmute' : 'mute');
+  });
+
+  // Shuffle & loop toggles
+  ['pbShuffle', 'pbLoop'].forEach(id => {
+    const btn = document.getElementById(id);
+    btn.addEventListener('click', () => btn.classList.toggle('is-active'));
+  });
+
+  // Countdown to 2026-06-01 00:00 local
+  const target = new Date('2026-06-01T00:00:00').getTime();
+  function tick() {
+    const diff = target - Date.now();
+    if (diff <= 0) {
+      document.getElementById('cd-d').textContent = '00';
+      document.getElementById('cd-h').textContent = '00';
+      document.getElementById('cd-m').textContent = '00';
+      document.getElementById('cd-s').textContent = '00';
+      return;
+    }
+    const d = Math.floor(diff / 86400000);
+    const h = Math.floor((diff % 86400000) / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
+    document.getElementById('cd-d').textContent = String(d).padStart(2,'0');
+    document.getElementById('cd-h').textContent = String(h).padStart(2,'0');
+    document.getElementById('cd-m').textContent = String(m).padStart(2,'0');
+    document.getElementById('cd-s').textContent = String(s).padStart(2,'0');
+  }
+  tick();
+  setInterval(tick, 1000);
+</script>
+
+</body>
+</html>
