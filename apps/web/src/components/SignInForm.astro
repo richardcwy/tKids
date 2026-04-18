@@ -1,92 +1,233 @@
 ---
-import { authClient } from "../lib/auth-client";
+// tKids fanclub sign-in form. Same brand language as SignUpForm.
+// Uses authClient.signIn.email directly — Better-Auth's own throttle
+// covers password endpoint abuse. We can wrap this in a `signIn` oRPC
+// procedure later if we need stronger anti-abuse.
 ---
 
-<div class="mx-auto mt-10 w-full max-w-md p-6">
-  <h1 class="mb-6 text-center font-bold text-3xl text-white">Welcome Back</h1>
+<form id="signin-form" class="signin-form" novalidate>
+  <h1 class="form-title">
+    Welcome back
+    <small lang="zh-TW">歡迎回來</small>
+  </h1>
+  <p class="form-lede">Sign in to your fanclub account.</p>
 
-  <form id="signin-form" class="space-y-4">
-    <div class="space-y-1">
-      <label for="email" class="block text-sm font-medium text-neutral-300">Email</label>
-      <input
-        id="email"
-        name="email"
-        type="email"
-        required
-        class="w-full rounded-lg border border-neutral-700 bg-neutral-800 px-4 py-2.5 text-white placeholder-neutral-500 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-        placeholder="you@example.com"
-      />
-      <p id="email-error" class="text-sm text-red-500 hidden"></p>
-    </div>
-
-    <div class="space-y-1">
-      <label for="password" class="block text-sm font-medium text-neutral-300">Password</label>
-      <input
-        id="password"
-        name="password"
-        type="password"
-        required
-        class="w-full rounded-lg border border-neutral-700 bg-neutral-800 px-4 py-2.5 text-white placeholder-neutral-500 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-        placeholder="••••••••"
-      />
-      <p id="password-error" class="text-sm text-red-500 hidden"></p>
-    </div>
-
-    <p id="form-error" class="text-sm text-red-500 hidden"></p>
-
-    <button
-      type="submit"
-      class="w-full rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-neutral-900 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-    >
-      Sign In
-    </button>
-  </form>
-
-  <div class="mt-4 text-center">
-    <a href="/signup" class="text-indigo-400 hover:text-indigo-300 text-sm">
-      Need an account? Sign Up
-    </a>
+  <div class="field">
+    <label for="email">Email</label>
+    <input
+      id="email"
+      name="email"
+      type="email"
+      required
+      autocomplete="email"
+      placeholder="you@example.com"
+    />
   </div>
-</div>
+
+  <div class="field">
+    <label for="password">Password</label>
+    <input
+      id="password"
+      name="password"
+      type="password"
+      required
+      autocomplete="current-password"
+      placeholder="••••••••"
+    />
+  </div>
+
+  <p id="form-error" class="error" hidden></p>
+
+  <button type="submit" class="submit">
+    <span>Sign in</span>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h14m-5-6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+
+  <p class="signup-link">
+    Not in yet? <a href="/signup">Join the fanclub</a>.
+  </p>
+</form>
 
 <script>
   import { authClient } from "../lib/auth-client";
 
-  const form = document.getElementById("signin-form") as HTMLFormElement;
-  const emailInput = document.getElementById("email") as HTMLInputElement;
-  const passwordInput = document.getElementById("password") as HTMLInputElement;
-  const formError = document.getElementById("form-error") as HTMLParagraphElement;
-  const submitButton = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+  const form = document.getElementById("signin-form") as HTMLFormElement | null;
+  if (form) {
+    const err = document.getElementById("form-error")!;
+    const btn = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    
-    formError.classList.add("hidden");
-    submitButton.disabled = true;
-    submitButton.textContent = "Signing in...";
-
-    try {
-      await authClient.signIn.email(
-        {
-          email: emailInput.value,
-          password: passwordInput.value,
-        },
-        {
-          onSuccess: () => {
-            window.location.href = "/dashboard";
-          },
-          onError: (ctx) => {
-            formError.textContent = ctx.error.message || "Sign in failed. Please try again.";
-            formError.classList.remove("hidden");
-          },
-        }
-      );
-    } catch (error) {
-      formError.textContent = "An unexpected error occurred.";
-      formError.classList.remove("hidden");
-    } finally {
-      submitButton.disabled = false;
-      submitButton.textContent = "Sign In";
+    function showError(message: string) {
+      err.textContent = message;
+      err.hidden = false;
     }
-  });
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      err.hidden = true;
+      btn.disabled = true;
+      btn.dataset.state = "loading";
+
+      const fd = new FormData(form);
+      const email = String(fd.get("email") ?? "").trim().toLowerCase();
+      const password = String(fd.get("password") ?? "");
+
+      try {
+        await authClient.signIn.email(
+          { email, password },
+          {
+            onSuccess: () => {
+              window.location.href = "/dashboard";
+            },
+            onError: (ctx) => {
+              showError(ctx.error.message ?? "Sign in failed.");
+            },
+          },
+        );
+      } catch (e) {
+        showError("Something went wrong. Please try again.");
+      } finally {
+        btn.disabled = false;
+        btn.dataset.state = "idle";
+      }
+    });
+  }
 </script>
+
+<style>
+  .signin-form {
+    max-width: 460px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 40px;
+    background: rgba(10, 19, 64, 0.6);
+    border: 1px solid rgba(184, 204, 255, 0.15);
+    border-radius: 20px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 0 60px rgba(46, 95, 255, 0.15);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .form-title {
+    font-family: "Unbounded", sans-serif;
+    font-weight: 800;
+    font-size: 36px;
+    letter-spacing: -0.04em;
+    color: var(--white);
+    line-height: 1;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .form-title small {
+    font-family: "Noto Sans TC", sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    letter-spacing: 0.18em;
+    color: var(--gold);
+    opacity: 0.9;
+  }
+  .form-lede {
+    font-family: "DM Serif Display", serif;
+    font-size: 18px;
+    color: var(--ice);
+    line-height: 1.4;
+    margin: 0 0 4px;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .field label {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ice);
+  }
+  .field input {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 14px;
+    padding: 12px 14px;
+    background: rgba(3, 6, 26, 0.7);
+    border: 1px solid rgba(184, 204, 255, 0.2);
+    border-radius: 10px;
+    color: var(--white);
+    width: 100%;
+  }
+  .field input::placeholder {
+    color: var(--ice);
+    opacity: 0.35;
+  }
+  .field input:focus {
+    outline: none;
+    border-color: var(--electric);
+    box-shadow: 0 0 0 3px rgba(46, 95, 255, 0.25);
+  }
+
+  .error {
+    color: #ff6a85;
+    font-size: 13px;
+    margin: 0;
+    padding: 10px 12px;
+    background: rgba(255, 106, 133, 0.08);
+    border: 1px solid rgba(255, 106, 133, 0.3);
+    border-radius: 8px;
+  }
+
+  .submit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 22px;
+    font-family: "Unbounded", sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    border: 1px solid var(--white);
+    background: var(--white);
+    color: var(--midnight);
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 0 24px rgba(46, 95, 255, 0.25);
+  }
+  .submit:hover:not(:disabled) {
+    background: var(--gold);
+    border-color: var(--gold);
+    box-shadow: 0 0 40px rgba(255, 216, 74, 0.4);
+  }
+  .submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  .submit svg {
+    width: 14px;
+    height: 14px;
+  }
+  .submit[data-state="loading"] span::after {
+    content: "…";
+  }
+
+  .signup-link {
+    text-align: center;
+    font-size: 12px;
+    color: var(--ice);
+    opacity: 0.8;
+    margin: 0;
+  }
+  .signup-link a {
+    color: var(--glow);
+    text-decoration: none;
+    border-bottom: 1px dotted currentColor;
+  }
+  .signup-link a:hover {
+    color: var(--white);
+  }
+</style>

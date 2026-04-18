@@ -1,10 +1,32 @@
 ---
-import SignInForm from "../components/SignInForm.astro";
 import Layout from "../layouts/Layout.astro";
+import AtmosphereBg from "../components/AtmosphereBg.astro";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+import SignInForm from "../components/SignInForm.astro";
 ---
 
-<Layout title="Sign In - my-better-t-app">
-  <div class="flex min-h-[calc(100vh-4rem)] items-center justify-center">
+<Layout
+  title="Sign in · tKids"
+  description="Sign in to your tKids fanclub account."
+  noindex={true}
+>
+  <AtmosphereBg />
+  <Nav />
+  <main class="login-page">
     <SignInForm />
-  </div>
+  </main>
+  <Footer />
 </Layout>
+
+<style>
+  .login-page {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 100px);
+    padding: 120px 20px 80px;
+  }
+</style>
