@@ -1,0 +1,3 @@
+[test]
+# Bun test resolves *.test.ts under this root by default.
+root = "./packages"

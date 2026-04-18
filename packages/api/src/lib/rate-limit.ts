@@ -2,6 +2,9 @@ import { db } from "@my-better-t-app/db";
 import { rateLimits } from "@my-better-t-app/db/schema";
 import { and, eq, sql as dsql, lt } from "drizzle-orm";
 
+import { computeWindow } from "./rate-limit-window";
+export { computeWindow };
+
 // Rolling window rate limit per IP hash.
 // Window is a fixed 60s bucket: floor(now / window) * window.
 // Upsert-increment on composite PK (ip_hash, window_start).
@@ -15,7 +18,7 @@ export async function checkRateLimit(
   retryAfterSeconds: number;
 }> {
   const now = Date.now();
-  const windowStart = Math.floor(now / windowMs) * windowMs;
+  const { windowStart, retryAfterSeconds } = computeWindow(now, windowMs);
   const windowDate = new Date(windowStart);
 
   await db
@@ -44,7 +47,7 @@ export async function checkRateLimit(
   return {
     allowed: count <= max,
     count,
-    retryAfterSeconds: Math.ceil((windowStart + windowMs - now) / 1000),
+    retryAfterSeconds,
   };
 }
 

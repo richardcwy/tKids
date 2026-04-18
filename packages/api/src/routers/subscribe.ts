@@ -6,6 +6,7 @@ import { eq } from "drizzle-orm";
 import { z } from "zod";
 
 import { publicProcedure } from "../index";
+import { isAgeOk } from "../lib/age";
 import { sha256 } from "../lib/hash";
 import { verifyTurnstile } from "../lib/turnstile";
 import { checkRateLimit } from "../lib/rate-limit";
@@ -99,8 +100,7 @@ export const subscribe = publicProcedure
 
     // Server-side age check (redundant with Better-Auth databaseHook but
     // we log the attempt at this layer for audit clarity).
-    const age = CURRENT_YEAR - input.birthYear;
-    if (age < 13) {
+    if (!isAgeOk(input.birthYear, CURRENT_YEAR)) {
       await audit({
         email: input.email,
         ipHash,
