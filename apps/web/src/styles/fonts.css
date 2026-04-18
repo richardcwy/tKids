@@ -1,0 +1,32 @@
+/* Self-hosted fonts via @fontsource. No Google Fonts CDN = cleaner CSP,
+   no leaked visitor IPs, predictable cache behavior.
+
+   Load strategy:
+   - Critical path (above-the-fold hero): Unbounded 800 + 600
+   - Secondary Latin serifs: loaded but `font-display: swap` via Fontsource defaults
+   - zh-TW (Noto Sans TC): subset to chinese-traditional at weights we actually use */
+
+/* --- Unbounded (display, wordmark, titles) --- */
+@import "@fontsource/unbounded/300.css";
+@import "@fontsource/unbounded/400.css";
+@import "@fontsource/unbounded/600.css";
+@import "@fontsource/unbounded/800.css";
+@import "@fontsource/unbounded/900.css";
+
+/* --- DM Serif Display (hero slogan) --- */
+@import "@fontsource/dm-serif-display/400.css";
+
+/* --- Instrument Serif (italic accents) --- */
+@import "@fontsource/instrument-serif/400.css";
+@import "@fontsource/instrument-serif/400-italic.css";
+
+/* --- JetBrains Mono (UI labels, nav, time readouts) --- */
+@import "@fontsource/jetbrains-mono/300.css";
+@import "@fontsource/jetbrains-mono/400.css";
+@import "@fontsource/jetbrains-mono/600.css";
+
+/* --- Noto Sans TC (Traditional Chinese) — subset only, keeps bytes sane --- */
+@import "@fontsource/noto-sans-tc/chinese-traditional-300.css";
+@import "@fontsource/noto-sans-tc/chinese-traditional-400.css";
+@import "@fontsource/noto-sans-tc/chinese-traditional-500.css";
+@import "@fontsource/noto-sans-tc/chinese-traditional-700.css";

@@ -1,8 +1,82 @@
+@import "./fonts.css";
 @import "tailwindcss";
 
-/* Add your theme customizations here. */
-/* See the TailwindCSS v4 docs for more info: https://tailwindcss.com/docs/v4-beta */
+/* =============================================================
+   tKids brand tokens
+   Stage/concert aesthetic: midnight navy base, electric-blue
+   spotlights, gold breathing stars. Poster + idol energy.
+   ============================================================= */
+:root {
+  --midnight: #03061a;
+  --navy: #0a1340;
+  --deep-blue: #112280;
+  --electric: #2e5fff;
+  --glow: #5b85ff;
+  --ice: #b8ccff;
+  --chrome: #e8ecff;
+  --white: #ffffff;
+  --gold: #ffd84a;
+  --gold-warm: #ffb347;
+}
 
 @theme {
-  --font-sans: "Inter", sans-serif;
+  --font-sans: "JetBrains Mono", ui-monospace, monospace;
+  --font-display: "Unbounded", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "DM Serif Display", Georgia, serif;
+  --font-italic: "Instrument Serif", Georgia, serif;
+  --font-cjk: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+
+  --color-midnight: #03061a;
+  --color-navy: #0a1340;
+  --color-electric: #2e5fff;
+  --color-glow: #5b85ff;
+  --color-ice: #b8ccff;
+  --color-chrome: #e8ecff;
+  --color-gold: #ffd84a;
+  --color-gold-warm: #ffb347;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--midnight);
+  color: var(--chrome);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  line-height: 1.5;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  padding-bottom: 130px; /* leave room for fixed player dock */
+}
+
+/* =============================================================
+   Accessibility: respect prefers-reduced-motion.
+   Disables spotlight sweeps, breathing stars, marquee, auras.
+   ============================================================= */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* Visible focus ring for keyboard users. */
+:focus-visible {
+  outline: 2px solid var(--electric);
+  outline-offset: 2px;
+  border-radius: 4px;
 }

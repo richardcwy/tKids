@@ -6,26 +6,36 @@
   "scripts": {
     "build": "astro build",
     "preview": "astro preview",
+    "dev": "astro dev",
     "astro": "astro",
-    "dev:bare": "astro dev"
+    "test:e2e": "playwright test"
   },
   "dependencies": {
+    "@astrojs/sitemap": "^3.2.1",
+    "@fontsource/dm-serif-display": "^5.1.0",
+    "@fontsource/instrument-serif": "^5.1.0",
+    "@fontsource/jetbrains-mono": "^5.1.0",
+    "@fontsource/noto-sans-tc": "^5.1.0",
+    "@fontsource/unbounded": "^5.1.0",
     "@libsql/client": "catalog:",
     "@my-better-t-app/api": "workspace:*",
     "@my-better-t-app/auth": "workspace:*",
     "@my-better-t-app/env": "workspace:*",
     "@orpc/client": "catalog:",
+    "@orpc/server": "catalog:",
     "@polar-sh/better-auth": "catalog:",
     "astro": "^6.0.1",
     "better-auth": "catalog:",
     "dotenv": "catalog:",
     "libsql": "catalog:",
+    "wavesurfer.js": "^7.9.1",
     "zod": "catalog:"
   },
   "devDependencies": {
     "@astrojs/cloudflare": "^13.0.1",
     "@cloudflare/workers-types": "catalog:",
     "@my-better-t-app/config": "workspace:*",
+    "@playwright/test": "^1.49.0",
     "@tailwindcss/vite": "^4.1.18",
     "alchemy": "catalog:",
     "tailwindcss": "^4.1.18",
