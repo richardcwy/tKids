@@ -1,6 +1,10 @@
 import { relations, sql } from "drizzle-orm";
 import { sqliteTable, text, integer, index } from "drizzle-orm/sqlite-core";
 
+// Extended by Better-Auth `user.additionalFields` config in packages/auth:
+// - birthYear, over13Consent (required on signup — COPPA/consent gate)
+// - source (which form fired: hero | ep | footer)
+// - subscribedAt, unsubscribedAt (mailing-list lifecycle)
 export const user = sqliteTable("user", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
@@ -14,6 +18,15 @@ export const user = sqliteTable("user", {
     .default(sql`(cast(unixepoch('subsecond') * 1000 as integer))`)
     .$onUpdate(() => /* @__PURE__ */ new Date())
     .notNull(),
+
+  // --- additionalFields (wired via Better-Auth config) ---
+  birthYear: integer("birth_year").notNull(),
+  over13Consent: integer("over_13_consent", { mode: "boolean" })
+    .default(false)
+    .notNull(),
+  source: text("source").default("unknown"),
+  subscribedAt: integer("subscribed_at", { mode: "timestamp_ms" }),
+  unsubscribedAt: integer("unsubscribed_at", { mode: "timestamp_ms" }),
 });
 
 export const session = sqliteTable(
