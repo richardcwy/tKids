@@ -5,6 +5,7 @@
     "": {
       "name": "my-better-t-app",
       "dependencies": {
+        "@libsql/client": "catalog:",
         "@my-better-t-app/env": "workspace:*",
         "dotenv": "catalog:",
         "zod": "catalog:",

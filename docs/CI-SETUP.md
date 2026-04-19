@@ -1,4 +1,4 @@
-# Enabling CI / CD
+# Enabling CI / CD + nightly backup
 
 The CI workflow lives at `docs/ci-workflow.yml` instead of
 `.github/workflows/ci.yml` because the gh CLI token used to seed this
@@ -11,11 +11,12 @@ repo doesn't have the `workflow` OAuth scope. Pushing to
 # 1. Refresh your gh token to add the workflow scope (opens a browser).
 gh auth refresh -h github.com -s workflow
 
-# 2. Move the workflow into the active path and push.
+# 2. Move BOTH workflows into the active path and push.
 mkdir -p .github/workflows
 mv docs/ci-workflow.yml .github/workflows/ci.yml
-git add .github/workflows/ci.yml docs/CI-SETUP.md
-git commit -m "ci: enable test + build + deploy workflow"
+mv docs/backup-workflow.yml .github/workflows/backup.yml
+git add .github/workflows/ docs/CI-SETUP.md
+git commit -m "ci: enable test + build + deploy + nightly backup workflows"
 git push
 ```
 
@@ -53,3 +54,29 @@ For the deploy job to actually run, add these secrets:
 | `TURNSTILE_SECRET_KEY` | From Cloudflare Turnstile |
 | `PUBLIC_SERVER_URL` | `https://t.kids` |
 | `PUBLIC_TURNSTILE_SITE_KEY` | From Cloudflare Turnstile (public) |
+| `SENTRY_DSN` | Optional. Error reporting to Sentry. |
+| `DISCORD_ALERT_WEBHOOK` | Optional. Errors pinged to a Discord channel. |
+
+## Backup-specific secrets (for nightly R2 dump)
+
+| Secret | What |
+| --- | --- |
+| `R2_ACCESS_KEY_ID` | From Cloudflare R2 → Manage API tokens |
+| `R2_SECRET_ACCESS_KEY` | Same place |
+
+R2 S3 credentials are separate from the Workers API token. Create them
+at Cloudflare → R2 → Manage API tokens, scope them to "Object
+Read & Write" on the `tkids-backups` bucket.
+
+## Running the backup locally
+
+```bash
+# Just dump to stdout:
+BACKUP_STDOUT=1 bun run backup > dump.sql
+
+# Dump + write gzipped local copy:
+bun run backup
+
+# Dump + upload to R2:
+R2_ACCOUNT_ID=... R2_ACCESS_KEY_ID=... R2_SECRET_ACCESS_KEY=... bun run backup
+```

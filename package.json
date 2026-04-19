@@ -33,6 +33,7 @@
     "test": "bun test",
     "test:e2e": "turbo -F web test:e2e",
     "peaks": "bun run scripts/generate-peaks.ts",
+    "backup": "bun run scripts/backup-turso.ts",
     "db:push": "turbo -F @my-better-t-app/db db:push",
     "db:studio": "turbo -F @my-better-t-app/db db:studio",
     "db:generate": "turbo -F @my-better-t-app/db db:generate",
@@ -42,6 +43,7 @@
     "destroy": "turbo -F @my-better-t-app/infra destroy"
   },
   "dependencies": {
+    "@libsql/client": "catalog:",
     "@my-better-t-app/env": "workspace:*",
     "dotenv": "catalog:",
     "zod": "catalog:"
