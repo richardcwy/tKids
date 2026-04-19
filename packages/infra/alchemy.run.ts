@@ -75,6 +75,13 @@ export const web = await Astro("web", {
     RESEND_FROM_EMAIL: alchemy.env.RESEND_FROM_EMAIL ?? "no-reply@t.kids",
     RESEND_REPLY_TO: alchemy.env.RESEND_REPLY_TO ?? "hello@t.kids",
     TURNSTILE_SECRET_KEY: alchemy.secret(alchemy.env.TURNSTILE_SECRET_KEY!),
+
+    // Observability — both optional. If neither set, errors only console.error.
+    SENTRY_DSN: alchemy.secret(alchemy.env.SENTRY_DSN ?? ""),
+    DISCORD_ALERT_WEBHOOK: alchemy.secret(
+      alchemy.env.DISCORD_ALERT_WEBHOOK ?? "",
+    ),
+
     NODE_ENV: alchemy.env.NODE_ENV ?? "production",
 
     // Resource bindings — accessible in the Worker as env.AUDIO etc.

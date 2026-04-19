@@ -24,6 +24,11 @@ export const env = createEnv({
     // Cloudflare Turnstile (bot protection on signup)
     TURNSTILE_SECRET_KEY: z.string().default(""),
 
+    // Observability sinks — both optional. If neither is set, errors
+    // only go to console. Wire one or both as needed.
+    SENTRY_DSN: z.string().default(""),
+    DISCORD_ALERT_WEBHOOK: z.string().default(""),
+
     NODE_ENV: z
       .enum(["development", "production", "test"])
       .default("development"),
