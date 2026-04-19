@@ -3,9 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "alchemy dev",
-    "deploy": "alchemy deploy",
-    "destroy": "alchemy destroy"
+    "dev": "bun run alchemy.run.ts",
+    "deploy": "bun run alchemy.run.ts",
+    "destroy": "alchemy destroy alchemy.run.ts"
   },
   "dependencies": {
     "dotenv": "catalog:",
