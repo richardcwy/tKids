@@ -25,6 +25,14 @@ export default defineConfig({
         context: "client",
         default: "1x00000000000000000000AA", // Turnstile "always passes" test key
       }),
+      // Google Analytics 4 measurement ID, e.g. G-XXXXXXXXXX. Leave
+      // empty to disable GA entirely (recommended in dev).
+      PUBLIC_GA_MEASUREMENT_ID: envField.string({
+        access: "public",
+        context: "client",
+        default: "",
+        optional: true,
+      }),
     },
   },
   vite: {

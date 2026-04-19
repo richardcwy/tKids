@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import SEO from "../components/SEO.astro";
+import GoogleAnalytics from "../components/GoogleAnalytics.astro";
 
 interface Props {
   title?: string;
@@ -36,6 +37,7 @@ const {
       type={type}
       noindex={noindex}
     />
+    <GoogleAnalytics />
   </head>
   <body>
     <slot />

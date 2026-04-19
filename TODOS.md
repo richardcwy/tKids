@@ -96,19 +96,27 @@ Hard deadline: EP "Ignite!" drops 2026-06-01 (44 days from 2026-04-18)
 
 ## P1 — Strongly recommended
 
-- [ ] **Sentry Worker + error alerting to Discord webhook**
-  - Free tier Sentry DSN bound as Worker secret
-  - Capture 5xx + unhandled exceptions
-  - Discord webhook as a secondary sink so founder sees errors in the fan Discord's ops channel
+- [ ] **Google Analytics 4 tracking** ⭐ newly requested
+  - Integration already implemented (env-gated in `apps/web/src/components/GoogleAnalytics.astro`)
+  - Action: create GA4 property → paste measurement ID `G-XXXXXXXXXX` into `apps/web/.env` as `PUBLIC_GA_MEASUREMENT_ID` + same key into GitHub repo Secrets for deploy
+  - Site starts reporting page views + events automatically on next deploy
+  - DNT is respected; `anonymize_ip=true` is the default
+
+- [x] **Sentry Worker + error alerting to Discord webhook** *(done 2026-04-19)*
+  - ~~Free tier Sentry DSN bound as Worker secret~~
+  - ~~Capture 5xx + unhandled exceptions~~
+  - ~~Discord webhook as a secondary sink so founder sees errors in the fan Discord's ops channel~~
+  - Implemented as lightweight `apps/web/src/lib/observability.ts` (no SDK dep), wired into both API catch-all routes. Still need: create Sentry account + paste DSN into `SENTRY_DSN` env, and create Discord webhook URL + paste into `DISCORD_ALERT_WEBHOOK`
 
 - [ ] **Uptime monitoring on `/api/health`**
   - Better Stack free tier pings every 60s
   - Page if down > 2 min
 
-- [ ] **Turso nightly backup**
-  - Scheduled Worker runs `turso db shell <dbname> .dump` daily
-  - Upload to R2 `tkids-backups` bucket
-  - Retain 30 days
+- [x] **Turso nightly backup** *(done 2026-04-19)*
+  - ~~Scheduled Worker runs `turso db shell <dbname> .dump` daily~~
+  - ~~Upload to R2 `tkids-backups` bucket~~
+  - ~~Retain 30 days~~
+  - Implemented as `scripts/backup-turso.ts` + cron workflow at `docs/backup-workflow.yml` (parked, needs `gh auth refresh -s workflow`). Still need: R2 S3 API tokens in GitHub repo Secrets as `R2_ACCESS_KEY_ID` + `R2_SECRET_ACCESS_KEY`
 
 - [ ] **Hide `/dashboard` and `/login` from launch nav**
   - Keep routes working (for authenticated fans who know the URL)

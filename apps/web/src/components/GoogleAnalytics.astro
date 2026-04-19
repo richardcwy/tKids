@@ -1,0 +1,39 @@
+---
+// Google Analytics 4 loader. Renders nothing (zero network, zero JS)
+// unless PUBLIC_GA_MEASUREMENT_ID is set in the environment. That keeps
+// dev clean and lets you disable GA per-environment by just unsetting
+// the var — no code change.
+//
+// Also respects Do Not Track: if the browser sends DNT:1, we never
+// call gtag() so nothing is reported. This is a defensive stance for
+// the Taiwan / EU audience; no banner is displayed here because GA
+// only fires when the user hasn't opted out AND the env var is wired.
+import { PUBLIC_GA_MEASUREMENT_ID } from "astro:env/client";
+
+const enabled = !!PUBLIC_GA_MEASUREMENT_ID && PUBLIC_GA_MEASUREMENT_ID !== "";
+---
+
+{enabled && (
+  <>
+    <script async src={`https://www.googletagmanager.com/gtag/js?id=${PUBLIC_GA_MEASUREMENT_ID}`} is:inline></script>
+    <script is:inline define:vars={{ id: PUBLIC_GA_MEASUREMENT_ID }}>
+      (function () {
+        // Respect DNT — don't initialize at all if user opted out.
+        if (navigator.doNotTrack === "1" || (window as any).doNotTrack === "1") {
+          return;
+        }
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { window.dataLayer.push(arguments); }
+        gtag('js', new Date());
+        // anonymize_ip is a privacy-lighter default; we're not doing
+        // user-level targeting anyway.
+        gtag('config', id, {
+          anonymize_ip: true,
+          send_page_view: true,
+        });
+        // Expose for any component that wants to fire custom events later.
+        (window as any).gtag = gtag;
+      })();
+    </script>
+  </>
+)}
