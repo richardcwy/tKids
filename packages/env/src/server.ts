@@ -14,12 +14,12 @@ export const env = createEnv({
 
     // Polar (imported eagerly by @polar-sh/better-auth; checkout deferred Phase 2)
     POLAR_ACCESS_TOKEN: z.string().min(1),
-    POLAR_SUCCESS_URL: z.url().default("https://t.kids/dashboard"),
+    POLAR_SUCCESS_URL: z.url().default("https://tkids.tw/dashboard"),
 
     // Resend (transactional email, mailing-list double-opt-in)
     RESEND_API_KEY: z.string().default(""),
-    RESEND_FROM_EMAIL: z.string().default("no-reply@t.kids"),
-    RESEND_REPLY_TO: z.string().default("hello@t.kids"),
+    RESEND_FROM_EMAIL: z.string().default("no-reply@tkids.tw"),
+    RESEND_REPLY_TO: z.string().default("hello@tkids.tw"),
 
     // Cloudflare Turnstile (bot protection on signup)
     TURNSTILE_SECRET_KEY: z.string().default(""),

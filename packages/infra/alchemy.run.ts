@@ -5,11 +5,11 @@ import { config } from "dotenv";
 config({ path: "./.env" });
 config({ path: "../../apps/web/.env" });
 
-// tKids infrastructure — single Astro Worker at t.kids with everything
+// tKids infrastructure — single Astro Worker at tkids.tw with everything
 // it needs colocated.
 //
 // After `bun run deploy` from the repo root, the outputs below print:
-//   Web   -> https://t.kids
+//   Web   -> https://tkids.tw
 //   Audio -> R2 bucket tkids-audio
 //   Queue -> tkids-subscribe-retry
 //
@@ -53,13 +53,13 @@ export const web = await Astro("web", {
   entrypoint: "dist/server/entry.mjs",
   assets: "dist/client",
 
-  // Custom domains — nameservers for t.kids must be pointed at Cloudflare
+  // Custom domains — nameservers for tkids.tw must be pointed at Cloudflare
   // first. See TODOS.md for the DNS cutover runbook.
-  domains: ["t.kids", "www.t.kids"],
+  domains: ["tkids.tw", "www.tkids.tw"],
 
   bindings: {
     // Public (readable client-side via astro:env/client):
-    PUBLIC_SERVER_URL: alchemy.env.PUBLIC_SERVER_URL ?? "https://t.kids",
+    PUBLIC_SERVER_URL: alchemy.env.PUBLIC_SERVER_URL ?? "https://tkids.tw",
     PUBLIC_TURNSTILE_SITE_KEY:
       alchemy.env.PUBLIC_TURNSTILE_SITE_KEY ?? "1x00000000000000000000AA",
 
@@ -67,13 +67,13 @@ export const web = await Astro("web", {
     DATABASE_URL: alchemy.secret(alchemy.env.DATABASE_URL!),
     DATABASE_AUTH_TOKEN: alchemy.secret(alchemy.env.DATABASE_AUTH_TOKEN!),
     BETTER_AUTH_SECRET: alchemy.secret(alchemy.env.BETTER_AUTH_SECRET!),
-    BETTER_AUTH_URL: alchemy.env.BETTER_AUTH_URL ?? "https://t.kids",
+    BETTER_AUTH_URL: alchemy.env.BETTER_AUTH_URL ?? "https://tkids.tw",
     POLAR_ACCESS_TOKEN: alchemy.secret(alchemy.env.POLAR_ACCESS_TOKEN!),
     POLAR_SUCCESS_URL:
-      alchemy.env.POLAR_SUCCESS_URL ?? "https://t.kids/dashboard",
+      alchemy.env.POLAR_SUCCESS_URL ?? "https://tkids.tw/dashboard",
     RESEND_API_KEY: alchemy.secret(alchemy.env.RESEND_API_KEY!),
-    RESEND_FROM_EMAIL: alchemy.env.RESEND_FROM_EMAIL ?? "no-reply@t.kids",
-    RESEND_REPLY_TO: alchemy.env.RESEND_REPLY_TO ?? "hello@t.kids",
+    RESEND_FROM_EMAIL: alchemy.env.RESEND_FROM_EMAIL ?? "no-reply@tkids.tw",
+    RESEND_REPLY_TO: alchemy.env.RESEND_REPLY_TO ?? "hello@tkids.tw",
     TURNSTILE_SECRET_KEY: alchemy.secret(alchemy.env.TURNSTILE_SECRET_KEY!),
 
     // Observability — both optional. If neither set, errors only console.error.

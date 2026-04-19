@@ -6,14 +6,14 @@ import { defineConfig, envField } from "astro/config";
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://t.kids",
+  site: "https://tkids.tw",
   output: "server",
   adapter: alchemy(),
   integrations: [sitemap()],
   env: {
     schema: {
       // Same-origin: defaults to the Astro dev server. In production, Alchemy
-      // sets this to https://t.kids when binding the Worker's custom domain.
+      // sets this to https://tkids.tw when binding the Worker's custom domain.
       PUBLIC_SERVER_URL: envField.string({
         access: "public",
         context: "client",

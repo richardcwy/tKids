@@ -18,7 +18,7 @@ const {
   noindex = false,
 } = Astro.props;
 
-const site = Astro.site?.href ?? "https://t.kids/";
+const site = Astro.site?.href ?? "https://tkids.tw/";
 const ogImageAbs = new URL(ogImage, site).href;
 
 const jsonLd = {
@@ -26,7 +26,7 @@ const jsonLd = {
   "@type": "MusicGroup",
   name: "tKids",
   alternateName: "t★Kids",
-  url: "https://t.kids",
+  url: "https://tkids.tw",
   genre: ["K-Pop", "Mandopop"],
   foundingLocation: {
     "@type": "Place",

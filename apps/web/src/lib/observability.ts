@@ -128,7 +128,7 @@ async function sendToDiscord(
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        username: "t.kids alert",
+        username: "tkids.tw alert",
         embeds: [
           {
             title: `❗ ${ctx.source ?? "unknown"}`,

@@ -72,11 +72,11 @@ function buildWelcomeHtml(input: WelcomeEmailInput): string {
     </p>
     <p style="font-size:14px;color:#b8ccff;margin:0;">
       — Team tKids<br>
-      <a href="https://t.kids" style="color:#5b85ff;">t.kids</a>
+      <a href="https://tkids.tw" style="color:#5b85ff;">tkids.tw</a>
     </p>
     <hr style="border:0;border-top:1px solid rgba(184,204,255,0.15);margin:32px 0 16px;">
     <p style="font-size:11px;color:#777;line-height:1.5;">
-      You received this because you subscribed at t.kids.
+      You received this because you subscribed at tkids.tw.
       Reply to this email to unsubscribe; we'll remove you within 24 hours.
     </p>
   </div>

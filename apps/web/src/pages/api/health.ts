@@ -4,7 +4,7 @@ export const prerender = false;
 
 // Plain GET endpoint for uptime monitors (Better Stack, UptimeRobot, etc).
 // No DB hit, no auth lookup — just confirms the Worker is responding.
-// Uptime monitor target: https://t.kids/api/health (60s pings, page if
+// Uptime monitor target: https://tkids.tw/api/health (60s pings, page if
 // down > 2 min).
 export const GET: APIRoute = () => {
   return Response.json(

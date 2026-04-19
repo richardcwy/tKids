@@ -47,12 +47,12 @@ For the deploy job to actually run, add these secrets:
 | `DATABASE_URL` | Turso `libsql://...` URL |
 | `DATABASE_AUTH_TOKEN` | Turso JWT |
 | `BETTER_AUTH_SECRET` | 32+ char random string (`openssl rand -base64 48`) |
-| `BETTER_AUTH_URL` | `https://t.kids` |
+| `BETTER_AUTH_URL` | `https://tkids.tw` |
 | `POLAR_ACCESS_TOKEN` | Polar production access token |
-| `POLAR_SUCCESS_URL` | `https://t.kids/dashboard` |
+| `POLAR_SUCCESS_URL` | `https://tkids.tw/dashboard` |
 | `RESEND_API_KEY` | From resend.com dashboard |
 | `TURNSTILE_SECRET_KEY` | From Cloudflare Turnstile |
-| `PUBLIC_SERVER_URL` | `https://t.kids` |
+| `PUBLIC_SERVER_URL` | `https://tkids.tw` |
 | `PUBLIC_TURNSTILE_SITE_KEY` | From Cloudflare Turnstile (public) |
 | `SENTRY_DSN` | Optional. Error reporting to Sentry. |
 | `DISCORD_ALERT_WEBHOOK` | Optional. Errors pinged to a Discord channel. |

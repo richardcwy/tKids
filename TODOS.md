@@ -17,7 +17,7 @@ Hard deadline: EP "Ignite!" drops 2026-06-01 (44 days from 2026-04-18)
 - [ ] **Alchemy infra expansion** (`packages/infra/alchemy.run.ts`)
   - R2 buckets: `tkids-audio` (public), `tkids-images` (public via Cloudflare Images), `tkids-backups` (private)
   - Queue: `tkids-subscribe-retry`
-  - Custom domains: `t.kids`, `www.t.kids`
+  - Custom domains: `tkids.tw`, `www.tkids.tw`
   - Bind all server secrets: DATABASE_URL, DATABASE_AUTH_TOKEN, BETTER_AUTH_SECRET, BETTER_AUTH_URL, POLAR_ACCESS_TOKEN, POLAR_SUCCESS_URL, RESEND_API_KEY, TURNSTILE_SECRET_KEY
   - **Smoke test this week:** `bun run deploy` to a throwaway `*.workers.dev` — verify all 8 secrets bind and Queue fires. If Alchemy wobbles, fall back to `wrangler.toml`.
 
