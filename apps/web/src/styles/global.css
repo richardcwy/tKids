@@ -46,6 +46,29 @@ html {
   scroll-behavior: smooth;
 }
 
+/* =============================================================
+   Custom yellow-star cursor (v1.1 brand signature).
+   Default: soft gold star, 32px, anchored center.
+   Clickable hover: brighter/warmer star, 40px.
+   prefers-reduced-motion honors system cursor if users want that.
+   ============================================================= */
+html, body {
+  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'><defs><filter id='g' x='-50%25' y='-50%25' width='200%25' height='200%25'><feGaussianBlur stdDeviation='1.2'/></filter></defs><polygon points='16,3 19.8,11.5 29,12.7 22.2,18.9 23.9,28 16,23.7 8.1,28 9.8,18.9 3,12.7 12.2,11.5' fill='%23ffd84a' filter='url(%23g)' opacity='0.6'/><polygon points='16,3 19.8,11.5 29,12.7 22.2,18.9 23.9,28 16,23.7 8.1,28 9.8,18.9 3,12.7 12.2,11.5' fill='%23ffd84a'/></svg>") 16 16, auto;
+}
+a, button, [role="button"], [role="slider"], input, textarea, select, label[for], .member, [onclick] {
+  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'><defs><filter id='g' x='-50%25' y='-50%25' width='200%25' height='200%25'><feGaussianBlur stdDeviation='2'/></filter></defs><polygon points='20,4 24.7,14.4 36,15.9 27.5,23.5 29.7,34.6 20,29.4 10.3,34.6 12.5,23.5 4,15.9 15.3,14.4' fill='%23ffb347' filter='url(%23g)' opacity='0.7'/><polygon points='20,4 24.7,14.4 36,15.9 27.5,23.5 29.7,34.6 20,29.4 10.3,34.6 12.5,23.5 4,15.9 15.3,14.4' fill='%23ffd84a'/></svg>") 20 20, pointer;
+}
+input[type="text"], input[type="email"], input[type="password"], input[type="number"], textarea {
+  /* Text inputs keep the I-beam so users can position the caret. */
+  cursor: text;
+}
+@media (prefers-reduced-motion: reduce) {
+  html, body, a, button, [role="button"], [role="slider"], input, textarea, select, label[for], .member, [onclick] {
+    cursor: auto;
+  }
+  a, button, [role="button"] { cursor: pointer; }
+}
+
 body {
   background: var(--midnight);
   color: var(--chrome);

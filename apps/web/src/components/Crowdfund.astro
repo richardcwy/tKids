@@ -1,0 +1,396 @@
+---
+// Hero-section crowdfund tracker. Replaces v1.0's <Countdown/> block.
+// Initial values render from the server (via getFundingState oRPC call in
+// the inline script); the live timer ticks client-side.
+//
+// v1.1.0420-beta1 note: data is MOCK. Real Polar/Ko-fi wiring ships
+// in beta2 — the component doesn't change, only the RPC handler does.
+interface Props {
+  /** Where the donate CTA points. Placeholder for the mock phase. */
+  donateHref?: string;
+}
+const { donateHref = "#donate-coming-soon" } = Astro.props;
+---
+
+<div class="crowdfund" data-mock>
+  <div class="cf-row">
+    <div class="cf-raised" data-cf="raised">
+      <span class="cf-currency">$</span><span data-cf="raised-amount">0</span>
+    </div>
+    <div class="cf-goal">raised of <b data-cf="goal">$—</b> goal</div>
+  </div>
+  <div class="cf-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" data-cf="bar">
+    <div class="cf-bar-fill" data-cf="bar-fill" style="width:0%"></div>
+  </div>
+  <div class="cf-foot">
+    <div class="cf-meta">
+      <div class="cf-meta-item">
+        <span class="cf-meta-num" data-cf="supporters">—</span>
+        <span>supporters</span>
+      </div>
+      <div class="cf-meta-item">
+        <span>days left</span>
+        <span class="cf-meta-time" data-cf="cd-time" aria-live="off">--<span class="sep">:</span>--<span class="sep">:</span>--<span class="sep">:</span>--</span>
+      </div>
+    </div>
+    <a href={donateHref} class="cf-donate" data-cf="donate">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+      donate now
+    </a>
+  </div>
+  <p class="cf-mock-note" data-cf="mock-note" hidden>
+    <span>preview</span> payments launching soon · this is a UI preview
+  </p>
+</div>
+
+<script>
+  // v1.1.0420-beta1: fetch mock data from a plain /api/funding endpoint
+  // rather than going through the oRPC client. See apps/web/src/pages/api/funding.ts
+  // for why. Switch back to `orpc.getFundingState()` once the oRPC dynamic
+  // route is fixed.
+  const root = document.querySelector<HTMLElement>(".crowdfund");
+  if (root) {
+    const $ = (sel: string) => root.querySelector<HTMLElement>(`[data-cf="${sel}"]`);
+    const raisedAmount = $("raised-amount");
+    const goal = $("goal");
+    const barFill = $("bar-fill");
+    const bar = $("bar");
+    const supporters = $("supporters");
+    const cdTime = $("cd-time");
+    const donate = $("donate") as HTMLAnchorElement | null;
+    const mockNote = $("mock-note");
+
+    function fmtMoney(n: number): string {
+      return n.toLocaleString("en-US");
+    }
+    function pad(n: number): string {
+      return String(n).padStart(2, "0");
+    }
+
+    let deadlineMs = 0;
+    let tickHandle: number | null = null;
+
+    function renderCountdown() {
+      if (!cdTime || !deadlineMs) return;
+      const diff = deadlineMs - Date.now();
+      if (diff <= 0) {
+        cdTime.innerHTML =
+          '00<span class="sep">:</span>00<span class="sep">:</span>00<span class="sep">:</span>00';
+        if (tickHandle) window.clearInterval(tickHandle);
+        return;
+      }
+      const d = Math.floor(diff / 86_400_000);
+      const h = Math.floor((diff % 86_400_000) / 3_600_000);
+      const m = Math.floor((diff % 3_600_000) / 60_000);
+      const s = Math.floor((diff % 60_000) / 1000);
+      cdTime.innerHTML =
+        pad(d) +
+        '<span class="sep">:</span>' +
+        pad(h) +
+        '<span class="sep">:</span>' +
+        pad(m) +
+        '<span class="sep">:</span>' +
+        pad(s);
+    }
+
+    async function load() {
+      try {
+        const res = await fetch("/api/funding");
+        if (!res.ok) throw new Error(`funding fetch ${res.status}`);
+        const data = (await res.json()) as {
+          raisedUsd: number;
+          goalUsd: number;
+          supporterCount: number;
+          deadlineIso: string;
+          percentage: number;
+          mock: boolean;
+        };
+        if (raisedAmount) raisedAmount.textContent = fmtMoney(data.raisedUsd);
+        if (goal) goal.textContent = `$${fmtMoney(data.goalUsd)}`;
+        if (supporters) supporters.textContent = fmtMoney(data.supporterCount);
+        const pct = Math.max(0, Math.min(100, data.percentage));
+        if (barFill) barFill.style.width = `${pct}%`;
+        if (bar) bar.setAttribute("aria-valuenow", String(pct));
+        deadlineMs = new Date(data.deadlineIso).getTime();
+        renderCountdown();
+        if (tickHandle) window.clearInterval(tickHandle);
+        tickHandle = window.setInterval(renderCountdown, 1000);
+        if (data.mock && mockNote) mockNote.hidden = false;
+      } catch (e) {
+        console.error("[crowdfund] failed to load funding state", e);
+      }
+    }
+
+    // v1.1.0420-beta1: clicking donate shows a toast instead of opening a
+    // real checkout. Remove this handler + change the href in beta2.
+    donate?.addEventListener("click", (e) => {
+      e.preventDefault();
+      const toast = document.createElement("div");
+      toast.className = "cf-toast";
+      toast.setAttribute("role", "status");
+      toast.textContent =
+        "💛 payments launching soon — thanks for the interest, the UI is a preview";
+      document.body.appendChild(toast);
+      requestAnimationFrame(() => toast.classList.add("show"));
+      window.setTimeout(() => {
+        toast.classList.remove("show");
+        window.setTimeout(() => toast.remove(), 400);
+      }, 3200);
+    });
+
+    load();
+  }
+</script>
+
+<style>
+  .crowdfund {
+    width: 100%;
+    max-width: 540px;
+    margin-bottom: 28px;
+  }
+  .cf-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 14px;
+    gap: 12px;
+  }
+  .cf-raised {
+    font-family: "Unbounded", sans-serif;
+    font-weight: 800;
+    font-size: clamp(28px, 3.4vw, 44px);
+    color: var(--white);
+    letter-spacing: -0.04em;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    text-shadow:
+      0 0 22px rgba(46, 95, 255, 0.3),
+      0 0 48px rgba(46, 95, 255, 0.12);
+  }
+  .cf-raised .cf-currency {
+    color: var(--electric);
+    margin-right: 2px;
+    font-weight: 600;
+  }
+  .cf-goal {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--ice);
+    opacity: 0.7;
+    white-space: nowrap;
+  }
+  .cf-goal :global(b) {
+    font-family: "Unbounded", sans-serif;
+    font-weight: 600;
+    color: var(--white);
+    margin-left: 4px;
+  }
+
+  .cf-bar {
+    width: 100%;
+    height: 8px;
+    background: rgba(184, 204, 255, 0.15);
+    border-radius: 999px;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 18px;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+  }
+  .cf-bar-fill {
+    position: absolute;
+    inset: 0;
+    width: 0%;
+    background: linear-gradient(90deg, var(--electric) 0%, var(--glow) 70%, var(--gold) 100%);
+    border-radius: 999px;
+    box-shadow:
+      0 0 18px rgba(46, 95, 255, 0.8),
+      0 0 36px rgba(46, 95, 255, 0.4);
+    animation: cfShimmer 2.8s ease-in-out infinite;
+    transition: width 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .cf-bar-fill::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 14px;
+    background: linear-gradient(90deg, transparent, var(--gold));
+    border-radius: 999px;
+    box-shadow: 0 0 16px var(--gold);
+  }
+  @keyframes cfShimmer {
+    0%, 100% {
+      box-shadow: 0 0 18px rgba(46, 95, 255, 0.7), 0 0 36px rgba(46, 95, 255, 0.3);
+    }
+    50% {
+      box-shadow: 0 0 26px rgba(46, 95, 255, 1), 0 0 50px rgba(46, 95, 255, 0.55);
+    }
+  }
+
+  .cf-foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .cf-meta {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--ice);
+  }
+  .cf-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .cf-meta-num {
+    font-family: "Unbounded", sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--white);
+    letter-spacing: -0.01em;
+    text-transform: none;
+    font-variant-numeric: tabular-nums;
+  }
+  .cf-meta-time {
+    font-family: "Unbounded", sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--white);
+    letter-spacing: 0.04em;
+    font-variant-numeric: tabular-nums;
+    text-transform: none;
+    margin-left: 6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .cf-meta-time :global(.sep) {
+    color: var(--electric);
+    opacity: 0.7;
+    margin: 0 1px;
+  }
+  .cf-meta-time::before {
+    content: "";
+    width: 5px;
+    height: 5px;
+    background: var(--gold-warm);
+    border-radius: 50%;
+    box-shadow: 0 0 6px var(--gold-warm);
+    animation: cfPulse 1.4s ease-in-out infinite;
+    margin-right: 4px;
+  }
+  @keyframes cfPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%      { opacity: 0.55; transform: scale(0.85); }
+  }
+
+  .cf-donate {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 34px;
+    font-family: "Unbounded", sans-serif;
+    font-weight: 800;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    text-decoration: none;
+    border: none;
+    background: var(--gold);
+    color: var(--midnight);
+    border-radius: 999px;
+    transition: all 0.25s;
+    box-shadow:
+      0 0 30px rgba(255, 216, 74, 0.55),
+      0 4px 16px rgba(0, 0, 0, 0.3);
+    animation: cfDonateGlow 2.6s ease-in-out infinite;
+    position: relative;
+    cursor: pointer;
+  }
+  @keyframes cfDonateGlow {
+    0%, 100% {
+      box-shadow:
+        0 0 0 0 rgba(255, 216, 74, 0.6),
+        0 0 30px rgba(255, 216, 74, 0.5),
+        0 4px 16px rgba(0, 0, 0, 0.3);
+    }
+    50% {
+      box-shadow:
+        0 0 0 14px rgba(255, 216, 74, 0),
+        0 0 50px rgba(255, 216, 74, 0.85),
+        0 4px 16px rgba(0, 0, 0, 0.3);
+    }
+  }
+  .cf-donate:hover {
+    background: var(--gold-warm);
+    transform: translateY(-2px) scale(1.03);
+    animation-play-state: paused;
+    box-shadow:
+      0 0 60px rgba(255, 216, 74, 0.9),
+      0 6px 20px rgba(0, 0, 0, 0.4);
+  }
+  .cf-donate svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+  }
+
+  .cf-mock-note {
+    margin: 14px 0 0;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--gold-warm);
+    opacity: 0.75;
+    text-align: center;
+  }
+  .cf-mock-note :global(span) {
+    background: rgba(255, 179, 71, 0.12);
+    border: 1px solid rgba(255, 179, 71, 0.3);
+    padding: 2px 8px;
+    border-radius: 999px;
+    margin-right: 8px;
+    color: var(--gold-warm);
+    font-weight: 600;
+  }
+
+  /* Toast appended to <body> by the script */
+  :global(.cf-toast) {
+    position: fixed;
+    bottom: 160px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    z-index: 200;
+    padding: 14px 22px;
+    background: rgba(10, 19, 64, 0.96);
+    color: var(--white);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    border: 1px solid rgba(255, 216, 74, 0.4);
+    border-radius: 999px;
+    box-shadow: 0 0 30px rgba(255, 216, 74, 0.3), 0 8px 24px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.3s;
+    pointer-events: none;
+    max-width: 90vw;
+    text-align: center;
+  }
+  :global(.cf-toast.show) {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+</style>

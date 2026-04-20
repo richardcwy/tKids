@@ -1,0 +1,15 @@
+# Compatibility settings for the Cloudflare Worker. Read by @astrojs/cloudflare
+# at build time and merged into the generated dist/server/wrangler.json.
+#
+# Why this file exists: Alchemy's compatibilityFlags set in alchemy.run.ts
+# was dropping on the floor — the built wrangler.json arrived at Cloudflare
+# with compatibility_flags=[], which meant process.env was undefined and
+# node:async_hooks (used by better-auth) wasn't available. Every route
+# that imported the auth chain crashed at module load with a zero-byte 500.
+#
+# nodejs_compat enables: process.env hydration, node:async_hooks,
+# node:crypto, node:fs stubs (we don't use fs at runtime but dotenv
+# references it in shims).
+name = "tkids-web"
+compatibility_date = "2026-04-01"
+compatibility_flags = ["nodejs_compat"]

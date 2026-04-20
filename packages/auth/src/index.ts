@@ -107,4 +107,17 @@ export function createAuth() {
   });
 }
 
-export const auth = createAuth();
+// Lazy — can't instantiate at module load because env is empty at cold
+// boot in the Cloudflare Worker. The middleware (apps/web/src/middleware.ts)
+// populates process.env on each request, so first access inside a route
+// handler sees real values.
+type Auth = ReturnType<typeof createAuth>;
+let _auth: Auth | undefined;
+
+export const auth = new Proxy({} as Auth, {
+  get(_t, prop: string | symbol) {
+    if (!_auth) _auth = createAuth();
+    const v = (_auth as unknown as Record<string | symbol, unknown>)[prop];
+    return typeof v === "function" ? v.bind(_auth) : v;
+  },
+});

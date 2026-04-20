@@ -9,8 +9,60 @@ import WordMark from "./WordMark.astro";
     <li><a href="#music">music</a></li>
     <li><a href="#shop">shop</a></li>
   </ul>
-  <a href="/signup" class="nav-cta">join fanclub</a>
+  <div class="nav-actions">
+    <button class="nav-icon-btn" id="navShare" aria-label="share tkids.tw">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>
+      <span class="share-tooltip" id="shareTooltip">link copied</span>
+    </button>
+    <a href="/login" class="nav-signin">sign in</a>
+    <a href="#donate-cta" class="nav-donate" id="navDonate">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+      donate
+    </a>
+  </div>
 </nav>
+
+<script>
+  // Share button — native Web Share API with clipboard fallback.
+  // Verbatim from the delivered v1.1 design.
+  const shareBtn = document.getElementById("navShare");
+  const shareTooltip = document.getElementById("shareTooltip");
+  const SHARE_URL = "https://tkids.tw";
+  const SHARE_DATA = {
+    title: "tKids — Ignite!",
+    text: "Ignite the universe and shine! 點亮宇宙",
+    url: SHARE_URL,
+  };
+  shareBtn?.addEventListener("click", async () => {
+    try {
+      if (navigator.share) {
+        await navigator.share(SHARE_DATA);
+      } else if (navigator.clipboard) {
+        await navigator.clipboard.writeText(SHARE_URL);
+        if (shareTooltip) {
+          shareTooltip.textContent = "link copied";
+          shareTooltip.classList.add("show");
+          window.setTimeout(
+            () => shareTooltip.classList.remove("show"),
+            1800,
+          );
+        }
+      }
+    } catch {
+      /* user dismissed the share sheet — silent */
+    }
+  });
+
+  // Donate in nav scrolls to the crowdfund block instead of navigating.
+  const navDonate = document.getElementById("navDonate");
+  navDonate?.addEventListener("click", (e) => {
+    const cf = document.querySelector(".crowdfund");
+    if (cf) {
+      e.preventDefault();
+      cf.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  });
+</script>
 
 <style>
   nav {
@@ -34,29 +86,110 @@ import WordMark from "./WordMark.astro";
     margin: 0;
     padding: 0;
   }
-  a {
+  ul a {
     color: var(--ice);
     text-decoration: none;
     transition: color 0.2s;
   }
-  a:hover {
+  ul a:hover {
     color: var(--white);
   }
-  .nav-cta {
+
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .nav-icon-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: transparent;
+    border: 1px solid rgba(184, 204, 255, 0.18);
+    color: var(--ice);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .nav-icon-btn:hover {
+    color: var(--white);
+    border-color: rgba(184, 204, 255, 0.4);
+    background: rgba(255, 255, 255, 0.04);
+  }
+  .nav-icon-btn svg {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+  }
+  .share-tooltip {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    padding: 6px 10px;
+    background: var(--white);
+    color: var(--midnight);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    border-radius: 6px;
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateY(-4px);
+    pointer-events: none;
+    transition: opacity 0.2s, transform 0.2s;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+  }
+  .share-tooltip.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .nav-signin {
+    font-family: "JetBrains Mono", monospace;
     font-size: 10px;
     text-transform: uppercase;
     letter-spacing: 0.2em;
-    padding: 8px 16px;
-    border: 1px solid var(--electric);
-    color: var(--electric);
-    border-radius: 999px;
-    background: rgba(46, 95, 255, 0.1);
-    transition: all 0.2s;
+    padding: 8px 14px;
+    color: var(--ice);
+    text-decoration: none;
+    transition: color 0.2s;
   }
-  .nav-cta:hover {
-    background: var(--electric);
+  .nav-signin:hover {
     color: var(--white);
-    box-shadow: 0 0 20px rgba(46, 95, 255, 0.6);
+  }
+
+  .nav-donate {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: "Unbounded", sans-serif;
+    font-weight: 700;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    padding: 9px 18px;
+    background: var(--gold);
+    color: var(--midnight);
+    border-radius: 999px;
+    text-decoration: none;
+    transition: all 0.25s;
+    box-shadow: 0 0 18px rgba(255, 216, 74, 0.3);
+  }
+  .nav-donate:hover {
+    background: var(--gold-warm);
+    box-shadow: 0 0 30px rgba(255, 216, 74, 0.6);
+    transform: translateY(-1px);
+  }
+  .nav-donate svg {
+    width: 11px;
+    height: 11px;
+    fill: currentColor;
   }
 
   @media (max-width: 600px) {
@@ -64,6 +197,9 @@ import WordMark from "./WordMark.astro";
       padding: 20px;
     }
     ul {
+      display: none;
+    }
+    .nav-signin {
       display: none;
     }
   }
