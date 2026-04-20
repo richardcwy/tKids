@@ -62,6 +62,7 @@ export const web = await Astro("web", {
     PUBLIC_SERVER_URL: alchemy.env.PUBLIC_SERVER_URL ?? "https://tkids.tw",
     PUBLIC_TURNSTILE_SITE_KEY:
       alchemy.env.PUBLIC_TURNSTILE_SITE_KEY ?? "1x00000000000000000000AA",
+    PUBLIC_GA_MEASUREMENT_ID: alchemy.env.PUBLIC_GA_MEASUREMENT_ID ?? "",
 
     // Server secrets — values come from apps/web/.env at deploy time.
     DATABASE_URL: alchemy.secret(alchemy.env.DATABASE_URL!),

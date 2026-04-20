@@ -19,20 +19,19 @@ const enabled = !!PUBLIC_GA_MEASUREMENT_ID && PUBLIC_GA_MEASUREMENT_ID !== "";
     <script is:inline define:vars={{ id: PUBLIC_GA_MEASUREMENT_ID }}>
       (function () {
         // Respect DNT — don't initialize at all if user opted out.
-        if (navigator.doNotTrack === "1" || (window as any).doNotTrack === "1") {
-          return;
-        }
+        // `is:inline` scripts are shipped as raw JS, so no TS casts here.
+        var dnt = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+        if (dnt === "1" || dnt === "yes") return;
+
         window.dataLayer = window.dataLayer || [];
         function gtag() { window.dataLayer.push(arguments); }
         gtag('js', new Date());
-        // anonymize_ip is a privacy-lighter default; we're not doing
-        // user-level targeting anyway.
         gtag('config', id, {
           anonymize_ip: true,
           send_page_view: true,
         });
-        // Expose for any component that wants to fire custom events later.
-        (window as any).gtag = gtag;
+        // Expose gtag so other components can fire custom events later.
+        window.gtag = gtag;
       })();
     </script>
   </>
