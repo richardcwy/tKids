@@ -1,28 +1,26 @@
 ---
 import MemberCard from "./MemberCard.astro";
+import { useI18n, dictFor } from "../lib/i18n";
+const { locale, t } = useI18n(Astro);
+const lineupDict = (dictFor(locale) as any).lineup;
+const mKey = (key: "ethan" | "alan" | "albert") => lineupDict.members[key];
 
 const members = [
   {
     index: 1,
-    name: "ETHAN",
-    role: "lead vocals",
-    roleZh: "主唱 · 隊長",
+    slug: "ethan" as const,
     auraStyle:
       "top: 22%; left: 18%; background: radial-gradient(circle, var(--electric) 0%, transparent 70%);",
   },
   {
     index: 2,
-    name: "ALAN",
-    role: "rap · producer",
-    roleZh: "饒舌 · 製作",
+    slug: "alan" as const,
     auraStyle:
       "top: 28%; left: 30%; background: radial-gradient(circle, var(--glow) 0%, transparent 70%);",
   },
   {
     index: 3,
-    name: "ALBERT",
-    role: "dance · visuals",
-    roleZh: "舞蹈 · 視覺",
+    slug: "albert" as const,
     auraStyle:
       "top: 20%; left: 25%; background: radial-gradient(circle, #8da7ff 0%, transparent 70%);",
   },
@@ -32,23 +30,34 @@ const members = [
 <section class="frame-two" id="lineup">
   <div class="lineup-head">
     <div>
-      <div class="section-label">the lineup</div>
-      <h2 class="section-title">three <em>kids</em></h2>
+      <div class="section-label">{t("lineup.sectionLabel")}</div>
+      <h2 class="section-title">{t("lineup.sectionTitlePrefix")} <em>{t("lineup.sectionTitleAccent")}</em></h2>
     </div>
     <p class="section-mini">
-      Ethan · Alan · Albert
-      <small lang="zh-TW">點亮宇宙的三個男孩</small>
+      {t("lineup.sectionMini")}
+      <small>{t("lineup.sectionMiniSub")}</small>
     </p>
   </div>
 
   <div class="members">
-    {members.map((m) => <MemberCard {...m} />)}
+    {members.map((m) => {
+      const mem = mKey(m.slug);
+      return (
+        <MemberCard
+          index={m.index}
+          name={mem.name}
+          role={mem.role}
+          roleNote={mem.roleNote}
+          auraStyle={m.auraStyle}
+        />
+      );
+    })}
   </div>
 
   <div class="lineup-foot">
     <a href="#music" class="cta-btn" id="listen-cta">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg>
-      listen to "Ignite!" · <span lang="zh-TW">聆聽</span>
+      {t("lineup.ctaListen")}
     </a>
   </div>
 </section>

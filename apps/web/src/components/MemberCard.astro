@@ -1,12 +1,13 @@
 ---
 interface Props {
-  index: number; // 1-based (01, 02, 03)
+  index: number;
   name: string;
   role: string;
-  roleZh: string;
-  auraStyle?: string; // override for per-member gradient
+  /** Optional secondary role line (e.g. "team leader" / "隊長"). */
+  roleNote?: string;
+  auraStyle?: string;
 }
-const { index, name, role, roleZh, auraStyle } = Astro.props;
+const { index, name, role, roleNote, auraStyle } = Astro.props;
 const num = String(index).padStart(2, "0");
 ---
 
@@ -27,7 +28,7 @@ const num = String(index).padStart(2, "0");
     <div class="member-bottom">
       <h3 class="member-name">{name}</h3>
       <p class="member-role">{role}</p>
-      <p class="member-role-zh" lang="zh-TW">{roleZh}</p>
+      {roleNote && <p class="member-role-zh">{roleNote}</p>}
     </div>
   </div>
 </article>

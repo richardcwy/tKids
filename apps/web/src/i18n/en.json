@@ -1,0 +1,61 @@
+{
+  "nav": {
+    "lineup": "lineup",
+    "music": "music",
+    "shop": "shop",
+    "signIn": "sign in",
+    "donate": "donate",
+    "shareLabel": "share tkids.tw",
+    "shareTooltip": "link copied",
+    "shareTextTitle": "tKids — Ignite!",
+    "shareTextBody": "Ignite the universe and shine! 點亮宇宙"
+  },
+  "hero": {
+    "sloganPrimary": "Ignite and shine!",
+    "manifestoIntro": "The T-community found three young talents among us.",
+    "manifestoLine2": "Now we are lifting them to the universe."
+  },
+  "crowdfund": {
+    "raisedLabel": "raised of",
+    "goalLabel": "goal",
+    "supporters": "supporters",
+    "daysLeft": "days left",
+    "donateNow": "donate now",
+    "mockTag": "preview",
+    "mockNote": "payments launching soon · this is a UI preview",
+    "toastPending": "💛 payments launching soon — thanks for the interest, the UI is a preview"
+  },
+  "releaseMeta": {
+    "lastCall": "last call",
+    "origin": "origin",
+    "originVal": "Taipei · Hsinchu · US · JP · EU"
+  },
+  "lineup": {
+    "sectionLabel": "the lineup",
+    "sectionTitlePrefix": "three",
+    "sectionTitleAccent": "kids",
+    "sectionMini": "Ethan · Alan · Albert",
+    "sectionMiniSub": "The three boys lighting up the universe",
+    "ctaListen": "listen to \"Ignite!\"",
+    "members": {
+      "ethan": { "name": "ETHAN", "role": "lead vocals", "roleNote": "team leader" },
+      "alan":  { "name": "ALAN",  "role": "rap · producer", "roleNote": "" },
+      "albert":{ "name": "ALBERT","role": "dance · visuals", "roleNote": "" }
+    }
+  },
+  "footer": {
+    "copyright": "© {year} tKids · all rights reserved",
+    "taglineGold": "ignite the universe",
+    "youtubeLabel": "YouTube",
+    "buildPrefix": "build"
+  },
+  "player": {
+    "trackTitle": "Ignite!",
+    "artistLabel": "tKids",
+    "play": "play",
+    "pause": "pause",
+    "mute": "mute",
+    "unmute": "unmute",
+    "seekLabel": "Seek track"
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "nav": {
+    "lineup": "成員",
+    "music": "音樂",
+    "shop": "商店",
+    "signIn": "登入",
+    "donate": "贊助",
+    "shareLabel": "分享 tkids.tw",
+    "shareTooltip": "已複製連結",
+    "shareTextTitle": "tKids — Ignite!",
+    "shareTextBody": "點亮宇宙,閃耀吧! Ignite and shine!"
+  },
+  "hero": {
+    "sloganPrimary": "Ignite and shine!",
+    "manifestoIntro": "T社群在我們之中找到了三位年輕的天才。",
+    "manifestoLine2": "現在,我們要將他們托向宇宙。"
+  },
+  "crowdfund": {
+    "raisedLabel": "已募集,目標",
+    "goalLabel": "目標",
+    "supporters": "位支持者",
+    "daysLeft": "剩餘天數",
+    "donateNow": "立即贊助",
+    "mockTag": "預覽",
+    "mockNote": "付款功能即將上線 · 介面為預覽版本",
+    "toastPending": "💛 付款即將上線 — 謝謝你的支持,這是介面預覽"
+  },
+  "releaseMeta": {
+    "lastCall": "募資截止",
+    "origin": "發源地",
+    "originVal": "臺北 · 新竹 · 美國 · 日本 · 歐洲"
+  },
+  "lineup": {
+    "sectionLabel": "成員陣容",
+    "sectionTitlePrefix": "三位",
+    "sectionTitleAccent": "男孩",
+    "sectionMini": "Ethan · Alan · Albert",
+    "sectionMiniSub": "點亮宇宙的三個男孩",
+    "ctaListen": "聆聽《Ignite!》",
+    "members": {
+      "ethan": { "name": "ETHAN", "role": "主唱", "roleNote": "隊長" },
+      "alan":  { "name": "ALAN",  "role": "饒舌 · 製作人", "roleNote": "" },
+      "albert":{ "name": "ALBERT","role": "舞蹈 · 視覺", "roleNote": "" }
+    }
+  },
+  "footer": {
+    "copyright": "© {year} tKids · 版權所有",
+    "taglineGold": "點亮宇宙",
+    "youtubeLabel": "YouTube",
+    "buildPrefix": "版本"
+  },
+  "player": {
+    "trackTitle": "Ignite!",
+    "artistLabel": "tKids",
+    "play": "播放",
+    "pause": "暫停",
+    "mute": "靜音",
+    "unmute": "取消靜音",
+    "seekLabel": "跳轉曲目"
+  }
+}

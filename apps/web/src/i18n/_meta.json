@@ -1,0 +1,38 @@
+{
+  "zh-TW": {
+    "label": "中",
+    "localeName": "Traditional Chinese",
+    "localeNameNative": "繁體中文",
+    "htmlLang": "zh-TW",
+    "direction": "ltr",
+    "ogLocale": "zh_TW",
+    "pathPrefix": ""
+  },
+  "en": {
+    "label": "EN",
+    "localeName": "English",
+    "localeNameNative": "English",
+    "htmlLang": "en",
+    "direction": "ltr",
+    "ogLocale": "en_US",
+    "pathPrefix": "/en"
+  },
+  "ja": {
+    "label": "日",
+    "localeName": "Japanese",
+    "localeNameNative": "日本語",
+    "htmlLang": "ja",
+    "direction": "ltr",
+    "ogLocale": "ja_JP",
+    "pathPrefix": "/ja"
+  },
+  "de": {
+    "label": "DE",
+    "localeName": "German",
+    "localeNameNative": "Deutsch",
+    "htmlLang": "de",
+    "direction": "ltr",
+    "ogLocale": "de_DE",
+    "pathPrefix": "/de"
+  }
+}

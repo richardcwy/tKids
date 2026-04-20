@@ -1,8 +1,7 @@
 ---
-// Three-column footer per v1.1 design: copyright + bilingual tag on the
-// left, single YouTube social pill in the center, version + build info
-// on the right. Version and commit SHA are injected by Vite at build
-// time (see apps/web/astro.config.mjs `define` block).
+import { useI18n } from "../lib/i18n";
+const { t } = useI18n(Astro);
+
 const year = new Date().getFullYear();
 const version = __TKIDS_VERSION__;
 const commit = __TKIDS_COMMIT__;
@@ -13,19 +12,19 @@ const YOUTUBE_URL = "#";
 
 <footer>
   <div class="ft-left">
-    <div>© {year} tKids · all rights reserved</div>
+    <div>{t("footer.copyright", { year })}</div>
     <div class="fn-tag" lang="zh-TW">點亮宇宙 · ignite the universe</div>
   </div>
 
   <a
     href={YOUTUBE_URL}
     class="ft-center"
-    aria-label="watch on YouTube"
+    aria-label={t("footer.youtubeLabel")}
     target={YOUTUBE_URL === "#" ? undefined : "_blank"}
     rel={YOUTUBE_URL === "#" ? undefined : "noopener noreferrer"}
   >
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23.498 6.186a2.998 2.998 0 0 0-2.107-2.117C19.503 3.5 12 3.5 12 3.5s-7.503 0-9.391.569A2.998 2.998 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a2.998 2.998 0 0 0 2.107 2.117C4.497 20.5 12 20.5 12 20.5s7.503 0 9.391-.569a2.998 2.998 0 0 0 2.107-2.117C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.546 15.568V8.432L15.818 12l-6.272 3.568z"/></svg>
-    YouTube
+    {t("footer.youtubeLabel")}
   </a>
 
   <div class="ft-right">
@@ -36,7 +35,7 @@ const YOUTUBE_URL = "#";
         <span class="ft-commit"> · {commit}</span>
       </span>
     </div>
-    <div class="ft-build">build {buildDate} · tkids.tw · /privacy</div>
+    <div class="ft-build">{t("footer.buildPrefix")} {buildDate} · tkids.tw · /privacy</div>
   </div>
 </footer>
 

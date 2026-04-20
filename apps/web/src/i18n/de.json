@@ -1,0 +1,62 @@
+{
+  "$translationStatus": "machine-drafted — needs native speaker review before launch",
+  "nav": {
+    "lineup": "Mitglieder",
+    "music": "Musik",
+    "shop": "Shop",
+    "signIn": "Anmelden",
+    "donate": "Spenden",
+    "shareLabel": "tkids.tw teilen",
+    "shareTooltip": "Link kopiert",
+    "shareTextTitle": "tKids — Ignite!",
+    "shareTextBody": "Entzünde das Universum und leuchte! 點亮宇宙"
+  },
+  "hero": {
+    "sloganPrimary": "Ignite and shine!",
+    "manifestoIntro": "Die T-Community hat drei junge Talente unter uns entdeckt.",
+    "manifestoLine2": "Jetzt heben wir sie ins Universum."
+  },
+  "crowdfund": {
+    "raisedLabel": "gesammelt von",
+    "goalLabel": "Ziel",
+    "supporters": "Unterstützer",
+    "daysLeft": "Tage übrig",
+    "donateNow": "Jetzt spenden",
+    "mockTag": "Vorschau",
+    "mockNote": "Zahlungen starten bald · dies ist eine UI-Vorschau",
+    "toastPending": "💛 Zahlungen starten bald — danke für dein Interesse, dies ist eine Vorschau"
+  },
+  "releaseMeta": {
+    "lastCall": "Stichtag",
+    "origin": "Herkunft",
+    "originVal": "Taipeh · Hsinchu · USA · JP · EU"
+  },
+  "lineup": {
+    "sectionLabel": "Das Lineup",
+    "sectionTitlePrefix": "Drei",
+    "sectionTitleAccent": "Jungs",
+    "sectionMini": "Ethan · Alan · Albert",
+    "sectionMiniSub": "Die drei Jungs, die das Universum erleuchten",
+    "ctaListen": "„Ignite!\" anhören",
+    "members": {
+      "ethan": { "name": "ETHAN", "role": "Hauptgesang", "roleNote": "Bandleader" },
+      "alan":  { "name": "ALAN",  "role": "Rap · Produzent", "roleNote": "" },
+      "albert":{ "name": "ALBERT","role": "Tanz · Visuals", "roleNote": "" }
+    }
+  },
+  "footer": {
+    "copyright": "© {year} tKids · alle Rechte vorbehalten",
+    "taglineGold": "entzünde das Universum",
+    "youtubeLabel": "YouTube",
+    "buildPrefix": "Build"
+  },
+  "player": {
+    "trackTitle": "Ignite!",
+    "artistLabel": "tKids",
+    "play": "Abspielen",
+    "pause": "Pause",
+    "mute": "Stumm",
+    "unmute": "Ton an",
+    "seekLabel": "Spuren wechseln"
+  }
+}

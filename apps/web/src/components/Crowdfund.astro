@@ -1,23 +1,24 @@
 ---
-// Hero-section crowdfund tracker. Replaces v1.0's <Countdown/> block.
-// Initial values render from the server (via getFundingState oRPC call in
-// the inline script); the live timer ticks client-side.
-//
-// v1.1.0420-beta1 note: data is MOCK. Real Polar/Ko-fi wiring ships
-// in beta2 — the component doesn't change, only the RPC handler does.
+import { useI18n } from "../lib/i18n";
+const { t } = useI18n(Astro);
+
 interface Props {
-  /** Where the donate CTA points. Placeholder for the mock phase. */
   donateHref?: string;
 }
 const { donateHref = "#donate-coming-soon" } = Astro.props;
+
+// Toast/mock note strings shipped to the client via data-* attrs so
+// the inline <script> can read them without re-importing i18n in the
+// browser bundle.
+const toastPending = t("crowdfund.toastPending");
 ---
 
-<div class="crowdfund" data-mock>
+<div class="crowdfund" data-mock data-toast-pending={toastPending}>
   <div class="cf-row">
     <div class="cf-raised" data-cf="raised">
       <span class="cf-currency">$</span><span data-cf="raised-amount">0</span>
     </div>
-    <div class="cf-goal">raised of <b data-cf="goal">$—</b> goal</div>
+    <div class="cf-goal">{t("crowdfund.raisedLabel")} <b data-cf="goal">$—</b> {t("crowdfund.goalLabel")}</div>
   </div>
   <div class="cf-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" data-cf="bar">
     <div class="cf-bar-fill" data-cf="bar-fill" style="width:0%"></div>
@@ -26,20 +27,20 @@ const { donateHref = "#donate-coming-soon" } = Astro.props;
     <div class="cf-meta">
       <div class="cf-meta-item">
         <span class="cf-meta-num" data-cf="supporters">—</span>
-        <span>supporters</span>
+        <span>{t("crowdfund.supporters")}</span>
       </div>
       <div class="cf-meta-item">
-        <span>days left</span>
+        <span>{t("crowdfund.daysLeft")}</span>
         <span class="cf-meta-time" data-cf="cd-time" aria-live="off">--<span class="sep">:</span>--<span class="sep">:</span>--<span class="sep">:</span>--</span>
       </div>
     </div>
     <a href={donateHref} class="cf-donate" data-cf="donate">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-      donate now
+      {t("crowdfund.donateNow")}
     </a>
   </div>
   <p class="cf-mock-note" data-cf="mock-note" hidden>
-    <span>preview</span> payments launching soon · this is a UI preview
+    <span>{t("crowdfund.mockTag")}</span> {t("crowdfund.mockNote")}
   </p>
 </div>
 
@@ -129,7 +130,8 @@ const { donateHref = "#donate-coming-soon" } = Astro.props;
       toast.className = "cf-toast";
       toast.setAttribute("role", "status");
       toast.textContent =
-        "💛 payments launching soon — thanks for the interest, the UI is a preview";
+        root.dataset.toastPending ||
+        "💛 payments launching soon";
       document.body.appendChild(toast);
       requestAnimationFrame(() => toast.classList.add("show"));
       window.setTimeout(() => {

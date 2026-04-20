@@ -1,0 +1,62 @@
+{
+  "$translationStatus": "machine-drafted — needs native speaker review before launch",
+  "nav": {
+    "lineup": "メンバー",
+    "music": "ミュージック",
+    "shop": "ショップ",
+    "signIn": "サインイン",
+    "donate": "支援する",
+    "shareLabel": "tkids.tw をシェア",
+    "shareTooltip": "リンクをコピーしました",
+    "shareTextTitle": "tKids — Ignite!",
+    "shareTextBody": "宇宙を照らせ、輝け! 點亮宇宙"
+  },
+  "hero": {
+    "sloganPrimary": "Ignite and shine!",
+    "manifestoIntro": "Tコミュニティが、僕らの中から三人の若い才能を見つけた。",
+    "manifestoLine2": "いま、僕らは彼らを宇宙へ押し上げる。"
+  },
+  "crowdfund": {
+    "raisedLabel": "集まった額 / 目標",
+    "goalLabel": "目標額",
+    "supporters": "サポーター",
+    "daysLeft": "残り日数",
+    "donateNow": "今すぐ支援",
+    "mockTag": "プレビュー",
+    "mockNote": "決済機能はまもなく公開 · これは UI プレビューです",
+    "toastPending": "💛 決済はまもなく公開です — 関心ありがとうございます、これはプレビューです"
+  },
+  "releaseMeta": {
+    "lastCall": "締切",
+    "origin": "オリジン",
+    "originVal": "台北 · 新竹 · 米国 · 日本 · 欧州"
+  },
+  "lineup": {
+    "sectionLabel": "ラインナップ",
+    "sectionTitlePrefix": "三人の",
+    "sectionTitleAccent": "少年",
+    "sectionMini": "Ethan · Alan · Albert",
+    "sectionMiniSub": "宇宙を照らす三人の少年",
+    "ctaListen": "「Ignite!」を聴く",
+    "members": {
+      "ethan": { "name": "ETHAN", "role": "リードボーカル", "roleNote": "リーダー" },
+      "alan":  { "name": "ALAN",  "role": "ラップ · プロデューサー", "roleNote": "" },
+      "albert":{ "name": "ALBERT","role": "ダンス · ビジュアル", "roleNote": "" }
+    }
+  },
+  "footer": {
+    "copyright": "© {year} tKids · 無断複製禁止",
+    "taglineGold": "宇宙を照らせ",
+    "youtubeLabel": "YouTube",
+    "buildPrefix": "build"
+  },
+  "player": {
+    "trackTitle": "Ignite!",
+    "artistLabel": "tKids",
+    "play": "再生",
+    "pause": "停止",
+    "mute": "ミュート",
+    "unmute": "ミュート解除",
+    "seekLabel": "再生位置を調整"
+  }
+}

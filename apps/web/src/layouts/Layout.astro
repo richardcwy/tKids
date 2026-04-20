@@ -2,29 +2,25 @@
 import "../styles/global.css";
 import SEO from "../components/SEO.astro";
 import GoogleAnalytics from "../components/GoogleAnalytics.astro";
+import { useI18n } from "../lib/i18n";
 
 interface Props {
   title?: string;
   description?: string;
   ogImage?: string;
-  /** Default html lang is zh-TW since the core audience is Mandarin-speaking. */
+  /** Override lang if needed (rare — locale detection usually handles it). */
   lang?: string;
   type?: "website" | "music.album" | "music.musician" | "article";
   noindex?: boolean;
 }
 
-const {
-  title,
-  description,
-  ogImage,
-  lang = "zh-TW",
-  type,
-  noindex,
-} = Astro.props;
+const { title, description, ogImage, lang, type, noindex } = Astro.props;
+const { meta } = useI18n(Astro);
+const htmlLang = lang ?? meta.htmlLang;
 ---
 
 <!doctype html>
-<html lang={lang}>
+<html lang={htmlLang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
