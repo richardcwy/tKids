@@ -34,6 +34,7 @@
     "test:e2e": "turbo -F web test:e2e",
     "peaks": "bun run scripts/generate-peaks.ts",
     "backup": "bun run scripts/backup-turso.ts",
+    "og": "./scripts/generate-og.sh",
     "db:push": "turbo -F @my-better-t-app/db db:push",
     "db:studio": "turbo -F @my-better-t-app/db db:studio",
     "db:generate": "turbo -F @my-better-t-app/db db:generate",
