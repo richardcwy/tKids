@@ -1,0 +1,118 @@
+---
+// Fixed-position overlay. A new star spawns every 3–8s and travels
+// down-right at ~30° for 1.1–1.7s, then cleans itself up.
+// Respects prefers-reduced-motion.
+---
+
+<div class="shooting-stars-layer" id="shootingStarsLayer" aria-hidden="true"></div>
+
+<script>
+  (function () {
+    const layer = document.getElementById("shootingStarsLayer");
+    if (!layer) return;
+
+    // Bail entirely if the user prefers reduced motion.
+    const mql = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (mql.matches) return;
+
+    function spawn() {
+      const star = document.createElement("div");
+      star.className = "shooting-star";
+
+      const head = document.createElement("div");
+      head.className = "ss-head";
+      const trail = document.createElement("div");
+      trail.className = "ss-trail";
+      star.appendChild(trail);
+      star.appendChild(head);
+
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const startX = Math.random() * vw * 0.7 - 100;
+      const startY = Math.random() * vh * 0.5 - 50;
+      star.style.left = startX + "px";
+      star.style.top = startY + "px";
+
+      const travel = 600 + Math.random() * 400;
+      const duration = 1.1 + Math.random() * 0.6;
+      star.style.setProperty("--travel", travel + "px");
+      star.style.setProperty("--dur", duration + "s");
+
+      layer!.appendChild(star);
+      star.addEventListener("animationend", () => star.remove());
+    }
+
+    function scheduleNext() {
+      // 3–8s jitter between stars
+      const delay = 3000 + Math.random() * 5000;
+      window.setTimeout(() => {
+        spawn();
+        scheduleNext();
+      }, delay);
+    }
+
+    // Slight initial delay so the hero fade has landed first.
+    window.setTimeout(scheduleNext, 2000);
+  })();
+</script>
+
+<style>
+  .shooting-stars-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  :global(.shooting-star) {
+    position: absolute;
+    width: 140px;
+    height: 2px;
+    opacity: 0;
+    will-change: transform, opacity;
+    animation: shoot var(--dur, 1.4s) cubic-bezier(0.35, 0.05, 0.6, 0.9) forwards;
+  }
+  :global(.shooting-star .ss-head) {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--white);
+    box-shadow:
+      0 0 6px var(--white),
+      0 0 14px var(--gold),
+      0 0 28px var(--gold-warm);
+  }
+  :global(.shooting-star .ss-trail) {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 132px;
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 216, 74, 0.15) 20%,
+      rgba(255, 216, 74, 0.6) 60%,
+      rgba(255, 255, 255, 0.95) 100%
+    );
+    border-radius: 2px;
+    filter: blur(0.3px);
+  }
+  @keyframes shoot {
+    0% {
+      transform: rotate(30deg) translate(0, 0);
+      opacity: 0;
+    }
+    8% { opacity: 1; }
+    88% { opacity: 1; }
+    100% {
+      transform: rotate(30deg) translate(var(--travel, 700px), 0);
+      opacity: 0;
+    }
+  }
+</style>

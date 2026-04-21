@@ -1,5 +1,6 @@
 ---
 import Marquee from "./Marquee.astro";
+import TeaserBanner from "./TeaserBanner.astro";
 
 // Fixed bottom player. wavesurfer.js (~90KB) is dynamically imported
 // ONLY on the first play tap — zero audio-bundle cost at page load.
@@ -21,6 +22,7 @@ const {
 ---
 
 <div class="player-dock" id="music">
+  <TeaserBanner />
   <div class="player-bar" id="playerBar" data-src={src} data-peaks={peaks}>
     <div class="pb-cluster pb-transport">
       <button class="pb-btn pb-prev" aria-label="previous track">

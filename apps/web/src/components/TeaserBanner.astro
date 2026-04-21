@@ -1,0 +1,188 @@
+---
+import { useI18n } from "../lib/i18n";
+const { t } = useI18n(Astro);
+---
+
+<div class="teaser-banner" id="teaserBanner" data-hidden="true">
+  <span class="tb-badge">
+    <span class="tb-live-dot" aria-hidden="true"></span>
+    {t("teaser.liveLabel")}
+  </span>
+  <div class="tb-message">
+    <strong>{t("teaser.message")}</strong>
+    <span class="tb-star" aria-hidden="true">✦</span>
+    <span class="tb-zh">{t("teaser.messageAccent")}</span>
+  </div>
+  <button class="tb-close" id="tbClose" aria-label={t("teaser.dismiss")}>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+  </button>
+</div>
+
+<script>
+  // Persist dismissal in localStorage so reloads keep it closed. Clear
+  // localStorage key "tkids.teaser.dismissed" in devtools to re-show.
+  const KEY = "tkids.teaser.dismissed";
+  const banner = document.getElementById("teaserBanner");
+  const close = document.getElementById("tbClose");
+  if (banner && close) {
+    let dismissed = false;
+    try {
+      dismissed = window.localStorage.getItem(KEY) === "1";
+    } catch {
+      /* private mode / disabled storage — just treat as not dismissed */
+    }
+    if (!dismissed) {
+      banner.removeAttribute("data-hidden");
+    }
+    close.addEventListener("click", () => {
+      banner.classList.add("is-dismissed");
+      try {
+        window.localStorage.setItem(KEY, "1");
+      } catch {
+        /* swallow */
+      }
+    });
+  }
+</script>
+
+<style>
+  .teaser-banner {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 5px 20px;
+    background: linear-gradient(
+      90deg,
+      var(--gold) 0%,
+      var(--gold-warm) 50%,
+      var(--gold) 100%
+    );
+    background-size: 200% 100%;
+    color: var(--midnight);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    animation: bannerShimmer 5s ease-in-out infinite;
+    overflow: hidden;
+    transition:
+      height 0.3s ease,
+      opacity 0.25s ease,
+      padding 0.3s ease;
+    height: 26px;
+  }
+  /* Hidden until JS decides whether to show (avoids a flash if user already dismissed). */
+  .teaser-banner[data-hidden="true"] {
+    display: none;
+  }
+  .teaser-banner.is-dismissed {
+    height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    opacity: 0;
+    border: none;
+  }
+  @keyframes bannerShimmer {
+    0%, 100% { background-position: 0% 50%; }
+    50%      { background-position: 100% 50%; }
+  }
+  .teaser-banner::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    opacity: 0.08;
+    mix-blend-mode: overlay;
+    pointer-events: none;
+  }
+  .tb-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: "Unbounded", sans-serif;
+    font-weight: 800;
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    color: var(--midnight);
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+    text-transform: uppercase;
+  }
+  .tb-live-dot {
+    width: 6px;
+    height: 6px;
+    background: #c42a2a;
+    border-radius: 50%;
+    box-shadow: 0 0 6px rgba(196, 42, 42, 0.8);
+    animation: tbPulse 1.2s ease-in-out infinite;
+  }
+  @keyframes tbPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%      { opacity: 0.6; transform: scale(0.8); }
+  }
+  .tb-message {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: relative;
+    z-index: 1;
+  }
+  .tb-message strong {
+    font-family: "Unbounded", sans-serif;
+    font-weight: 700;
+    font-size: 10.5px;
+    letter-spacing: 0;
+    color: var(--midnight);
+  }
+  .tb-zh {
+    font-family: "Noto Sans TC", sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: rgba(3, 6, 26, 0.7);
+  }
+  :global(html[lang^="ja"]) .tb-zh {
+    font-family: "Noto Sans JP", "Noto Sans TC", sans-serif;
+  }
+  .tb-star {
+    color: var(--midnight);
+    opacity: 0.4;
+    font-size: 9px;
+  }
+  .tb-close {
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: rgba(3, 6, 26, 0.55);
+    border-radius: 50%;
+    flex-shrink: 0;
+    transition: color 0.2s, background 0.2s;
+    position: relative;
+    z-index: 1;
+    padding: 0;
+  }
+  .tb-close:hover {
+    color: var(--midnight);
+    background: rgba(3, 6, 26, 0.12);
+  }
+  .tb-close svg {
+    width: 11px;
+    height: 11px;
+    fill: currentColor;
+  }
+  @media (max-width: 600px) {
+    .teaser-banner { padding: 5px 14px; gap: 8px; }
+    .tb-zh { display: none; }
+    .tb-message strong { font-size: 10px; }
+  }
+</style>

@@ -30,3 +30,7 @@
 @import "@fontsource/noto-sans-tc/chinese-traditional-400.css";
 @import "@fontsource/noto-sans-tc/chinese-traditional-500.css";
 @import "@fontsource/noto-sans-tc/chinese-traditional-700.css";
+
+/* --- Noto Sans JP (Japanese) — subset only; ja locale hero + marquee --- */
+@import "@fontsource/noto-sans-jp/japanese-400.css";
+@import "@fontsource/noto-sans-jp/japanese-700.css";

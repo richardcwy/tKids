@@ -18,7 +18,12 @@ const toastPending = t("crowdfund.toastPending");
     <div class="cf-raised" data-cf="raised">
       <span class="cf-currency">$</span><span data-cf="raised-amount">0</span>
     </div>
-    <div class="cf-goal">{t("crowdfund.raisedLabel")} <b data-cf="goal">$—</b> {t("crowdfund.goalLabel")}</div>
+    <div class="cf-goal">
+      <span class="cf-tagline" data-cf-tagline={t("crowdfund.goalTagline", { goal: "{goal}" })}>
+        {t("crowdfund.goalTagline", { goal: "$—" })}
+      </span>
+      <span class="cf-tagline-accent" aria-hidden="true">{t("crowdfund.goalTaglineAccent")}</span>
+    </div>
   </div>
   <div class="cf-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" data-cf="bar">
     <div class="cf-bar-fill" data-cf="bar-fill" style="width:0%"></div>
@@ -53,7 +58,8 @@ const toastPending = t("crowdfund.toastPending");
   if (root) {
     const $ = (sel: string) => root.querySelector<HTMLElement>(`[data-cf="${sel}"]`);
     const raisedAmount = $("raised-amount");
-    const goal = $("goal");
+    const tagline = root.querySelector<HTMLElement>(".cf-tagline");
+    const taglineTpl = tagline?.getAttribute("data-cf-tagline") || "";
     const barFill = $("bar-fill");
     const bar = $("bar");
     const supporters = $("supporters");
@@ -107,7 +113,9 @@ const toastPending = t("crowdfund.toastPending");
           mock: boolean;
         };
         if (raisedAmount) raisedAmount.textContent = fmtMoney(data.raisedUsd);
-        if (goal) goal.textContent = `$${fmtMoney(data.goalUsd)}`;
+        if (tagline && taglineTpl) {
+          tagline.textContent = taglineTpl.replace("{goal}", `$${fmtMoney(data.goalUsd)}`);
+        }
         if (supporters) supporters.textContent = fmtMoney(data.supporterCount);
         const pct = Math.max(0, Math.min(100, data.percentage));
         if (barFill) barFill.style.width = `${pct}%`;
@@ -175,19 +183,37 @@ const toastPending = t("crowdfund.toastPending");
     font-weight: 600;
   }
   .cf-goal {
-    font-family: "JetBrains Mono", monospace;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.18em;
-    color: var(--ice);
-    opacity: 0.7;
-    white-space: nowrap;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+    text-align: right;
+    min-width: 0;
   }
-  .cf-goal :global(b) {
-    font-family: "Unbounded", sans-serif;
-    font-weight: 600;
-    color: var(--white);
-    margin-left: 4px;
+  .cf-tagline {
+    font-family: "Instrument Serif", serif;
+    font-style: italic;
+    font-size: clamp(12px, 1.05vw, 15px);
+    color: var(--ice);
+    opacity: 0.85;
+    letter-spacing: 0.01em;
+    white-space: normal;
+    line-height: 1.25;
+  }
+  :global(html[lang^="ja"]) .cf-tagline {
+    font-family: "Noto Sans JP", "Instrument Serif", serif;
+    font-style: normal;
+  }
+  .cf-tagline-accent {
+    font-family: "Noto Sans TC", sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    color: var(--gold);
+    opacity: 0.7;
+  }
+  @media (max-width: 600px) {
+    .cf-row { flex-wrap: wrap; gap: 8px; }
+    .cf-goal { align-items: flex-start; text-align: left; }
   }
 
   .cf-bar {

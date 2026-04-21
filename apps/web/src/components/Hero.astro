@@ -91,9 +91,26 @@ const isZhTW = locale === "zh-TW";
     font-size: clamp(16px, 1.4vw, 22px);
     line-height: 1.55;
     color: var(--ice);
-    max-width: 560px;
+    max-width: 680px;
     margin: 0 auto;
     opacity: 0.92;
+    /* word-break prevents long German compounds from overflowing on narrow viewports */
+    overflow-wrap: break-word;
+  }
+  /* CJK italics look wrong. Swap to Noto Sans JP for ja,
+     widen line-height for taller glyphs, drop italic. */
+  :global([lang="ja"]) .slogan-manifesto,
+  :global(html[lang^="ja"]) .slogan-manifesto {
+    font-family: "Noto Sans JP", "Instrument Serif", serif;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1.75;
+    letter-spacing: 0.02em;
+  }
+  /* German: longer words. Nudge size down slightly and loosen leading. */
+  :global(html[lang^="de"]) .slogan-manifesto {
+    font-size: clamp(15px, 1.3vw, 20px);
+    line-height: 1.65;
   }
   .zh-sep {
     display: inline-block;

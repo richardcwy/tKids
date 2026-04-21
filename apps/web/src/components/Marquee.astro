@@ -1,22 +1,47 @@
 ---
-// Scrolling ticker at the bottom, above the player dock.
-// Duplicated once inline so the -50% translate looks seamless.
+// Multilingual ticker at the bottom of the dock. Covers EN / zh-TW /
+// ja / ko / fr / it / es / de. CJK items get `lang-*` classes so the
+// right Noto subset is used instead of falling back to Latin metrics.
+// Duplicated inline so the -50% translate looks seamless.
+
+const items = [
+  { text: "IGNITE!" },
+  { text: "點亮宇宙", cls: "lang-zh" },
+  { text: "enflamme l'univers" },
+  { text: "宇宙を灯せ", cls: "lang-ja" },
+  { text: "shine through the night" },
+  { text: "accendi l'universo" },
+  { text: "우주를 밝혀라", cls: "lang-ko" },
+  { text: "world tour" },
+  { text: "因星芒而閃亮", cls: "lang-zh" },
+  { text: "Entzünde das Universum" },
+  { text: "星の光で輝く", cls: "lang-ja" },
+  { text: "enciende el universo" },
+  { text: "tKids" },
+  { text: "brille dans la nuit" },
+  { text: "월드투어", cls: "lang-ko" },
+  { text: "世界巡演", cls: "lang-zh" },
+  { text: "tournée mondiale" },
+  { text: "ワールドツアー", cls: "lang-ja" },
+  { text: "gira mundial" },
+  { text: "Welttournee" },
+];
 ---
 
 <div class="marquee" aria-hidden="true">
   <div class="marquee-track">
-    <span>IGNITE!</span><span class="sep">★</span>
-    <span><em>out 06.01.26</em></span><span class="sep">★</span>
-    <span>tKids</span><span class="sep">★</span>
-    <span lang="zh-TW">點亮宇宙</span><span class="sep">★</span>
-    <span><em>ignite the universe</em></span><span class="sep">★</span>
-    <span lang="zh-TW">世界巡演</span><span class="sep">★</span>
-    <span>IGNITE!</span><span class="sep">★</span>
-    <span><em>out 06.01.26</em></span><span class="sep">★</span>
-    <span>tKids</span><span class="sep">★</span>
-    <span lang="zh-TW">點亮宇宙</span><span class="sep">★</span>
-    <span><em>ignite the universe</em></span><span class="sep">★</span>
-    <span lang="zh-TW">世界巡演</span><span class="sep">★</span>
+    {items.map((item) => (
+      <>
+        <span class={item.cls}>{item.text}</span>
+        <span class="sep">★</span>
+      </>
+    ))}
+    {items.map((item) => (
+      <>
+        <span class={item.cls}>{item.text}</span>
+        <span class="sep">★</span>
+      </>
+    ))}
   </div>
 </div>
 
@@ -31,18 +56,28 @@
   }
   .marquee-track {
     display: flex;
-    gap: 56px;
+    gap: 40px;
     white-space: nowrap;
-    animation: slide 35s linear infinite;
+    animation: slide 70s linear infinite;
     font-family: "Unbounded", sans-serif;
     font-weight: 700;
-    font-size: 26px;
+    font-size: 24px;
     letter-spacing: -0.02em;
   }
-  .marquee-track :global(em) {
-    font-family: "Instrument Serif", serif;
-    font-style: italic;
-    font-weight: 400;
+  .marquee-track :global(.lang-zh) {
+    font-family: "Noto Sans TC", sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+  .marquee-track :global(.lang-ja) {
+    font-family: "Noto Sans JP", "Noto Sans TC", sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+  .marquee-track :global(.lang-ko) {
+    font-family: "Noto Sans KR", "Noto Sans JP", "Noto Sans TC", sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.01em;
   }
   .marquee-track .sep {
     font-family: "Unbounded", sans-serif;
@@ -51,7 +86,8 @@
 
   @media (max-width: 600px) {
     .marquee-track {
-      font-size: 20px;
+      font-size: 18px;
+      gap: 28px;
     }
   }
 </style>

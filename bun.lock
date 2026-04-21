@@ -26,6 +26,7 @@
         "@fontsource/dm-serif-display": "^5.1.0",
         "@fontsource/instrument-serif": "^5.1.0",
         "@fontsource/jetbrains-mono": "^5.1.0",
+        "@fontsource/noto-sans-jp": "^5.2.9",
         "@fontsource/noto-sans-tc": "^5.1.0",
         "@fontsource/unbounded": "^5.1.0",
         "@libsql/client": "catalog:",
@@ -358,6 +359,8 @@
     "@fontsource/instrument-serif": ["@fontsource/instrument-serif@5.2.8", "", {}, "sha512-s+bkz+syj2rO00Rmq9g0P+PwuLig33DR1xDR8pTWmovH1pUjwnncrFk++q9mmOex8fUQ7oW80gPpPDaw7V1MMw=="],
 
     "@fontsource/jetbrains-mono": ["@fontsource/jetbrains-mono@5.2.8", "", {}, "sha512-6w8/SG4kqvIMu7xd7wt6x3idn1Qux3p9N62s6G3rfldOUYHpWcc2FKrqf+Vo44jRvqWj2oAtTHrZXEP23oSKwQ=="],
+
+    "@fontsource/noto-sans-jp": ["@fontsource/noto-sans-jp@5.2.9", "", {}, "sha512-6yVGiofnrnbiJjU8ch4JGSs2HqyozxMvsVyVmFwOnDH3u//qQKLqmKM4n0lqN0637uaJNzUW9nIJqbbMgHVQzw=="],
 
     "@fontsource/noto-sans-tc": ["@fontsource/noto-sans-tc@5.2.9", "", {}, "sha512-Z+pXTvXYrip79lPV9X1lCYO3UTys55P25VqcifDStIzdZ86I4R6t8dz+NhGd09YdbvHWvOCB5Icw1m7glKHPNQ=="],
 

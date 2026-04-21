@@ -23,7 +23,15 @@
     "donateNow": "donate now",
     "mockTag": "preview",
     "mockNote": "payments launching soon · this is a UI preview",
-    "toastPending": "💛 payments launching soon — thanks for the interest, the UI is a preview"
+    "toastPending": "💛 payments launching soon — thanks for the interest, the UI is a preview",
+    "goalTagline": "crowdfund {goal} and rock the world",
+    "goalTaglineAccent": "點亮宇宙"
+  },
+  "teaser": {
+    "liveLabel": "live",
+    "message": "tKids' first EP teaser is streaming now",
+    "messageAccent": "首張 EP 搶先試聽",
+    "dismiss": "dismiss banner"
   },
   "releaseMeta": {
     "lastCall": "last call",

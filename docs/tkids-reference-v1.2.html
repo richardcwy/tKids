@@ -1,0 +1,2166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>tKids — Ignite!</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<!-- Preload the two most critical font files to minimize FOUT on the wordmark -->
+<link rel="preload" as="font" type="font/woff2" crossorigin
+      href="https://fonts.gstatic.com/s/unbounded/v9/Yq6F-4HQZBL9Yt3cVhBUz7_pLrDzbgLWEg.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin
+      href="https://fonts.gstatic.com/s/dmserifdisplay/v15/-nFnOHM81r4j6k0gjAW3mujVU2B2G_Vx1yGaWsE.woff2">
+
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Unbounded:wght@300;400;600;800;900&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@300;400;600&family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Sans+JP:wght@400;700&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --midnight: #03061a;
+    --navy: #0a1340;
+    --deep-blue: #112280;
+    --electric: #2e5fff;
+    --glow: #5b85ff;
+    --ice: #b8ccff;
+    --chrome: #e8ecff;
+    --white: #ffffff;
+    --gold: #ffd84a;
+    --gold-warm: #ffb347;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  /* ================= CUSTOM CURSOR (yellow star) ================= */
+  /* default cursor: gold star, anchored at center (16,16) */
+  html, body {
+    cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'><defs><filter id='g' x='-50%' y='-50%' width='200%' height='200%'><feGaussianBlur stdDeviation='1.2'/></filter></defs><polygon points='16,3 19.8,11.5 29,12.7 22.2,18.9 23.9,28 16,23.7 8.1,28 9.8,18.9 3,12.7 12.2,11.5' fill='%23ffd84a' filter='url(%23g)' opacity='0.6'/><polygon points='16,3 19.8,11.5 29,12.7 22.2,18.9 23.9,28 16,23.7 8.1,28 9.8,18.9 3,12.7 12.2,11.5' fill='%23ffd84a'/></svg>") 16 16, auto;
+  }
+  /* hover/clickable cursor: brighter, larger gold star */
+  a, button, .pb-progress, [role="button"], .member, [onclick] {
+    cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'><defs><filter id='g' x='-50%' y='-50%' width='200%' height='200%'><feGaussianBlur stdDeviation='2'/></filter></defs><polygon points='20,4 24.7,14.4 36,15.9 27.5,23.5 29.7,34.6 20,29.4 10.3,34.6 12.5,23.5 4,15.9 15.3,14.4' fill='%23ffb347' filter='url(%23g)' opacity='0.7'/><polygon points='20,4 24.7,14.4 36,15.9 27.5,23.5 29.7,34.6 20,29.4 10.3,34.6 12.5,23.5 4,15.9 15.3,14.4' fill='%23ffd84a'/></svg>") 20 20, pointer;
+  }
+  body {
+    background: var(--midnight);
+    color: var(--chrome);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 13px;
+    line-height: 1.5;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    padding-bottom: 158px;
+  }
+
+  /* ================= BACKGROUND ================= */
+  .bg-atmosphere {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse 1200px 800px at 75% 30%, rgba(46,95,255,0.4) 0%, transparent 55%),
+      radial-gradient(ellipse 900px 600px at 15% 75%, rgba(91,133,255,0.25) 0%, transparent 50%),
+      radial-gradient(ellipse 700px 500px at 50% 0%, rgba(17,34,128,0.45) 0%, transparent 60%),
+      radial-gradient(ellipse 500px 400px at 90% 90%, rgba(255,179,71,0.08) 0%, transparent 60%),
+      linear-gradient(180deg, var(--midnight) 0%, #050930 100%);
+  }
+  .bg-atmosphere::before {
+    content: "";
+    position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    opacity: 0.08;
+    mix-blend-mode: overlay;
+  }
+
+  /* animated stage spotlights — drift over tKids */
+  .spotlight-stage {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .spotlight {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    mix-blend-mode: screen;
+    will-change: transform;
+  }
+  .sl-1 {
+    width: 720px; height: 720px;
+    top: -80px; left: 12%;
+    background: radial-gradient(circle, rgba(46, 95, 255, 0.55) 0%, rgba(46, 95, 255, 0.2) 35%, transparent 65%);
+    animation: sweep1 22s ease-in-out infinite;
+  }
+  .sl-2 {
+    width: 620px; height: 620px;
+    top: 40px; right: 10%;
+    background: radial-gradient(circle, rgba(91, 133, 255, 0.5) 0%, transparent 65%);
+    animation: sweep2 28s ease-in-out infinite;
+  }
+  .sl-3 {
+    width: 520px; height: 520px;
+    top: 25%; left: 38%;
+    background: radial-gradient(circle, rgba(255, 216, 74, 0.2) 0%, transparent 65%);
+    animation: sweep3 34s ease-in-out infinite;
+  }
+  @keyframes sweep1 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    25% { transform: translate(280px, 160px) scale(1.1); }
+    50% { transform: translate(460px, 60px) scale(0.95); }
+    75% { transform: translate(220px, -100px) scale(1.08); }
+  }
+  @keyframes sweep2 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(-320px, 180px) scale(1.05); }
+    66% { transform: translate(-520px, 40px) scale(0.92); }
+  }
+  @keyframes sweep3 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(220px, -140px) scale(1.2); }
+  }
+
+  /* yellow breathing stars */
+  .stars-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .shine-star {
+    position: absolute;
+    color: var(--gold);
+    will-change: transform, opacity, filter;
+    animation: breathShine 4s ease-in-out infinite;
+  }
+  .shine-star svg {
+    width: 100%;
+    height: 100%;
+    fill: currentColor;
+    display: block;
+  }
+  @keyframes breathShine {
+    0%, 100% {
+      opacity: 0.35;
+      transform: scale(0.85) rotate(0deg);
+      filter: drop-shadow(0 0 6px currentColor) drop-shadow(0 0 14px currentColor);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.2) rotate(12deg);
+      filter: drop-shadow(0 0 14px currentColor) drop-shadow(0 0 30px currentColor);
+    }
+  }
+  /* star positions */
+  .star-a { top: 12%; left: 6%; width: 42px; height: 42px; animation-duration: 4.5s; animation-delay: 0s; }
+  .star-b { top: 22%; right: 5%; width: 28px; height: 28px; animation-duration: 3.2s; animation-delay: 0.8s; color: var(--gold-warm); }
+  .star-c { top: 70%; left: 10%; width: 52px; height: 52px; animation-duration: 5.2s; animation-delay: 1.4s; }
+  .star-d { bottom: 8%; right: 12%; width: 32px; height: 32px; animation-duration: 3.8s; animation-delay: 2s; }
+  .star-e { top: 45%; left: 45%; width: 18px; height: 18px; animation-duration: 2.8s; animation-delay: 0.4s; color: var(--gold-warm); }
+  .star-f { top: 85%; left: 32%; width: 22px; height: 22px; animation-duration: 3.6s; animation-delay: 1.2s; }
+  .star-g { top: 8%; left: 38%; width: 24px; height: 24px; animation-duration: 4.2s; animation-delay: 2.2s; color: var(--gold-warm); }
+  .star-h { top: 55%; right: 18%; width: 36px; height: 36px; animation-duration: 4.8s; animation-delay: 0.6s; }
+  /* stars for second frame */
+  .star-i { top: 8%; left: 8%; width: 38px; height: 38px; animation-duration: 4s; animation-delay: 1s; }
+  .star-j { top: 35%; right: 6%; width: 24px; height: 24px; animation-duration: 3.4s; animation-delay: 0.2s; color: var(--gold-warm); }
+  .star-k { bottom: 15%; left: 48%; width: 20px; height: 20px; animation-duration: 3s; animation-delay: 1.8s; }
+  .star-l { bottom: 30%; right: 30%; width: 30px; height: 30px; animation-duration: 4.4s; animation-delay: 2.4s; }
+
+  /* ================= SHOOTING STARS ================= */
+  .shooting-stars-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .shooting-star {
+    position: absolute;
+    width: 140px;
+    height: 2px;
+    opacity: 0;
+    will-change: transform, opacity;
+  }
+  .shooting-star .ss-head {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--white);
+    box-shadow:
+      0 0 6px var(--white),
+      0 0 14px var(--gold),
+      0 0 28px var(--gold-warm);
+  }
+  .shooting-star .ss-trail {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 132px;
+    height: 2px;
+    /* tail (left end) is transparent, head end (right) is bright white */
+    background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(255, 216, 74, 0.15) 20%,
+      rgba(255, 216, 74, 0.6) 60%,
+      rgba(255, 255, 255, 0.95) 100%);
+    border-radius: 2px;
+    filter: blur(0.3px);
+  }
+
+  /* The element is 140px wide with head on the right end.
+     rotate(30deg) in CSS (Y-down) tilts the head down-right, so trail trails up-left.
+     The star then moves down-right along the same vector. */
+  .shooting-star {
+    animation: shoot var(--dur, 1.4s) cubic-bezier(0.35, 0.05, 0.6, 0.9) forwards;
+  }
+  @keyframes shoot {
+    0% {
+      transform: rotate(30deg) translate(0, 0);
+      opacity: 0;
+    }
+    8% { opacity: 1; }
+    88% { opacity: 1; }
+    100% {
+      transform: rotate(30deg) translate(var(--travel, 700px), 0);
+      opacity: 0;
+    }
+  }
+
+  /* ================= WORDMARK ================= */
+  .wordmark {
+    display: inline-flex;
+    align-items: center;
+    font-family: "Unbounded", sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.05em;
+    line-height: 0.85;
+    color: inherit;
+    white-space: nowrap;
+    text-decoration: none;
+  }
+  .wordmark > span { display: inline-block; }
+  .wordmark .wm-star {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 0.62em;
+    height: 0.62em;
+    margin: 0 0.015em;
+    color: var(--electric);
+    flex-shrink: 0;
+    filter: drop-shadow(0 0 0.25em rgba(46, 95, 255, 0.55));
+    transform: translateY(-0.02em);
+  }
+  .wordmark .wm-star svg {
+    width: 100%; height: 100%;
+    fill: currentColor;
+    display: block;
+  }
+
+  /* ================= NAV ================= */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 24px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  nav .logo { font-size: 22px; color: var(--white); }
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: 32px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+  }
+  nav a {
+    color: var(--ice);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  nav a:hover { color: var(--white); }
+  nav .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  nav .nav-icon-btn {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: transparent;
+    border: 1px solid rgba(184, 204, 255, 0.18);
+    color: var(--ice);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    position: relative;
+    flex-shrink: 0;
+  }
+  nav .nav-icon-btn:hover {
+    color: var(--white);
+    border-color: rgba(184, 204, 255, 0.4);
+    background: rgba(255, 255, 255, 0.04);
+  }
+  nav .nav-icon-btn svg {
+    width: 14px; height: 14px;
+    fill: currentColor;
+  }
+  nav .nav-icon-btn .share-tooltip {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    padding: 6px 10px;
+    background: var(--white);
+    color: var(--midnight);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    border-radius: 6px;
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateY(-4px);
+    pointer-events: none;
+    transition: opacity 0.2s, transform 0.2s;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+  }
+  nav .nav-icon-btn .share-tooltip.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  nav .nav-signin {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    padding: 8px 14px;
+    color: var(--ice);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  nav .nav-signin:hover { color: var(--white); }
+  nav .nav-donate {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: "Unbounded", sans-serif;
+    font-weight: 700;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    padding: 9px 18px;
+    background: var(--gold);
+    color: var(--midnight);
+    border-radius: 999px;
+    text-decoration: none;
+    transition: all 0.25s;
+    box-shadow: 0 0 18px rgba(255, 216, 74, 0.3);
+  }
+  nav .nav-donate:hover {
+    background: var(--gold-warm);
+    box-shadow: 0 0 30px rgba(255, 216, 74, 0.6);
+    transform: translateY(-1px);
+  }
+  nav .nav-donate svg {
+    width: 11px; height: 11px;
+    fill: currentColor;
+  }
+
+  /* ================= HERO ================= */
+  .hero {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    padding: 100px 40px 178px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .hero-wordmark {
+    font-size: clamp(90px, 14vw, 220px);
+    color: var(--white);
+    margin-bottom: 20px;
+    text-shadow:
+      0 0 60px rgba(46, 95, 255, 0.3),
+      0 0 120px rgba(46, 95, 255, 0.15);
+    /* reserve vertical space so the logo row doesn't collapse before the font loads */
+    min-height: 0.9em;
+    line-height: 0.9;
+    /* match fallback metrics closely so there's minimal jump on font swap */
+    font-synthesis: none;
+  }
+
+  /* hero content fades in once fonts are ready — prevents the pop-in shift */
+  .hero > * {
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+  }
+  .fonts-ready .hero > *,
+  .fonts-late .hero > * {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .fonts-ready .hero > *:nth-child(1) { transition-delay: 0.0s; }
+  .fonts-ready .hero > *:nth-child(2) { transition-delay: 0.08s; }
+  .fonts-ready .hero > *:nth-child(3) { transition-delay: 0.16s; }
+  .fonts-ready .hero > *:nth-child(4) { transition-delay: 0.24s; }
+
+  /* the fixed nav & dock also wait briefly so they don't flash ungeometric fallbacks */
+  nav, .player-dock {
+    opacity: 0;
+    transition: opacity 0.5s ease-out;
+  }
+  .fonts-ready nav, .fonts-late nav,
+  .fonts-ready .player-dock, .fonts-late .player-dock {
+    opacity: 1;
+  }
+
+  .hero-slogan { max-width: 880px; margin-bottom: 36px; }
+  .slogan-en {
+    font-family: "DM Serif Display", serif;
+    font-size: clamp(36px, 4.5vw, 62px);
+    color: var(--white);
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+    margin-bottom: 22px;
+    text-shadow: 0 2px 30px rgba(46,95,255,0.22);
+  }
+  .slogan-zh {
+    font-family: "Noto Sans TC", sans-serif;
+    font-weight: 400;
+    font-size: clamp(13.5px, 1.05vw, 16px);
+    line-height: 1.95;
+    letter-spacing: 0.12em;
+    color: var(--ice);
+    max-width: 880px;
+    margin: 0 auto;
+  }
+  .slogan-zh .zh-sep {
+    display: inline-block;
+    color: var(--gold);
+    margin: 0 10px;
+    font-size: 0.85em;
+    animation: textTwinkle 3.8s ease-in-out infinite;
+  }
+  .slogan-zh .zh-sep.sep-b { animation-delay: 0.8s; animation-duration: 4.4s; }
+  .slogan-zh .zh-sep.sep-c { animation-delay: 1.6s; animation-duration: 3.2s; }
+  .slogan-zh .zh-sep.sep-d { animation-delay: 2.4s; animation-duration: 4.1s; }
+  @keyframes textTwinkle {
+    0%, 100% {
+      opacity: 0.5;
+      text-shadow: 0 0 4px currentColor;
+      transform: scale(0.9);
+    }
+    50% {
+      opacity: 1;
+      text-shadow: 0 0 12px currentColor, 0 0 22px currentColor;
+      transform: scale(1.15);
+    }
+  }
+  .slogan-zh .product {
+    font-family: "Unbounded", sans-serif;
+    font-weight: 600;
+    color: var(--electric);
+    letter-spacing: -0.02em;
+    font-size: 0.92em;
+    margin-right: 2px;
+  }
+
+  /* ================= CROWDFUND ================= */
+  .crowdfund {
+    width: 100%;
+    max-width: 540px;
+    margin-bottom: 28px;
+  }
+  .cf-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 14px;
+    gap: 12px;
+  }
+  /* live time inside meta - sits beside DAYS LEFT */
+  .cf-meta-time {
+    font-family: "Unbounded", sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--white);
+    letter-spacing: 0.04em;
+    font-variant-numeric: tabular-nums;
+    text-transform: none;
+    margin-left: 6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .cf-meta-time .sep {
+    color: var(--electric);
+    opacity: 0.7;
+    margin: 0 1px;
+  }
+  .cf-meta-time::before {
+    content: "";
+    width: 5px; height: 5px;
+    background: var(--gold-warm);
+    border-radius: 50%;
+    box-shadow: 0 0 6px var(--gold-warm);
+    animation: pulse 1.4s ease-in-out infinite;
+    margin-right: 4px;
+  }
+  .cf-raised {
+    font-family: "Unbounded", sans-serif;
+    font-weight: 800;
+    font-size: clamp(28px, 3.4vw, 44px);
+    color: var(--white);
+    letter-spacing: -0.04em;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    text-shadow:
+      0 0 22px rgba(46, 95, 255, 0.3),
+      0 0 48px rgba(46, 95, 255, 0.12);
+  }
+  .cf-raised .cf-currency {
+    color: var(--electric);
+    margin-right: 2px;
+    font-weight: 600;
+  }
+  .cf-goal {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--ice);
+    opacity: 0.7;
+    white-space: nowrap;
+  }
+  .cf-goal b {
+    font-family: "Unbounded", sans-serif;
+    font-weight: 600;
+    color: var(--white);
+    margin-left: 4px;
+  }
+
+  .cf-bar {
+    width: 100%;
+    height: 8px;
+    background: rgba(184, 204, 255, 0.15);
+    border-radius: 999px;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 18px;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+  }
+  .cf-bar-fill {
+    position: absolute;
+    inset: 0;
+    width: 62%;
+    background: linear-gradient(90deg, var(--electric) 0%, var(--glow) 70%, var(--gold) 100%);
+    border-radius: 999px;
+    box-shadow:
+      0 0 18px rgba(46, 95, 255, 0.8),
+      0 0 36px rgba(46, 95, 255, 0.4);
+    animation: cfShimmer 2.8s ease-in-out infinite;
+  }
+  .cf-bar-fill::after {
+    content: "";
+    position: absolute;
+    top: 0; right: 0; bottom: 0;
+    width: 14px;
+    background: linear-gradient(90deg, transparent, var(--gold));
+    border-radius: 999px;
+    box-shadow: 0 0 16px var(--gold);
+  }
+  @keyframes cfShimmer {
+    0%, 100% {
+      box-shadow: 0 0 18px rgba(46, 95, 255, 0.7), 0 0 36px rgba(46, 95, 255, 0.3);
+    }
+    50% {
+      box-shadow: 0 0 26px rgba(46, 95, 255, 1), 0 0 50px rgba(46, 95, 255, 0.55);
+    }
+  }
+
+  .cf-foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .cf-meta {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--ice);
+  }
+  .cf-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .cf-meta-item .cf-meta-num {
+    font-family: "Unbounded", sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--white);
+    letter-spacing: -0.01em;
+    text-transform: none;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .cf-donate {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 34px;
+    font-family: "Unbounded", sans-serif;
+    font-weight: 800;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    text-decoration: none;
+    border: none;
+    background: var(--gold);
+    color: var(--midnight);
+    border-radius: 999px;
+    transition: all 0.25s;
+    box-shadow:
+      0 0 30px rgba(255, 216, 74, 0.55),
+      0 4px 16px rgba(0, 0, 0, 0.3);
+    animation: donateGlow 2.6s ease-in-out infinite;
+    position: relative;
+  }
+  @keyframes donateGlow {
+    0%, 100% {
+      box-shadow:
+        0 0 0 0 rgba(255, 216, 74, 0.6),
+        0 0 30px rgba(255, 216, 74, 0.5),
+        0 4px 16px rgba(0, 0, 0, 0.3);
+    }
+    50% {
+      box-shadow:
+        0 0 0 14px rgba(255, 216, 74, 0),
+        0 0 50px rgba(255, 216, 74, 0.85),
+        0 4px 16px rgba(0, 0, 0, 0.3);
+    }
+  }
+  .cf-donate:hover {
+    background: var(--gold-warm);
+    transform: translateY(-2px) scale(1.03);
+    animation-play-state: paused;
+    box-shadow:
+      0 0 60px rgba(255, 216, 74, 0.9),
+      0 6px 20px rgba(0, 0, 0, 0.4);
+  }
+  .cf-donate svg {
+    width: 16px; height: 16px;
+    fill: currentColor;
+  }
+
+  .release-meta {
+    display: flex;
+    gap: 40px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    color: var(--ice);
+    opacity: 0.75;
+  }
+  .release-meta .rm-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .release-meta .rm-label { opacity: 0.6; }
+  .release-meta .rm-val {
+    font-family: "Unbounded", sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--white);
+    letter-spacing: -0.01em;
+    text-transform: none;
+  }
+
+  /* ================= PLAYER DOCK (fixed bottom) ================= */
+  .player-dock {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    z-index: 50;
+  }
+
+  /* ================= TEASER BANNER (slim strip above player bar) ================= */
+  .teaser-banner {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 5px 20px;
+    background: linear-gradient(90deg,
+      var(--gold) 0%,
+      var(--gold-warm) 50%,
+      var(--gold) 100%);
+    background-size: 200% 100%;
+    color: var(--midnight);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    animation: bannerShimmer 5s ease-in-out infinite;
+    overflow: hidden;
+    transition: height 0.3s ease, opacity 0.25s ease, padding 0.3s ease;
+    height: 26px;
+  }
+  .teaser-banner.is-dismissed {
+    height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    opacity: 0;
+    border: none;
+  }
+  @keyframes bannerShimmer {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+  .teaser-banner::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    opacity: 0.08;
+    mix-blend-mode: overlay;
+    pointer-events: none;
+  }
+
+  .tb-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: "Unbounded", sans-serif;
+    font-weight: 800;
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    color: var(--midnight);
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+  .tb-badge .tb-live-dot {
+    width: 6px; height: 6px;
+    background: #c42a2a;
+    border-radius: 50%;
+    box-shadow: 0 0 6px rgba(196, 42, 42, 0.8);
+    animation: pulse 1.2s ease-in-out infinite;
+  }
+
+  .tb-message {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: relative;
+    z-index: 1;
+  }
+  .tb-message strong {
+    font-family: "Unbounded", sans-serif;
+    font-weight: 700;
+    font-size: 10.5px;
+    letter-spacing: 0;
+    color: var(--midnight);
+  }
+  .tb-message .tb-zh {
+    font-family: "Noto Sans TC", sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: rgba(3, 6, 26, 0.7);
+  }
+  .tb-message .tb-star {
+    color: var(--midnight);
+    opacity: 0.4;
+    font-size: 9px;
+  }
+
+  .tb-close {
+    width: 18px; height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: rgba(3, 6, 26, 0.55);
+    border-radius: 50%;
+    flex-shrink: 0;
+    transition: color 0.2s, background 0.2s;
+    position: relative;
+    z-index: 1;
+    padding: 0;
+  }
+  .tb-close:hover {
+    color: var(--midnight);
+    background: rgba(3, 6, 26, 0.12);
+  }
+  .tb-close svg { width: 11px; height: 11px; fill: currentColor; }
+
+  /* ================= PLAYER BAR (slim single row) ================= */
+  .player-bar {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 9px 22px;
+    background: rgba(3, 6, 26, 0.88);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(184, 204, 255, 0.15);
+  }
+  .pb-cluster {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    flex-shrink: 0;
+  }
+  .pb-divider {
+    width: 1px;
+    height: 18px;
+    background: rgba(184, 204, 255, 0.18);
+    flex-shrink: 0;
+    margin: 0 4px;
+  }
+
+  /* unified button */
+  .pb-btn {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: transparent;
+    border: none;
+    color: var(--ice);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s, background 0.2s, transform 0.15s;
+    flex-shrink: 0;
+  }
+  .pb-btn:hover {
+    color: var(--white);
+    background: rgba(255, 255, 255, 0.06);
+  }
+  .pb-btn:active { transform: scale(0.92); }
+  .pb-btn svg {
+    width: 18px; height: 18px;
+    fill: currentColor;
+    display: block;
+  }
+  .pb-btn.is-active { color: var(--electric); }
+  .pb-btn.is-active:hover { color: var(--glow); }
+
+  /* play button - white filled, slight glow */
+  .pb-play {
+    width: 38px; height: 38px;
+    background: var(--white);
+    color: var(--midnight);
+    box-shadow: 0 0 18px rgba(46, 95, 255, 0.35);
+  }
+  .pb-play:hover {
+    background: var(--white);
+    color: var(--midnight);
+    transform: scale(1.06);
+    box-shadow: 0 0 28px rgba(46, 95, 255, 0.55);
+  }
+  .pb-play svg { width: 14px; height: 14px; }
+
+  /* mute colors */
+  .pb-mute.muted { color: var(--gold-warm); }
+
+  /* time labels */
+  .pb-time-label {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    color: var(--ice);
+    letter-spacing: 0.04em;
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+    opacity: 0.7;
+  }
+  .pb-time-label.current { color: var(--white); opacity: 1; }
+
+  /* progress bar */
+  .pb-progress {
+    flex: 1;
+    min-width: 0;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+  }
+  .pb-progress-track {
+    width: 100%;
+    height: 2px;
+    background: rgba(184, 204, 255, 0.18);
+    border-radius: 999px;
+    position: relative;
+  }
+  .pb-progress-fill {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 38%;
+    background: linear-gradient(90deg, var(--electric), var(--glow));
+    border-radius: 999px;
+    box-shadow: 0 0 10px rgba(46, 95, 255, 0.55);
+  }
+  .pb-progress-dot {
+    position: absolute;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--white);
+    top: 50%;
+    left: 38%;
+    transform: translate(-50%, -50%);
+    box-shadow:
+      0 0 0 2px var(--electric),
+      0 0 14px rgba(46, 95, 255, 0.85);
+    transition: transform 0.15s;
+  }
+  .pb-progress:hover .pb-progress-dot { transform: translate(-50%, -50%) scale(1.2); }
+  .player-bar.is-muted .pb-progress-fill {
+    background: rgba(184, 204, 255, 0.35);
+    box-shadow: none;
+  }
+  .player-bar.is-muted .pb-progress-dot {
+    background: var(--ice);
+    box-shadow: 0 0 0 2px rgba(184, 204, 255, 0.4);
+  }
+
+  /* right side: thumb + track info */
+  .pb-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+    min-width: 0;
+    max-width: 240px;
+  }
+  .pb-thumb {
+    width: 36px; height: 36px;
+    flex-shrink: 0;
+    border-radius: 6px;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 30% 30%, var(--glow) 0%, transparent 55%),
+      linear-gradient(135deg, var(--electric) 0%, var(--navy) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(184, 204, 255, 0.22);
+    box-shadow: 0 2px 10px rgba(46, 95, 255, 0.3);
+    position: relative;
+  }
+  .pb-thumb::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    opacity: 0.15;
+    mix-blend-mode: overlay;
+  }
+  .pb-thumb-star {
+    width: 15px; height: 15px;
+    color: var(--gold);
+    filter: drop-shadow(0 0 7px rgba(255, 216, 74, 0.65));
+    position: relative;
+    z-index: 1;
+    animation: breathShine 3.5s ease-in-out infinite;
+  }
+  .pb-thumb-star svg { width: 100%; height: 100%; fill: currentColor; display: block; }
+
+  .pb-track-info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    line-height: 1.15;
+  }
+  .pb-artist {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    color: var(--glow);
+    white-space: nowrap;
+  }
+  .pb-song-title {
+    font-family: "Unbounded", sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--white);
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 2px;
+  }
+
+  /* ================= MARQUEE ================= */
+  .marquee {
+    position: relative;
+    z-index: 1;
+    background: var(--electric);
+    color: var(--white);
+    overflow: hidden;
+    padding: 14px 0;
+  }
+  .marquee-track {
+    display: flex;
+    gap: 56px;
+    white-space: nowrap;
+    animation: slide 80s linear infinite;
+    font-family: "Unbounded", sans-serif;
+    font-weight: 700;
+    font-size: 26px;
+    letter-spacing: -0.02em;
+  }
+  .marquee-track em {
+    font-family: "Instrument Serif", serif;
+    font-style: italic;
+    font-weight: 400;
+  }
+  /* per-language fonts so each script renders correctly */
+  .marquee-track .lang-zh { font-family: "Noto Sans TC", sans-serif; font-weight: 700; letter-spacing: 0.02em; }
+  .marquee-track .lang-ja { font-family: "Noto Sans JP", sans-serif; font-weight: 700; letter-spacing: 0.02em; }
+  .marquee-track .lang-ko { font-family: "Noto Sans KR", sans-serif; font-weight: 700; letter-spacing: 0.01em; }
+  .marquee-track .sep {
+    font-family: "Unbounded", sans-serif;
+    color: var(--gold);
+  }
+  @keyframes slide {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
+  /* ================= FRAME TWO : LINEUP ================= */
+  .frame-two {
+    position: relative;
+    z-index: 1;
+    padding: 120px 40px;
+    overflow: hidden;
+  }
+
+  .lineup-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 60px;
+    gap: 30px;
+    flex-wrap: wrap;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-bottom: 0;
+  }
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    color: var(--ice);
+    margin-bottom: 14px;
+  }
+  .section-label::before {
+    content: "";
+    width: 40px; height: 1px;
+    background: var(--electric);
+  }
+  .section-title {
+    font-family: "Unbounded", sans-serif;
+    font-weight: 800;
+    font-size: clamp(56px, 7.5vw, 120px);
+    line-height: 0.88;
+    letter-spacing: -0.045em;
+    color: var(--white);
+  }
+  .section-title em {
+    font-family: "Instrument Serif", serif;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--electric);
+  }
+  .section-mini {
+    font-family: "Instrument Serif", serif;
+    font-style: italic;
+    font-size: 18px;
+    color: var(--ice);
+    max-width: 280px;
+    text-align: right;
+    line-height: 1.35;
+  }
+  .section-mini small {
+    display: block;
+    font-family: "Noto Sans TC", sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 13px;
+    color: var(--gold);
+    letter-spacing: 0.12em;
+    margin-top: 8px;
+    opacity: 0.9;
+  }
+
+  /* member cards - typographic / atmospheric */
+  .members {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  .member {
+    position: relative;
+    aspect-ratio: 3/4;
+    border-radius: 20px;
+    overflow: hidden;
+    cursor: pointer;
+    border: 1px solid rgba(184,204,255,0.18);
+    transition: transform 0.4s cubic-bezier(0.2,0.8,0.2,1), border-color 0.3s;
+    isolation: isolate;
+  }
+  .member:hover {
+    transform: translateY(-8px);
+    border-color: var(--electric);
+  }
+  .member-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+  .member:nth-child(1) .member-bg {
+    background:
+      radial-gradient(ellipse 80% 60% at 30% 20%, rgba(46,95,255,0.6) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 70% at 80% 80%, rgba(17,34,128,0.8) 0%, transparent 65%),
+      linear-gradient(165deg, #1a2a80 0%, var(--midnight) 100%);
+  }
+  .member:nth-child(2) .member-bg {
+    background:
+      radial-gradient(ellipse 80% 60% at 70% 30%, rgba(91,133,255,0.55) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 80% at 20% 80%, rgba(10,19,64,0.9) 0%, transparent 60%),
+      linear-gradient(195deg, #2a3aa0 0%, var(--navy) 100%);
+  }
+  .member:nth-child(3) .member-bg {
+    background:
+      radial-gradient(ellipse 70% 70% at 50% 30%, rgba(141,167,255,0.5) 0%, transparent 55%),
+      radial-gradient(ellipse 70% 60% at 50% 90%, rgba(3,6,26,0.9) 0%, transparent 65%),
+      linear-gradient(180deg, #3040b0 0%, var(--midnight) 100%);
+  }
+  /* aura orb inside each card */
+  .member-aura {
+    position: absolute;
+    z-index: 2;
+    width: 65%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    filter: blur(30px);
+    opacity: 0.7;
+    transition: opacity 0.4s, transform 0.6s;
+  }
+  .member:nth-child(1) .member-aura {
+    top: 22%; left: 18%;
+    background: radial-gradient(circle, var(--electric) 0%, transparent 70%);
+  }
+  .member:nth-child(2) .member-aura {
+    top: 28%; left: 30%;
+    background: radial-gradient(circle, var(--glow) 0%, transparent 70%);
+  }
+  .member:nth-child(3) .member-aura {
+    top: 20%; left: 25%;
+    background: radial-gradient(circle, #8da7ff 0%, transparent 70%);
+  }
+  .member:hover .member-aura {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+  /* noise texture on cards */
+  .member::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    opacity: 0.12;
+    mix-blend-mode: overlay;
+  }
+  .member-content {
+    position: relative;
+    z-index: 5;
+    height: 100%;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .member-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .member-num {
+    font-family: "Unbounded", sans-serif;
+    font-weight: 800;
+    font-size: 44px;
+    color: var(--white);
+    letter-spacing: -0.06em;
+    line-height: 1;
+  }
+  .member-num .slash {
+    font-family: "Instrument Serif", serif;
+    font-weight: 300;
+    color: var(--ice);
+    opacity: 0.6;
+    margin-left: 2px;
+    font-size: 0.6em;
+  }
+  .member-star {
+    width: 28px; height: 28px;
+    color: var(--gold);
+    animation: breathShine 3.5s ease-in-out infinite;
+  }
+  .member:nth-child(2) .member-star { animation-delay: 0.6s; }
+  .member:nth-child(3) .member-star { animation-delay: 1.2s; }
+  .member-star svg { width: 100%; height: 100%; fill: currentColor; }
+
+  .member-bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .member-name {
+    font-family: "Unbounded", sans-serif;
+    font-weight: 800;
+    font-size: clamp(40px, 5vw, 72px);
+    color: var(--white);
+    letter-spacing: -0.05em;
+    line-height: 0.9;
+  }
+  .member-role {
+    font-family: "Instrument Serif", serif;
+    font-style: italic;
+    font-size: 17px;
+    color: var(--ice);
+    line-height: 1.3;
+  }
+  .member-role-zh {
+    font-family: "Noto Sans TC", sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    color: var(--gold);
+    letter-spacing: 0.18em;
+    margin-top: 4px;
+    opacity: 0.9;
+  }
+
+  /* ================= FOOTER ================= */
+  footer {
+    position: relative;
+    z-index: 1;
+    padding: 36px 40px;
+    border-top: 1px solid rgba(184,204,255,0.15);
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 30px;
+    align-items: center;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--ice);
+  }
+  .ft-left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    opacity: 0.75;
+  }
+  .ft-left .fn-tag {
+    font-family: "Noto Sans TC", sans-serif;
+    font-weight: 400;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: none;
+    color: var(--gold);
+  }
+  .ft-center {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--ice);
+    text-decoration: none;
+    padding: 10px 18px;
+    border-radius: 999px;
+    border: 1px solid rgba(184,204,255,0.2);
+    transition: all 0.2s;
+  }
+  .ft-center:hover {
+    color: var(--white);
+    border-color: var(--gold);
+    background: rgba(255,216,74,0.08);
+  }
+  .ft-center svg {
+    width: 14px; height: 14px;
+    fill: currentColor;
+  }
+  .ft-right {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: right;
+    align-items: flex-end;
+  }
+  .ft-version {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: var(--ice);
+    opacity: 0.85;
+  }
+  .ft-version .v-dot {
+    width: 6px; height: 6px;
+    background: #4ade80;
+    border-radius: 50%;
+    box-shadow: 0 0 8px #4ade80;
+    animation: pulse 1.8s ease-in-out infinite;
+  }
+  .ft-version b {
+    font-family: "Unbounded", sans-serif;
+    font-weight: 600;
+    color: var(--white);
+    letter-spacing: -0.01em;
+  }
+  .ft-build {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    color: var(--ice);
+    opacity: 0.5;
+  }
+
+  /* language selector */
+  .lang-selector {
+    position: relative;
+  }
+  .lang-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 14px;
+    background: rgba(3, 6, 26, 0.5);
+    border: 1px solid rgba(184, 204, 255, 0.2);
+    border-radius: 999px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ice);
+    transition: all 0.2s;
+    min-width: 130px;
+  }
+  .lang-trigger:hover {
+    color: var(--white);
+    border-color: rgba(184, 204, 255, 0.4);
+    background: rgba(46, 95, 255, 0.08);
+  }
+  .lang-flag {
+    width: 20px;
+    height: 14px;
+    border-radius: 2px;
+    overflow: hidden;
+    flex-shrink: 0;
+    display: inline-flex;
+    box-shadow: 0 0 0 1px rgba(184, 204, 255, 0.15);
+  }
+  .lang-flag svg {
+    width: 100%; height: 100%;
+    display: block;
+  }
+  .lang-name {
+    font-family: "Noto Sans TC", "Noto Sans JP", sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+    letter-spacing: 0.02em;
+    text-transform: none;
+    color: var(--white);
+    flex: 1;
+    text-align: left;
+  }
+  .lang-caret {
+    width: 10px; height: 10px;
+    fill: currentColor;
+    opacity: 0.6;
+    transition: transform 0.2s;
+  }
+  .lang-selector.is-open .lang-caret {
+    transform: rotate(180deg);
+  }
+
+  /* dropdown panel */
+  .lang-menu {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    right: 0;
+    min-width: 180px;
+    padding: 6px;
+    background: rgba(5, 9, 32, 0.95);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid rgba(184, 204, 255, 0.2);
+    border-radius: 14px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transform: translateY(4px);
+    pointer-events: none;
+    transition: opacity 0.2s, transform 0.2s;
+    z-index: 20;
+  }
+  .lang-selector.is-open .lang-menu {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+  .lang-option {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    background: transparent;
+    border: none;
+    border-left: 2px solid transparent;
+    border-radius: 8px;
+    color: var(--ice);
+    text-align: left;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    font-family: "Noto Sans TC", "Noto Sans JP", sans-serif;
+    font-weight: 500;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+  }
+  .lang-option:hover {
+    background: rgba(46, 95, 255, 0.1);
+    color: var(--white);
+  }
+  .lang-option.is-active {
+    color: var(--white);
+    border-left-color: var(--electric);
+    background: rgba(46, 95, 255, 0.08);
+  }
+  .lang-option .lang-label {
+    flex: 1;
+  }
+  .lang-option .lang-code {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    opacity: 0.55;
+    text-transform: uppercase;
+  }
+  .lang-option.is-active .lang-check {
+    width: 12px; height: 12px;
+    fill: var(--electric);
+  }
+  .lang-option:not(.is-active) .lang-check { display: none; }
+
+  /* ================= RESPONSIVE ================= */
+  @media (max-width: 900px) {
+    .members { grid-template-columns: 1fr 1fr; gap: 14px; }
+    .member:nth-child(3) { grid-column: span 2; aspect-ratio: 16/9; }
+    .section-mini { text-align: left; }
+    .release-meta { flex-direction: column; gap: 12px; }
+    .pb-secondary, .pb-divider { display: none; }
+    .player-bar { gap: 10px; padding: 9px 16px; }
+    .teaser-banner { padding: 5px 14px; gap: 8px; }
+  }
+  @media (max-width: 600px) {
+    nav { padding: 20px; }
+    nav ul { display: none; }
+    nav .nav-actions { gap: 4px; }
+    nav .nav-signin { display: none; }
+    nav .nav-donate { padding: 8px 14px; font-size: 9px; letter-spacing: 0.18em; }
+    .hero { padding: 120px 20px 188px; }
+    .hero-slogan { margin-bottom: 40px; }
+    .frame-two { padding: 80px 20px; }
+    .members { grid-template-columns: 1fr; }
+    .member:nth-child(3) { grid-column: span 1; aspect-ratio: 3/4; }
+    .marquee-track { font-size: 20px; }
+    .pb-prev, .pb-next { display: none; }
+    .pb-right { max-width: 130px; }
+    .pb-artist { font-size: 8px; letter-spacing: 0.2em; }
+    .pb-song-title { font-size: 12px; }
+    .crowdfund { max-width: 100%; }
+    .cf-foot { justify-content: center; flex-direction: column; gap: 14px; }
+    .tb-message .tb-star, .tb-message .tb-zh { display: none; }
+    .tb-message strong { font-size: 9.5px; letter-spacing: 0; }
+    footer { padding: 30px 20px; grid-template-columns: 1fr; gap: 22px; text-align: center; }
+    .ft-left, .ft-right { align-items: center; text-align: center; }
+    .ft-center { justify-self: center; }
+  }
+  @media (max-width: 440px) {
+    .pb-right { max-width: 80px; }
+    .pb-artist { display: none; }
+    .pb-time-label { font-size: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- atmospheric background with yellow breathing stars -->
+<div class="bg-atmosphere"></div>
+
+<!-- moving stage spotlights on tKids -->
+<div class="spotlight-stage">
+  <div class="spotlight sl-1"></div>
+  <div class="spotlight sl-2"></div>
+  <div class="spotlight sl-3"></div>
+</div>
+
+<!-- random shooting stars -->
+<div class="shooting-stars-layer" id="shootingStarsLayer"></div>
+
+<div class="stars-layer">
+  <div class="shine-star star-a"><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></div>
+  <div class="shine-star star-b"><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></div>
+  <div class="shine-star star-c"><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></div>
+  <div class="shine-star star-d"><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></div>
+  <div class="shine-star star-e"><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></div>
+  <div class="shine-star star-f"><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></div>
+  <div class="shine-star star-g"><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></div>
+  <div class="shine-star star-h"><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></div>
+</div>
+
+<nav>
+  <a href="#" class="wordmark logo" aria-label="tKids home">
+    <span>t</span>
+    <span class="wm-star"><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></span>
+    <span>Kids</span>
+  </a>
+  <ul>
+    <li><a href="#lineup">lineup</a></li>
+    <li><a href="#">music</a></li>
+    <li><a href="#">shop</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="nav-icon-btn" id="navShare" aria-label="share tkids.tw">
+      <svg viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>
+      <span class="share-tooltip" id="shareTooltip">link copied</span>
+    </button>
+    <a href="#" class="nav-signin">sign in</a>
+    <a href="#" class="nav-donate">
+      <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+      donate
+    </a>
+  </div>
+</nav>
+
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <h1 class="wordmark hero-wordmark">
+    <span>t</span>
+    <span class="wm-star"><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></span>
+    <span>Kids</span>
+  </h1>
+
+  <div class="hero-slogan">
+    <p class="slogan-en">Ignite and shine!</p>
+    <p class="slogan-zh">
+      今夏夜空因我們的星芒而閃亮
+      <span class="zh-sep sep-a">✦</span>
+      <span class="product">Chat</span> 串起了每個晝與夜的對話
+      <span class="zh-sep sep-b">✦</span>
+      <span class="product">Doc</span> 守護著我們最深的秘密與信仰
+      <span class="zh-sep sep-c">✦</span>
+      <span class="product">Task</span> 標記各個約定的想像
+      <span class="zh-sep sep-d">✦</span>
+      <span class="product">File</span> 承載著旅途上所有的重量
+    </p>
+  </div>
+
+  <div class="crowdfund">
+    <div class="cf-row">
+      <div class="cf-raised"><span class="cf-currency">$</span>1,847</div>
+      <div class="cf-goal">crowdfund <b>$3,000</b> and rock the world</div>
+    </div>
+    <div class="cf-bar">
+      <div class="cf-bar-fill"></div>
+    </div>
+    <div class="cf-foot">
+      <div class="cf-meta">
+        <div class="cf-meta-item">
+          <span class="cf-meta-num">128</span>
+          <span>supporters</span>
+        </div>
+        <div class="cf-meta-item">
+          <span>days left</span>
+          <span class="cf-meta-time" id="cf-cd-time">12<span class="sep">:</span>04<span class="sep">:</span>37<span class="sep">:</span>21</span>
+        </div>
+      </div>
+      <a href="#" class="cf-donate">
+        <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+        donate now
+      </a>
+    </div>
+  </div>
+
+  <div class="release-meta">
+    <div class="rm-item">
+      <span class="rm-label">last call</span>
+      <span class="rm-val">06.01.26</span>
+    </div>
+    <div class="rm-item">
+      <span class="rm-label">origin</span>
+      <span class="rm-val">Taipei · Hsinchu · US · JP · EU</span>
+    </div>
+  </div>
+</section>
+
+<!-- ================= MARQUEE ================= -->
+<!-- (player bar + marquee moved into fixed dock at end of body) -->
+
+<!-- ================= FRAME 2 : LINEUP ================= -->
+<section class="frame-two" id="lineup">
+  <div class="stars-layer">
+    <div class="shine-star star-i"><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></div>
+    <div class="shine-star star-j"><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></div>
+    <div class="shine-star star-k"><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></div>
+    <div class="shine-star star-l"><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></div>
+  </div>
+
+  <div class="lineup-head">
+    <div>
+      <div class="section-label">the lineup</div>
+      <h2 class="section-title">three <em>kids</em></h2>
+    </div>
+    <p class="section-mini">
+      Ethan · Alan · Albert
+      <small>點亮宇宙的三個男孩</small>
+    </p>
+  </div>
+
+  <div class="members">
+    <div class="member">
+      <div class="member-bg"></div>
+      <div class="member-aura"></div>
+      <div class="member-content">
+        <div class="member-top">
+          <div class="member-num">01<span class="slash">/03</span></div>
+          <div class="member-star">
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+          </div>
+        </div>
+        <div class="member-bottom">
+          <div class="member-name">ETHAN</div>
+          <div class="member-role">lead vocals</div>
+          <div class="member-role-zh">主唱 · 隊長</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="member">
+      <div class="member-bg"></div>
+      <div class="member-aura"></div>
+      <div class="member-content">
+        <div class="member-top">
+          <div class="member-num">02<span class="slash">/03</span></div>
+          <div class="member-star">
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+          </div>
+        </div>
+        <div class="member-bottom">
+          <div class="member-name">ALAN</div>
+          <div class="member-role">rap · producer</div>
+          <div class="member-role-zh">饒舌 · 製作</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="member">
+      <div class="member-bg"></div>
+      <div class="member-aura"></div>
+      <div class="member-content">
+        <div class="member-top">
+          <div class="member-num">03<span class="slash">/03</span></div>
+          <div class="member-star">
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+          </div>
+        </div>
+        <div class="member-bottom">
+          <div class="member-name">ALBERT</div>
+          <div class="member-role">dance · visuals</div>
+          <div class="member-role-zh">舞蹈 · 視覺</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="ft-left">
+    <div>© 2026 tKids · all rights reserved</div>
+    <div class="fn-tag">點亮宇宙 · ignite the universe</div>
+  </div>
+
+  <a href="#" class="ft-center" aria-label="watch on YouTube">
+    <svg viewBox="0 0 24 24"><path d="M23.498 6.186a2.998 2.998 0 0 0-2.107-2.117C19.503 3.5 12 3.5 12 3.5s-7.503 0-9.391.569A2.998 2.998 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a2.998 2.998 0 0 0 2.107 2.117C4.497 20.5 12 20.5 12 20.5s7.503 0 9.391-.569a2.998 2.998 0 0 0 2.107-2.117C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.546 15.568V8.432L15.818 12l-6.272 3.568z"/></svg>
+    YouTube
+  </a>
+
+  <div class="ft-right">
+    <div class="lang-selector" id="langSelector">
+      <button class="lang-trigger" id="langTrigger" aria-label="select language" aria-haspopup="true">
+        <span class="lang-flag" id="langCurrentFlag">
+          <!-- Taiwan flag (ROC): red field, blue canton with white sun -->
+          <svg viewBox="0 0 60 40" xmlns="http://www.w3.org/2000/svg">
+            <rect width="60" height="40" fill="#fe0000"/>
+            <rect width="30" height="20" fill="#000095"/>
+            <g transform="translate(15 10)" fill="#fff">
+              <circle r="5.5"/>
+              <g fill="#000095"><circle r="3.5"/></g>
+              <g fill="#fff">
+                <circle r="2.5"/>
+              </g>
+            </g>
+          </svg>
+        </span>
+        <span class="lang-name" id="langCurrentName">中文</span>
+        <svg class="lang-caret" viewBox="0 0 16 16"><path d="M4 6l4 4 4-4z"/></svg>
+      </button>
+
+      <div class="lang-menu" role="menu" id="langMenu">
+        <button class="lang-option is-active" role="menuitem" data-lang="zh-TW" data-name="中文">
+          <span class="lang-flag">
+            <svg viewBox="0 0 60 40" xmlns="http://www.w3.org/2000/svg">
+              <rect width="60" height="40" fill="#fe0000"/>
+              <rect width="30" height="20" fill="#000095"/>
+              <circle cx="15" cy="10" r="5.5" fill="#fff"/>
+              <circle cx="15" cy="10" r="3.5" fill="#000095"/>
+              <circle cx="15" cy="10" r="2.5" fill="#fff"/>
+            </svg>
+          </span>
+          <span class="lang-label">中文</span>
+          <span class="lang-code">TW</span>
+          <svg class="lang-check" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+        </button>
+
+        <button class="lang-option" role="menuitem" data-lang="en-US" data-name="English">
+          <span class="lang-flag">
+            <svg viewBox="0 0 60 40" xmlns="http://www.w3.org/2000/svg">
+              <rect width="60" height="40" fill="#b22234"/>
+              <g fill="#fff">
+                <rect y="3.08" width="60" height="3.08"/>
+                <rect y="9.23" width="60" height="3.08"/>
+                <rect y="15.38" width="60" height="3.08"/>
+                <rect y="21.54" width="60" height="3.08"/>
+                <rect y="27.69" width="60" height="3.08"/>
+                <rect y="33.85" width="60" height="3.08"/>
+              </g>
+              <rect width="24" height="21.54" fill="#3c3b6e"/>
+            </svg>
+          </span>
+          <span class="lang-label">English</span>
+          <span class="lang-code">US</span>
+          <svg class="lang-check" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+        </button>
+
+        <button class="lang-option" role="menuitem" data-lang="ja-JP" data-name="日本語">
+          <span class="lang-flag">
+            <svg viewBox="0 0 60 40" xmlns="http://www.w3.org/2000/svg">
+              <rect width="60" height="40" fill="#fff"/>
+              <circle cx="30" cy="20" r="12" fill="#bc002d"/>
+            </svg>
+          </span>
+          <span class="lang-label">日本語</span>
+          <span class="lang-code">JP</span>
+          <svg class="lang-check" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+        </button>
+
+        <button class="lang-option" role="menuitem" data-lang="de-DE" data-name="Deutsch">
+          <span class="lang-flag">
+            <svg viewBox="0 0 60 40" xmlns="http://www.w3.org/2000/svg">
+              <rect width="60" height="13.33" y="0" fill="#000"/>
+              <rect width="60" height="13.33" y="13.33" fill="#dd0000"/>
+              <rect width="60" height="13.33" y="26.67" fill="#ffce00"/>
+            </svg>
+          </span>
+          <span class="lang-label">Deutsch</span>
+          <span class="lang-code">DE</span>
+          <svg class="lang-check" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="ft-version">
+      <span class="v-dot"></span>
+      <span><b>v1.0.0</b> — beta</span>
+    </div>
+    <div class="ft-build">build 2026.04.20 · tkids.tw</div>
+  </div>
+</footer>
+
+<!-- ================= FIXED BOTTOM DOCK ================= -->
+<div class="player-dock">
+  <div class="teaser-banner" id="teaserBanner">
+    <span class="tb-badge">
+      <span class="tb-live-dot"></span>
+      live
+    </span>
+    <div class="tb-message">
+      <strong>tKids' first EP teaser is streaming now</strong>
+      <span class="tb-star">✦</span>
+      <span class="tb-zh">首張 EP 搶先試聽</span>
+    </div>
+    <button class="tb-close" id="tbClose" aria-label="dismiss banner">
+      <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+    </button>
+  </div>
+  <div class="player-bar" id="playerBar">
+    <!-- transport cluster -->
+    <div class="pb-cluster pb-transport">
+      <button class="pb-btn pb-prev" aria-label="previous">
+        <svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zM9.5 12l8.5 6V6z"/></svg>
+      </button>
+      <button class="pb-btn pb-play" id="pbPlay" aria-label="pause">
+        <svg id="pbPlayIcon" viewBox="0 0 24 24"><path d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg>
+      </button>
+      <button class="pb-btn pb-next" aria-label="next">
+        <svg viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6h2v12h-2z"/></svg>
+      </button>
+    </div>
+
+    <div class="pb-divider"></div>
+
+    <!-- secondary cluster -->
+    <div class="pb-cluster pb-secondary">
+      <button class="pb-btn" id="pbShuffle" aria-label="shuffle">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="16 3 21 3 21 8"></polyline>
+          <line x1="4" y1="20" x2="21" y2="3"></line>
+          <polyline points="21 16 21 21 16 21"></polyline>
+          <line x1="15" y1="15" x2="21" y2="21"></line>
+          <line x1="4" y1="4" x2="9" y2="9"></line>
+        </svg>
+      </button>
+      <button class="pb-btn" id="pbLoop" aria-label="loop">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="17 1 21 5 17 9"></polyline>
+          <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
+          <polyline points="7 23 3 19 7 15"></polyline>
+          <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- current time -->
+    <span class="pb-time-label current" id="pbCur">1:24</span>
+
+    <!-- progress bar -->
+    <div class="pb-progress" id="pbProgress">
+      <div class="pb-progress-track">
+        <div class="pb-progress-fill"></div>
+        <div class="pb-progress-dot"></div>
+      </div>
+    </div>
+
+    <!-- total time -->
+    <span class="pb-time-label">3:42</span>
+
+    <!-- mute -->
+    <button class="pb-btn pb-mute" id="pbMute" aria-label="mute">
+      <svg id="pbMuteIcon" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+    </button>
+
+    <!-- thumb + track info on the right -->
+    <div class="pb-right">
+      <div class="pb-thumb">
+        <div class="pb-thumb-star">
+          <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+        </div>
+      </div>
+      <div class="pb-track-info">
+        <span class="pb-artist">tKids</span>
+        <span class="pb-song-title">Ignite!</span>
+      </div>
+    </div>
+  </div>
+  <div class="marquee">
+    <div class="marquee-track">
+      <span>IGNITE!</span><span class="sep">★</span>
+      <span class="lang-zh">點亮宇宙</span><span class="sep">★</span>
+      <span>enflamme l'univers</span><span class="sep">★</span>
+      <span class="lang-ja">宇宙を灯せ</span><span class="sep">★</span>
+      <span>shine through the night</span><span class="sep">★</span>
+      <span>accendi l'universo</span><span class="sep">★</span>
+      <span class="lang-ko">우주를 밝혀라</span><span class="sep">★</span>
+      <span>world tour</span><span class="sep">★</span>
+      <span class="lang-zh">因星芒而閃亮</span><span class="sep">★</span>
+      <span>Entzünde das Universum</span><span class="sep">★</span>
+      <span class="lang-ja">星の光で輝く</span><span class="sep">★</span>
+      <span>enciende el universo</span><span class="sep">★</span>
+      <span>tKids</span><span class="sep">★</span>
+      <span>brille dans la nuit</span><span class="sep">★</span>
+      <span class="lang-ko">월드투어</span><span class="sep">★</span>
+      <span class="lang-zh">世界巡演</span><span class="sep">★</span>
+      <span>tournée mondiale</span><span class="sep">★</span>
+      <span class="lang-ja">ワールドツアー</span><span class="sep">★</span>
+      <span>gira mundial</span><span class="sep">★</span>
+      <span>Welttournee</span><span class="sep">★</span>
+
+      <span>IGNITE!</span><span class="sep">★</span>
+      <span class="lang-zh">點亮宇宙</span><span class="sep">★</span>
+      <span>enflamme l'univers</span><span class="sep">★</span>
+      <span class="lang-ja">宇宙を灯せ</span><span class="sep">★</span>
+      <span>shine through the night</span><span class="sep">★</span>
+      <span>accendi l'universo</span><span class="sep">★</span>
+      <span class="lang-ko">우주를 밝혀라</span><span class="sep">★</span>
+      <span>world tour</span><span class="sep">★</span>
+      <span class="lang-zh">因星芒而閃亮</span><span class="sep">★</span>
+      <span>Entzünde das Universum</span><span class="sep">★</span>
+      <span class="lang-ja">星の光で輝く</span><span class="sep">★</span>
+      <span>enciende el universo</span><span class="sep">★</span>
+      <span>tKids</span><span class="sep">★</span>
+      <span>brille dans la nuit</span><span class="sep">★</span>
+      <span class="lang-ko">월드투어</span><span class="sep">★</span>
+      <span class="lang-zh">世界巡演</span><span class="sep">★</span>
+      <span>tournée mondiale</span><span class="sep">★</span>
+      <span class="lang-ja">ワールドツアー</span><span class="sep">★</span>
+      <span>gira mundial</span><span class="sep">★</span>
+      <span>Welttournee</span><span class="sep">★</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Wait for critical fonts before revealing the hero — prevents FOUT layout shift.
+  // Uses document.fonts.ready but caps wait at 1.2s (fonts-late) so slow/blocked
+  // networks still see content quickly.
+  (function gateOnFonts() {
+    const html = document.documentElement;
+    let settled = false;
+    const reveal = cls => {
+      if (settled) return;
+      settled = true;
+      html.classList.add(cls);
+    };
+    if (document.fonts && document.fonts.ready) {
+      // fonts arrive in time
+      Promise.race([
+        document.fonts.ready.then(() => 'ready'),
+        new Promise(resolve => setTimeout(() => resolve('late'), 1200))
+      ]).then(result => reveal(result === 'ready' ? 'fonts-ready' : 'fonts-late'));
+    } else {
+      // older browsers — just reveal on load
+      window.addEventListener('load', () => reveal('fonts-late'));
+      // belt-and-braces in case load has already fired
+      setTimeout(() => reveal('fonts-late'), 300);
+    }
+  })();
+</script>
+<script>
+  // Toggle play/pause
+  const playBtn = document.getElementById('pbPlay');
+  const playIcon = document.getElementById('pbPlayIcon');
+  const ICON_PLAY = '<path d="M8 5v14l11-7z"/>';
+  const ICON_PAUSE = '<path d="M6 4h4v16H6zM14 4h4v16h-4z"/>';
+  let playing = true;
+  playBtn.addEventListener('click', () => {
+    playing = !playing;
+    playIcon.innerHTML = playing ? ICON_PAUSE : ICON_PLAY;
+    playBtn.setAttribute('aria-label', playing ? 'pause' : 'play');
+  });
+
+  // Toggle mute
+  const muteBtn = document.getElementById('pbMute');
+  const muteIcon = document.getElementById('pbMuteIcon');
+  const playerBar = document.getElementById('playerBar');
+  const ICON_UNMUTED = '<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>';
+  const ICON_MUTED = '<path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zM19 12c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.17v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>';
+  let muted = false;
+  muteBtn.addEventListener('click', () => {
+    muted = !muted;
+    muteBtn.classList.toggle('muted', muted);
+    playerBar.classList.toggle('is-muted', muted);
+    muteIcon.innerHTML = muted ? ICON_MUTED : ICON_UNMUTED;
+    muteBtn.setAttribute('aria-label', muted ? 'unmute' : 'mute');
+  });
+
+  // Shuffle & loop toggles
+  ['pbShuffle', 'pbLoop'].forEach(id => {
+    const btn = document.getElementById(id);
+    btn.addEventListener('click', () => btn.classList.toggle('is-active'));
+  });
+
+  // Teaser banner dismiss
+  const banner = document.getElementById('teaserBanner');
+  const tbClose = document.getElementById('tbClose');
+  tbClose.addEventListener('click', () => {
+    banner.classList.add('is-dismissed');
+  });
+
+  // ================= LANGUAGE SELECTOR =================
+  const langSelector = document.getElementById('langSelector');
+  const langTrigger = document.getElementById('langTrigger');
+  const langMenu = document.getElementById('langMenu');
+  const langCurrentName = document.getElementById('langCurrentName');
+  const langCurrentFlag = document.getElementById('langCurrentFlag');
+  const langOptions = langMenu.querySelectorAll('.lang-option');
+
+  langTrigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    langSelector.classList.toggle('is-open');
+  });
+
+  langOptions.forEach(opt => {
+    opt.addEventListener('click', (e) => {
+      e.stopPropagation();
+      // update active state
+      langOptions.forEach(o => o.classList.remove('is-active'));
+      opt.classList.add('is-active');
+
+      // update trigger display
+      langCurrentName.textContent = opt.dataset.name;
+      const flag = opt.querySelector('.lang-flag svg').cloneNode(true);
+      langCurrentFlag.innerHTML = '';
+      langCurrentFlag.appendChild(flag);
+
+      // close menu
+      langSelector.classList.remove('is-open');
+
+      // note: actual i18n translation would hook in here via opt.dataset.lang
+    });
+  });
+
+  // close menu when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!langSelector.contains(e.target)) {
+      langSelector.classList.remove('is-open');
+    }
+  });
+
+  // close on escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') langSelector.classList.remove('is-open');
+  });
+
+  // ================= SHOOTING STARS =================
+  // Spawns a star falling from top-left toward bottom-right every 3-8s.
+  // Angle is fixed at ~30deg below horizontal (set in CSS), start position varies.
+  const shootingLayer = document.getElementById('shootingStarsLayer');
+
+  function spawnShootingStar() {
+    const star = document.createElement('div');
+    star.className = 'shooting-star';
+
+    const head = document.createElement('div');
+    head.className = 'ss-head';
+    const trail = document.createElement('div');
+    trail.className = 'ss-trail';
+    star.appendChild(trail);
+    star.appendChild(head);
+
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+
+    // Spawn anywhere across the top-left 70% of the viewport,
+    // with some starting above the fold so they appear to "enter" the frame.
+    const startX = Math.random() * vw * 0.7 - 100;
+    const startY = Math.random() * vh * 0.5 - 50;
+    star.style.left = startX + 'px';
+    star.style.top = startY + 'px';
+
+    // Vary travel distance and duration slightly for natural feel
+    const travel = 600 + Math.random() * 400; // 600-1000px along the tilted axis
+    const duration = 1.1 + Math.random() * 0.6; // 1.1-1.7s
+    star.style.setProperty('--travel', travel + 'px');
+    star.style.setProperty('--dur', duration + 's');
+
+    shootingLayer.appendChild(star);
+    star.addEventListener('animationend', () => star.remove());
+  }
+
+  function scheduleNextShootingStar() {
+    const delay = 3000 + Math.random() * 5000;
+    setTimeout(() => {
+      spawnShootingStar();
+      scheduleNextShootingStar();
+    }, delay);
+  }
+  setTimeout(scheduleNextShootingStar, 2000);
+
+  // Live countdown to 06.01.26 — DD:HH:MM:SS inline next to "DAYS LEFT"
+  const target = new Date('2026-06-01T00:00:00').getTime();
+  const cdTime = document.getElementById('cf-cd-time');
+  function tick() {
+    const diff = target - Date.now();
+    if (diff <= 0) {
+      cdTime.innerHTML = '00<span class="sep">:</span>00<span class="sep">:</span>00<span class="sep">:</span>00';
+      return;
+    }
+    const d = Math.floor(diff / 86400000);
+    const h = Math.floor((diff % 86400000) / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
+    const pad = n => String(n).padStart(2, '0');
+    cdTime.innerHTML = `${pad(d)}<span class="sep">:</span>${pad(h)}<span class="sep">:</span>${pad(m)}<span class="sep">:</span>${pad(s)}`;
+  }
+  tick();
+  setInterval(tick, 1000);
+
+  // Share button — native Web Share with clipboard fallback
+  const shareBtn = document.getElementById('navShare');
+  const shareTooltip = document.getElementById('shareTooltip');
+  const SHARE_URL = 'https://tkids.tw';
+  shareBtn.addEventListener('click', async () => {
+    const shareData = {
+      title: 'tKids — Ignite!',
+      text: 'Ignite the universe and shine! 點亮宇宙',
+      url: SHARE_URL
+    };
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else if (navigator.clipboard) {
+        await navigator.clipboard.writeText(SHARE_URL);
+        shareTooltip.textContent = 'link copied';
+        shareTooltip.classList.add('show');
+        setTimeout(() => shareTooltip.classList.remove('show'), 1800);
+      }
+    } catch (err) {
+      // user dismissed share or clipboard failed — silent
+    }
+  });
+</script>
+
+</body>
+</html>

@@ -23,7 +23,15 @@
     "donateNow": "立即贊助",
     "mockTag": "預覽",
     "mockNote": "付款功能即將上線 · 介面為預覽版本",
-    "toastPending": "💛 付款即將上線 — 謝謝你的支持,這是介面預覽"
+    "toastPending": "💛 付款即將上線 — 謝謝你的支持,這是介面預覽",
+    "goalTagline": "募集 {goal},一起撼動世界",
+    "goalTaglineAccent": "點亮宇宙"
+  },
+  "teaser": {
+    "liveLabel": "直播中",
+    "message": "tKids 首張 EP 試聽檔正在播放",
+    "messageAccent": "Ignite! 搶先聽",
+    "dismiss": "關閉橫幅"
   },
   "releaseMeta": {
     "lastCall": "募資截止",

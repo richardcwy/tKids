@@ -24,7 +24,15 @@
     "donateNow": "今すぐ支援",
     "mockTag": "プレビュー",
     "mockNote": "決済機能はまもなく公開 · これは UI プレビューです",
-    "toastPending": "💛 決済はまもなく公開です — 関心ありがとうございます、これはプレビューです"
+    "toastPending": "💛 決済はまもなく公開です — 関心ありがとうございます、これはプレビューです",
+    "goalTagline": "{goal} を集めて世界を揺らそう",
+    "goalTaglineAccent": "點亮宇宙"
+  },
+  "teaser": {
+    "liveLabel": "ライブ",
+    "message": "tKids のファースト EP ティーザーを配信中",
+    "messageAccent": "首張 EP 搶先試聽",
+    "dismiss": "バナーを閉じる"
   },
   "releaseMeta": {
     "lastCall": "締切",

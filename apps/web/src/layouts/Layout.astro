@@ -2,6 +2,7 @@
 import "../styles/global.css";
 import SEO from "../components/SEO.astro";
 import GoogleAnalytics from "../components/GoogleAnalytics.astro";
+import ShootingStars from "../components/ShootingStars.astro";
 import { useI18n } from "../lib/i18n";
 
 interface Props {
@@ -35,8 +36,34 @@ const htmlLang = lang ?? meta.htmlLang;
       noindex={noindex}
     />
     <GoogleAnalytics />
+    <script is:inline>
+      // FOUT gate: reveal hero + nav + player-dock only once fonts have arrived,
+      // with a 1.2s fallback so slow/blocked networks still get to paint.
+      // Adds `.fonts-ready` or `.fonts-late` to <html>. See v1.2.0421.md.
+      (function () {
+        var html = document.documentElement;
+        var settled = false;
+        function reveal(cls) {
+          if (settled) return;
+          settled = true;
+          html.classList.add(cls);
+        }
+        if (document.fonts && document.fonts.ready && window.Promise) {
+          Promise.race([
+            document.fonts.ready.then(function () { return "ready"; }),
+            new Promise(function (r) { setTimeout(function () { r("late"); }, 1200); })
+          ]).then(function (res) {
+            reveal(res === "ready" ? "fonts-ready" : "fonts-late");
+          });
+        } else {
+          window.addEventListener("load", function () { reveal("fonts-late"); });
+          setTimeout(function () { reveal("fonts-late"); }, 300);
+        }
+      })();
+    </script>
   </head>
   <body>
+    <ShootingStars />
     <slot />
   </body>
 </html>
