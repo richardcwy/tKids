@@ -10,6 +10,7 @@ import {
 const { locale, t, allMeta, switchHref } = useI18n(Astro);
 const homeHref = localizedPath("/", locale);
 const loginHref = localizedPath("/login", locale);
+const stargazingHref = localizedPath("/stargazing", locale);
 ---
 
 <nav aria-label="Main">
@@ -17,6 +18,7 @@ const loginHref = localizedPath("/login", locale);
   <ul>
     <li><a href="#lineup">{t("nav.lineup")}</a></li>
     <li><a href="#music">{t("nav.music")}</a></li>
+    <li><a href={stargazingHref} class="nav-stargazing">{t("nav.stargazing")}</a></li>
     <li><a href="#shop">{t("nav.shop")}</a></li>
   </ul>
   <div class="nav-actions">
@@ -111,6 +113,23 @@ const loginHref = localizedPath("/login", locale);
   }
   ul a:hover {
     color: var(--white);
+  }
+  /* Gentle gold pulse on the stargazing link so it reads as the "fun" entry,
+     not another section anchor. Kept subtle — the nav bar is already busy. */
+  .nav-stargazing {
+    color: var(--gold) !important;
+    position: relative;
+  }
+  .nav-stargazing::before {
+    content: "✦";
+    font-size: 8px;
+    margin-right: 6px;
+    opacity: 0.85;
+    animation: navStarPulse 2.8s ease-in-out infinite;
+  }
+  @keyframes navStarPulse {
+    0%, 100% { opacity: 0.5; }
+    50%      { opacity: 1; }
   }
 
   .nav-actions {

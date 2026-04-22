@@ -1,0 +1,691 @@
+---
+// 本日觀星 — the fortune-drawing island.
+//
+// Entire JSON of fortunes is shipped to the client so the draw is instant and
+// offline-friendly. No server roundtrip, no DB. Future: swap this for an oRPC
+// endpoint if we want streaks or per-account rarity balancing.
+//
+// Daily cap: we store { date: "YYYY-MM-DD", fortuneId } under localStorage.
+// If today's date matches, we replay the saved pick. Else we clear and let
+// them draw again.
+
+import { useI18n } from "../lib/i18n";
+import { FORTUNES, TIER_WEIGHTS } from "../data/fortunes";
+
+const { locale, t } = useI18n(Astro);
+
+// Prepare the payload the client script uses. Only pass what's needed for the
+// active locale to keep the bundle tight.
+const clientFortunes = FORTUNES.map((f) => ({
+  id: f.id,
+  tier: f.tier,
+  voice: f.voice,
+  memberId: f.memberId,
+  lucky: {
+    color: f.lucky.color,
+    colorName: f.lucky.colorName[locale],
+    number: f.lucky.number,
+    track: f.lucky.track,
+  },
+  copy: f.copy[locale],
+}));
+
+const tierLabels = {
+  super: t("stargazing.tier.super"),
+  very:  t("stargazing.tier.very"),
+  lucky: t("stargazing.tier.lucky"),
+};
+
+const memberNames: Record<string, string> = {
+  ethan: "ETHAN",
+  alan: "ALAN",
+  albert: "ALBERT",
+  random: t("stargazing.memberRandom"),
+};
+---
+
+<section class="stargazing">
+  <div class="sg-inner">
+    <p class="sg-eyebrow">{t("stargazing.eyebrow")}</p>
+    <h1 class="sg-heading">{t("stargazing.heading")}</h1>
+    <p class="sg-sub">{t("stargazing.sub")}</p>
+
+    <!-- Three face-down cards. On pick, the chosen one flies to center and
+         flips. Non-chosen cards fade out. -->
+    <div class="card-stage" id="cardStage" role="group" aria-label={t("stargazing.drawPrompt")}>
+      <button class="fan-card" data-slot="0" type="button" aria-label={`${t("stargazing.drawPrompt")} 1/3`}>
+        <div class="fc-back"><span class="fc-glyph">✦</span></div>
+      </button>
+      <button class="fan-card" data-slot="1" type="button" aria-label={`${t("stargazing.drawPrompt")} 2/3`}>
+        <div class="fc-back"><span class="fc-glyph">✧</span></div>
+      </button>
+      <button class="fan-card" data-slot="2" type="button" aria-label={`${t("stargazing.drawPrompt")} 3/3`}>
+        <div class="fc-back"><span class="fc-glyph">✦</span></div>
+      </button>
+
+      <!-- The reveal card. Populated by JS after the flip. -->
+      <article class="reveal-card" id="revealCard" aria-live="polite" hidden>
+        <div class="rc-inner">
+          <div class="rc-top">
+            <span class="rc-tier" id="rcTier"></span>
+            <span class="rc-date" id="rcDate"></span>
+          </div>
+          <div class="rc-portrait" id="rcPortrait" aria-hidden="true">
+            <div class="rc-aura" id="rcAura"></div>
+            <div class="rc-initial" id="rcInitial"></div>
+          </div>
+          <h2 class="rc-headline" id="rcHeadline"></h2>
+          <p class="rc-body" id="rcBody"></p>
+          <dl class="rc-meta">
+            <div>
+              <dt>{t("stargazing.luckyColor")}</dt>
+              <dd id="rcColor"></dd>
+            </div>
+            <div>
+              <dt>{t("stargazing.luckyNumber")}</dt>
+              <dd id="rcNumber"></dd>
+            </div>
+            <div>
+              <dt>{t("stargazing.luckyTrack")}</dt>
+              <dd id="rcTrack"></dd>
+            </div>
+            <div>
+              <dt>{t("stargazing.memberWith")}</dt>
+              <dd id="rcMember"></dd>
+            </div>
+          </dl>
+        </div>
+      </article>
+    </div>
+
+    <p class="sg-prompt" id="sgPrompt">{t("stargazing.drawPrompt")}</p>
+
+    <div class="sg-actions" id="sgActions" hidden>
+      <button class="sg-btn sg-btn-primary" type="button" id="sgShare">
+        {t("stargazing.shareLabel")}
+      </button>
+      <p class="sg-comeback">{t("stargazing.comeBack")}</p>
+    </div>
+
+    <span class="sg-toast" id="sgToast">{t("stargazing.shareCopied")}</span>
+  </div>
+</section>
+
+<script
+  is:inline
+  type="application/json"
+  id="fortunePayload"
+  set:html={JSON.stringify({
+    fortunes: clientFortunes,
+    tierLabels,
+    memberNames,
+    shareText: t("stargazing.shareText"),
+    shareTitle: "tKids · 本日觀星",
+  })}
+/>
+
+<script>
+  type Tier = "super" | "very" | "lucky";
+  type Voice = "playful" | "mystical";
+  type MemberId = "ethan" | "alan" | "albert" | "random";
+  type ClientFortune = {
+    id: string;
+    tier: Tier;
+    voice: Voice;
+    memberId: MemberId;
+    lucky: { color: string; colorName: string; number: number; track: string };
+    copy: { headline: string; body: string };
+  };
+  type Payload = {
+    fortunes: ClientFortune[];
+    tierLabels: Record<Tier, string>;
+    memberNames: Record<string, string>;
+    shareText: string;
+    shareTitle: string;
+  };
+
+  const payloadEl = document.getElementById("fortunePayload");
+  if (payloadEl) {
+    const payload: Payload = JSON.parse(payloadEl.textContent || "{}");
+    const FORTUNES = payload.fortunes;
+    const STORAGE_KEY = "tkids:stargazing:v1";
+    const TIER_WEIGHTS: Record<Tier, number> = { super: 0.10, very: 0.40, lucky: 0.50 };
+
+    const stage = document.getElementById("cardStage");
+    const cards = Array.from(document.querySelectorAll<HTMLButtonElement>(".fan-card"));
+    const reveal = document.getElementById("revealCard");
+    const prompt = document.getElementById("sgPrompt");
+    const actions = document.getElementById("sgActions");
+    const shareBtn = document.getElementById("sgShare");
+    const toast = document.getElementById("sgToast");
+
+    function todayKey(d = new Date()): string {
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${y}-${m}-${day}`;
+    }
+
+    function drawFortune(): ClientFortune {
+      const r = Math.random();
+      let tier: Tier;
+      if (r < TIER_WEIGHTS.super) tier = "super";
+      else if (r < TIER_WEIGHTS.super + TIER_WEIGHTS.very) tier = "very";
+      else tier = "lucky";
+      const pool = FORTUNES.filter((f) => f.tier === tier);
+      return pool[Math.floor(Math.random() * pool.length)] || pool[0];
+    }
+
+    function readSaved(): { date: string; id: string } | null {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        if (typeof parsed?.date === "string" && typeof parsed?.id === "string") return parsed;
+      } catch {
+        /* malformed — treat as no save */
+      }
+      return null;
+    }
+
+    function save(id: string) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({ date: todayKey(), id }));
+      } catch {
+        /* storage blocked — soft-fail, the draw still shows */
+      }
+    }
+
+    function renderFortune(f: ClientFortune) {
+      const setText = (id: string, text: string) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = text;
+      };
+      setText("rcTier", payload.tierLabels[f.tier]);
+      setText("rcHeadline", f.copy.headline);
+      setText("rcBody", f.copy.body);
+      setText("rcColor", f.lucky.colorName);
+      setText("rcNumber", String(f.lucky.number));
+      setText("rcTrack", f.lucky.track);
+      setText("rcMember", payload.memberNames[f.memberId] || payload.memberNames.random);
+
+      const date = document.getElementById("rcDate");
+      if (date) date.textContent = todayKey();
+
+      const aura = document.getElementById("rcAura");
+      if (aura) aura.style.background = `radial-gradient(circle, ${f.lucky.color} 0%, transparent 70%)`;
+
+      const portrait = document.getElementById("rcPortrait");
+      if (portrait) portrait.setAttribute("data-member", f.memberId);
+
+      const initial = document.getElementById("rcInitial");
+      if (initial) {
+        const name = payload.memberNames[f.memberId];
+        initial.textContent = f.memberId === "random" ? "✦" : (name ? name.charAt(0) : "✦");
+      }
+
+      if (reveal) {
+        reveal.setAttribute("data-tier", f.tier);
+        reveal.setAttribute("data-voice", f.voice);
+      }
+
+      // GA event — fire and forget.
+      try {
+        (window as any).gtag?.("event", "stargazing_draw", {
+          tier: f.tier,
+          fortune_id: f.id,
+          voice: f.voice,
+          member: f.memberId,
+        });
+      } catch { /* no-op */ }
+    }
+
+    function showReveal(replay: boolean) {
+      if (!reveal || !stage || !prompt || !actions) return;
+      stage.classList.add("picked");
+      reveal.hidden = false;
+      // next frame so the transition catches
+      requestAnimationFrame(() => reveal.classList.add("shown"));
+      prompt.hidden = true;
+      actions.hidden = false;
+      if (replay) actions.classList.add("replay");
+    }
+
+    function handlePick(idx: number) {
+      if (!stage || stage.classList.contains("picked")) return;
+      cards.forEach((c) => c.setAttribute("disabled", "true"));
+      stage.classList.add("picking");
+      cards[idx]?.classList.add("chosen");
+      cards.forEach((c, i) => { if (i !== idx) c.classList.add("dimmed"); });
+
+      const f = drawFortune();
+      save(f.id);
+      renderFortune(f);
+
+      // Wait for the lift+flip animation, then reveal.
+      window.setTimeout(() => showReveal(false), 900);
+    }
+
+    async function handleShare() {
+      if (!shareBtn) return;
+      const savedId = readSaved()?.id;
+      const f = FORTUNES.find((x) => x.id === savedId);
+      const tierLabel = f ? payload.tierLabels[f.tier] : "";
+      const text = payload.shareText.replace("{tier}", tierLabel);
+      const url = window.location.href.split("?")[0].split("#")[0];
+      try {
+        if (navigator.share) {
+          await navigator.share({ title: payload.shareTitle, text, url });
+          return;
+        }
+      } catch { /* user dismissed */ return; }
+
+      // Fallback: copy URL to clipboard with attribution text appended.
+      try {
+        await navigator.clipboard.writeText(`${text} ${url}`);
+        if (toast) {
+          toast.classList.add("show");
+          window.setTimeout(() => toast.classList.remove("show"), 1800);
+        }
+      } catch {
+        // Final fallback: prompt with the URL.
+        window.prompt(text, url);
+      }
+    }
+
+    // Wire up.
+    cards.forEach((card, i) => {
+      card.addEventListener("click", () => handlePick(i));
+    });
+    shareBtn?.addEventListener("click", handleShare);
+
+    // Replay saved draw from today.
+    const saved = readSaved();
+    if (saved && saved.date === todayKey()) {
+      const f = FORTUNES.find((x) => x.id === saved.id);
+      if (f) {
+        renderFortune(f);
+        // Skip the animation; mark all cards as dimmed and reveal immediately.
+        cards.forEach((c) => { c.classList.add("dimmed"); c.setAttribute("disabled", "true"); });
+        if (stage) { stage.classList.add("picked"); stage.classList.add("replaying"); }
+        showReveal(true);
+      }
+    }
+  }
+</script>
+
+<style>
+  .stargazing {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    padding: 140px 24px 120px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+  }
+  .sg-inner {
+    width: 100%;
+    max-width: 780px;
+    text-align: center;
+  }
+  .sg-eyebrow {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin: 0 0 16px;
+    opacity: 0.9;
+  }
+  .sg-heading {
+    font-family: "Unbounded", sans-serif;
+    font-weight: 800;
+    font-size: clamp(28px, 5vw, 52px);
+    line-height: 1.05;
+    color: var(--white);
+    letter-spacing: -0.02em;
+    margin: 0 0 14px;
+  }
+  .sg-sub {
+    font-family: "Instrument Serif", serif;
+    font-style: italic;
+    font-size: 17px;
+    color: var(--ice);
+    opacity: 0.85;
+    margin: 0 auto 60px;
+    max-width: 480px;
+  }
+
+  /* ─── card stage ──────────────────────────────────────────────── */
+  .card-stage {
+    position: relative;
+    width: 100%;
+    height: 420px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    perspective: 1600px;
+  }
+  .fan-card {
+    position: absolute;
+    width: 200px;
+    height: 300px;
+    background: transparent;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    transition:
+      transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1),
+      opacity 0.6s ease;
+    transform-style: preserve-3d;
+  }
+  .fan-card[data-slot="0"] { transform: translateX(-180px) rotate(-12deg); }
+  .fan-card[data-slot="1"] { transform: translateY(-12px) rotate(0deg); z-index: 2; }
+  .fan-card[data-slot="2"] { transform: translateX(180px) rotate(12deg); }
+  .fan-card:not([disabled]):hover {
+    transform: translateY(-24px) rotate(0deg) scale(1.04);
+    z-index: 5;
+  }
+  .fan-card[data-slot="1"]:not([disabled]):hover { transform: translateY(-32px) scale(1.05); }
+  .fc-back {
+    width: 100%;
+    height: 100%;
+    border-radius: 16px;
+    background:
+      radial-gradient(ellipse 80% 60% at 30% 20%, rgba(46, 95, 255, 0.55) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 70% at 80% 80%, rgba(17, 34, 128, 0.8) 0%, transparent 65%),
+      linear-gradient(165deg, #1a2a80 0%, var(--midnight) 100%);
+    border: 1px solid rgba(255, 216, 74, 0.35);
+    box-shadow:
+      0 12px 34px rgba(0, 0, 0, 0.45),
+      inset 0 0 60px rgba(255, 216, 74, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .fc-back::after {
+    content: "";
+    position: absolute;
+    inset: 8px;
+    border-radius: 12px;
+    border: 1px solid rgba(184, 204, 255, 0.2);
+    pointer-events: none;
+  }
+  .fc-glyph {
+    font-size: 48px;
+    color: var(--gold);
+    text-shadow:
+      0 0 20px rgba(255, 216, 74, 0.6),
+      0 0 40px rgba(255, 216, 74, 0.3);
+    animation: glyphBreathe 3s ease-in-out infinite;
+  }
+  @keyframes glyphBreathe {
+    0%, 100% { opacity: 0.7; transform: scale(1); }
+    50%      { opacity: 1;   transform: scale(1.08); }
+  }
+
+  .card-stage.picking .fan-card.chosen {
+    transform: translateY(-40px) rotate(0deg) scale(1.06);
+    z-index: 10;
+  }
+  .card-stage.picking .fan-card.dimmed,
+  .card-stage.replaying .fan-card.dimmed {
+    opacity: 0;
+    transform: translateY(40px) scale(0.85);
+    pointer-events: none;
+  }
+  .card-stage.picked .fan-card.chosen {
+    opacity: 0;
+    transform: translateY(-80px) scale(0.9) rotateY(90deg);
+    transition-delay: 0.2s;
+  }
+  .card-stage.replaying .fan-card.chosen {
+    opacity: 0;
+  }
+
+  /* ─── reveal card ─────────────────────────────────────────────── */
+  .reveal-card {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: scale(0.9) rotateY(-90deg);
+    transition:
+      opacity 0.6s ease,
+      transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+    pointer-events: none;
+  }
+  .reveal-card.shown {
+    opacity: 1;
+    transform: scale(1) rotateY(0deg);
+    pointer-events: auto;
+  }
+  .rc-inner {
+    width: min(460px, 100%);
+    background:
+      radial-gradient(ellipse 80% 60% at 30% 20%, rgba(46, 95, 255, 0.45) 0%, transparent 60%),
+      linear-gradient(165deg, #1a2a80 0%, var(--midnight) 100%);
+    border: 1px solid rgba(255, 216, 74, 0.4);
+    border-radius: 20px;
+    padding: 28px 28px 32px;
+    box-shadow:
+      0 30px 80px rgba(0, 0, 0, 0.5),
+      0 0 0 1px rgba(184, 204, 255, 0.08),
+      inset 0 0 80px rgba(255, 216, 74, 0.06);
+    text-align: left;
+  }
+  .reveal-card[data-tier="super"] .rc-inner {
+    border-color: rgba(255, 216, 74, 0.7);
+    box-shadow:
+      0 30px 80px rgba(0, 0, 0, 0.5),
+      0 0 60px rgba(255, 216, 74, 0.25),
+      inset 0 0 80px rgba(255, 216, 74, 0.12);
+  }
+  .rc-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+  }
+  .rc-tier {
+    font-family: "Unbounded", sans-serif;
+    font-weight: 800;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.24em;
+    color: var(--gold);
+    padding: 6px 12px;
+    border: 1px solid rgba(255, 216, 74, 0.5);
+    border-radius: 999px;
+  }
+  .reveal-card[data-tier="super"] .rc-tier {
+    background: var(--gold);
+    color: var(--midnight);
+    border-color: var(--gold);
+    box-shadow: 0 0 20px rgba(255, 216, 74, 0.6);
+  }
+  .rc-date {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--ice);
+    opacity: 0.6;
+  }
+  .rc-portrait {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin: 4px auto 22px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: linear-gradient(165deg, #1a2a80 0%, var(--midnight) 100%);
+    border: 1px solid rgba(255, 216, 74, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .rc-aura {
+    position: absolute;
+    inset: -20%;
+    border-radius: 50%;
+    filter: blur(28px);
+    opacity: 0.75;
+    background: radial-gradient(circle, var(--gold) 0%, transparent 70%);
+  }
+  .rc-initial {
+    position: relative;
+    z-index: 2;
+    font-family: "Unbounded", sans-serif;
+    font-weight: 800;
+    font-size: 56px;
+    color: var(--white);
+    letter-spacing: -0.06em;
+    line-height: 1;
+    text-shadow: 0 4px 18px rgba(0, 0, 0, 0.5);
+  }
+  .rc-headline {
+    font-family: "Unbounded", sans-serif;
+    font-weight: 700;
+    font-size: clamp(18px, 2.8vw, 24px);
+    line-height: 1.2;
+    color: var(--white);
+    letter-spacing: -0.01em;
+    margin: 0 0 12px;
+    text-align: center;
+  }
+  .rc-body {
+    font-family: "Instrument Serif", serif;
+    font-style: italic;
+    font-size: 16px;
+    line-height: 1.55;
+    color: var(--ice);
+    text-align: center;
+    margin: 0 0 22px;
+    opacity: 0.95;
+  }
+  .rc-meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 18px;
+    margin: 0;
+    padding: 16px 0 0;
+    border-top: 1px solid rgba(184, 204, 255, 0.12);
+  }
+  .rc-meta > div { margin: 0; }
+  .rc-meta dt {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--ice);
+    opacity: 0.6;
+    margin-bottom: 4px;
+  }
+  .rc-meta dd {
+    font-family: "Noto Sans TC", "Inter", sans-serif;
+    font-size: 14px;
+    color: var(--white);
+    margin: 0;
+  }
+
+  /* ─── prompt + actions ────────────────────────────────────────── */
+  .sg-prompt {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--ice);
+    opacity: 0.7;
+    margin: 32px 0 0;
+    animation: promptFloat 2.4s ease-in-out infinite;
+  }
+  @keyframes promptFloat {
+    0%, 100% { transform: translateY(0); opacity: 0.7; }
+    50%      { transform: translateY(-3px); opacity: 1; }
+  }
+
+  .sg-actions {
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+  .sg-btn {
+    font-family: "Unbounded", sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    padding: 12px 24px;
+    border-radius: 999px;
+    border: 0;
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+  .sg-btn-primary {
+    background: var(--gold);
+    color: var(--midnight);
+    box-shadow: 0 0 18px rgba(255, 216, 74, 0.3);
+  }
+  .sg-btn-primary:hover {
+    background: var(--gold-warm);
+    box-shadow: 0 0 30px rgba(255, 216, 74, 0.6);
+    transform: translateY(-1px);
+  }
+  .sg-comeback {
+    font-family: "Instrument Serif", serif;
+    font-style: italic;
+    font-size: 13px;
+    color: var(--ice);
+    opacity: 0.65;
+    margin: 4px 0 0;
+  }
+
+  .sg-toast {
+    display: inline-block;
+    position: fixed;
+    bottom: 40px;
+    left: 50%;
+    transform: translate(-50%, 10px);
+    padding: 10px 18px;
+    background: var(--white);
+    color: var(--midnight);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    border-radius: 999px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s, transform 0.25s;
+    z-index: 200;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  }
+  .sg-toast.show {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+
+  @media (max-width: 640px) {
+    .stargazing { padding: 120px 16px 100px; }
+    .card-stage { height: 360px; }
+    .fan-card { width: 150px; height: 225px; }
+    .fan-card[data-slot="0"] { transform: translateX(-130px) rotate(-12deg); }
+    .fan-card[data-slot="2"] { transform: translateX(130px) rotate(12deg); }
+    .fc-glyph { font-size: 36px; }
+    .rc-inner { padding: 22px 20px 26px; }
+    .rc-portrait { width: 100px; height: 100px; }
+    .rc-initial { font-size: 44px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fan-card, .reveal-card, .fc-glyph, .sg-prompt { transition: none !important; animation: none !important; }
+  }
+</style>

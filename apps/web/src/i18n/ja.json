@@ -9,7 +9,34 @@
     "shareLabel": "tkids.tw をシェア",
     "shareTooltip": "リンクをコピーしました",
     "shareTextTitle": "tKids — Ignite!",
-    "shareTextBody": "宇宙を照らせ、輝け! 點亮宇宙"
+    "shareTextBody": "宇宙を照らせ、輝け! 點亮宇宙",
+    "stargazing": "今日の星占い"
+  },
+  "stargazing": {
+    "seoTitle": "tKids · 今日の星占い",
+    "seoDescription": "1日1枚、星のカードを引く。今日、宇宙は何を用意したのかな。",
+    "eyebrow": "今日の星占い · 本日觀星",
+    "heading": "今日、星が君のために用意したもの",
+    "sub": "カードを1枚引いて、宇宙の言葉を聞こう。1日1回まで。",
+    "drawPrompt": "カードを引く",
+    "drawing": "抽選中…",
+    "redraw": "もう一度見る",
+    "tier": {
+      "super": "超ラッキー",
+      "very": "大ラッキー",
+      "lucky": "ラッキー"
+    },
+    "luckyColor": "ラッキーカラー",
+    "luckyNumber": "ラッキーナンバー",
+    "luckyTrack": "今日の一曲",
+    "memberWith": "今日の相棒",
+    "memberRandom": "三人みんな",
+    "comeBack": "明日の同じ時間、星はまた開くよ。",
+    "shareLabel": "運勢をシェア",
+    "shareCopied": "リンクをコピーしました",
+    "shareText": "今日は「{tier}」を引いた — tKids 今日の星占い。きみは?",
+    "backHome": "ホームに戻る",
+    "intro": "超ラッキーでも、大ラッキーでも、ラッキーでも — 今日は笑顔になる理由がある。"
   },
   "hero": {
     "sloganPrimary": "Ignite and shine!",

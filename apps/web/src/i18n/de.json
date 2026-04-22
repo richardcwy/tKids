@@ -9,7 +9,34 @@
     "shareLabel": "tkids.tw teilen",
     "shareTooltip": "Link kopiert",
     "shareTextTitle": "tKids — Ignite!",
-    "shareTextBody": "Entzünde das Universum und leuchte! 點亮宇宙"
+    "shareTextBody": "Entzünde das Universum und leuchte! 點亮宇宙",
+    "stargazing": "Sterne des Tages"
+  },
+  "stargazing": {
+    "seoTitle": "tKids · Sterne des Tages",
+    "seoDescription": "Eine tägliche Sternkarte — schau, was das Universum heute für dich bereithält.",
+    "eyebrow": "Sterne des Tages · 本日觀星",
+    "heading": "Was die Sterne heute für dich ausgerichtet haben",
+    "sub": "Zieh eine Karte. Hör, was das Universum zu sagen hat. Einmal pro Tag.",
+    "drawPrompt": "Karte ziehen",
+    "drawing": "Ziehe…",
+    "redraw": "nochmal ansehen",
+    "tier": {
+      "super": "super glücklich",
+      "very": "sehr glücklich",
+      "lucky": "glücklich"
+    },
+    "luckyColor": "Glücksfarbe",
+    "luckyNumber": "Glückszahl",
+    "luckyTrack": "Song des Tages",
+    "memberWith": "heutiger Begleiter",
+    "memberRandom": "alle drei",
+    "comeBack": "Morgen zur gleichen Zeit — die Sterne öffnen sich wieder.",
+    "shareLabel": "Glück teilen",
+    "shareCopied": "Link kopiert",
+    "shareText": "Ich habe heute „{tier}\" gezogen — tKids · Sterne des Tages. Und du?",
+    "backHome": "zur Startseite",
+    "intro": "Super glücklich, sehr glücklich oder glücklich — heute gibt es einen Grund zu lächeln."
   },
   "hero": {
     "sloganPrimary": "Ignite and shine!",

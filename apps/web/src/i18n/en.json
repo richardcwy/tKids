@@ -8,7 +8,34 @@
     "shareLabel": "share tkids.tw",
     "shareTooltip": "link copied",
     "shareTextTitle": "tKids — Ignite!",
-    "shareTextBody": "Ignite the universe and shine! 點亮宇宙"
+    "shareTextBody": "Ignite the universe and shine! 點亮宇宙",
+    "stargazing": "today's stars"
+  },
+  "stargazing": {
+    "seoTitle": "tKids · Today's Stars",
+    "seoDescription": "A daily fortune card — come see what the universe cooked up for you today.",
+    "eyebrow": "today's stars · 本日觀星",
+    "heading": "What the stars lined up for you today",
+    "sub": "Pick a card. See what the universe has to say. Once per day.",
+    "drawPrompt": "pick a card",
+    "drawing": "drawing…",
+    "redraw": "look again",
+    "tier": {
+      "super": "super lucky",
+      "very": "very lucky",
+      "lucky": "lucky"
+    },
+    "luckyColor": "lucky color",
+    "luckyNumber": "lucky number",
+    "luckyTrack": "track of the day",
+    "memberWith": "today's companion",
+    "memberRandom": "all three of them",
+    "comeBack": "Same time tomorrow — the stars open again.",
+    "shareLabel": "share your fortune",
+    "shareCopied": "link copied",
+    "shareText": "I pulled \"{tier}\" today on tKids · Today's Stars. What did you get?",
+    "backHome": "back to home",
+    "intro": "Super lucky, very lucky, or lucky — either way, today has a reason to smile."
   },
   "hero": {
     "sloganPrimary": "Ignite and shine!",

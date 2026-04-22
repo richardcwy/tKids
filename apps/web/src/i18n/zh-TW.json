@@ -8,7 +8,34 @@
     "shareLabel": "分享 tkids.tw",
     "shareTooltip": "已複製連結",
     "shareTextTitle": "tKids — Ignite!",
-    "shareTextBody": "點亮宇宙,閃耀吧! Ignite and shine!"
+    "shareTextBody": "點亮宇宙,閃耀吧! Ignite and shine!",
+    "stargazing": "本日觀星"
+  },
+  "stargazing": {
+    "seoTitle": "tKids · 本日觀星",
+    "seoDescription": "每天為你抽一張星星卡,看看今天宇宙準備了什麼。",
+    "eyebrow": "本日觀星 · Today's Stars",
+    "heading": "今天,星星準備了什麼",
+    "sub": "抽一張卡,看看宇宙想對你說什麼。每天一次。",
+    "drawPrompt": "點一張卡",
+    "drawing": "抽卡中⋯⋯",
+    "redraw": "再看一次",
+    "tier": {
+      "super": "超級幸運",
+      "very": "很幸運",
+      "lucky": "幸運"
+    },
+    "luckyColor": "幸運色",
+    "luckyNumber": "幸運數字",
+    "luckyTrack": "今日主題曲",
+    "memberWith": "今日陪伴",
+    "memberRandom": "三位都在",
+    "comeBack": "明天同一時間,星星會再開一次。",
+    "shareLabel": "分享你的運勢",
+    "shareCopied": "已複製連結",
+    "shareText": "我今天抽到「{tier}」— tKids 本日觀星。你呢?",
+    "backHome": "回首頁",
+    "intro": "不管是超級幸運、很幸運,還是幸運,今天都會是一個可以微笑的日子。"
   },
   "hero": {
     "sloganPrimary": "Ignite and shine!",

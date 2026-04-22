@@ -1,0 +1,21 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import AtmosphereBg from "../../components/AtmosphereBg.astro";
+import Nav from "../../components/Nav.astro";
+import Footer from "../../components/Footer.astro";
+import FortuneDraw from "../../components/FortuneDraw.astro";
+import { useI18n } from "../../lib/i18n";
+
+const { t } = useI18n(Astro);
+---
+
+<Layout
+  title={t("stargazing.seoTitle")}
+  description={t("stargazing.seoDescription")}
+  type="website"
+>
+  <AtmosphereBg />
+  <Nav />
+  <FortuneDraw />
+  <Footer />
+</Layout>
