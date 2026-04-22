@@ -60,7 +60,9 @@
   .shooting-stars-layer {
     position: fixed;
     inset: 0;
-    z-index: 0;
+    /* Must beat AtmosphereBg's z:0 layers, which come later in DOM (inside the
+       page <slot/>) and otherwise paint over this fixed layer. */
+    z-index: 1;
     pointer-events: none;
     overflow: hidden;
   }
