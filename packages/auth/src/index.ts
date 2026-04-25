@@ -25,12 +25,12 @@ export function createAuth() {
       additionalFields: {
         birthYear: {
           type: "number",
-          required: true,
+          required: false,
           input: true,
         },
         over13Consent: {
           type: "boolean",
-          required: true,
+          required: false,
           input: true,
         },
         source: {
@@ -49,38 +49,58 @@ export function createAuth() {
           required: false,
           input: false,
         },
+        onboardedAt: {
+          type: "date",
+          required: false,
+          input: false,
+        },
       },
     },
     databaseHooks: {
       user: {
         create: {
           before: async (user) => {
-            // additionalFields extend the base user type at runtime
             const u = user as typeof user & {
-              birthYear?: number;
+              birthYear?: number | null;
               over13Consent?: boolean;
             };
 
-            if (u.over13Consent !== true) {
-              throw new Error(
-                "CONSENT_REQUIRED: You must confirm you are 13 or older to subscribe.",
-              );
+            // Form signup carries explicit consent + birthYear inline. When
+            // both are present we validate hard: under-13 is rejected, missing
+            // consent is rejected, and the user is marked onboarded.
+            //
+            // OAuth signup carries neither field. We let creation succeed with
+            // onboardedAt = null; the onboarding flow (v1.3.1+) collects age +
+            // consent and flips the flag. Action endpoints check onboardedAt
+            // before allowing identity-required behavior (donate/comment/etc).
+            const hasFormFields =
+              u.over13Consent !== undefined && u.birthYear !== undefined;
+
+            if (hasFormFields) {
+              if (u.over13Consent !== true) {
+                throw new Error(
+                  "CONSENT_REQUIRED: You must confirm you are 13 or older to subscribe.",
+                );
+              }
+              const currentYear = new Date().getUTCFullYear();
+              const age = currentYear - Number(u.birthYear);
+              if (!Number.isFinite(age) || age < 13) {
+                throw new Error(
+                  "UNDER_AGE: You must be 13 or older to subscribe.",
+                );
+              }
+              const now = new Date();
+              return {
+                data: {
+                  ...u,
+                  subscribedAt: now,
+                  onboardedAt: now,
+                },
+              };
             }
 
-            const currentYear = new Date().getUTCFullYear();
-            const age = currentYear - Number(u.birthYear);
-            if (!Number.isFinite(age) || age < 13) {
-              throw new Error(
-                "UNDER_AGE: You must be 13 or older to subscribe.",
-              );
-            }
-
-            return {
-              data: {
-                ...u,
-                subscribedAt: new Date(),
-              },
-            };
+            // OAuth path: no form fields, soft-create as pending-onboarding.
+            return { data: u };
           },
         },
       },
@@ -95,12 +115,24 @@ export function createAuth() {
         httpOnly: true,
       },
     },
+    socialProviders:
+      env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET
+        ? {
+            google: {
+              clientId: env.GOOGLE_CLIENT_ID,
+              clientSecret: env.GOOGLE_CLIENT_SECRET,
+              prompt: "select_account",
+            },
+          }
+        : undefined,
     plugins: [
       polar({
         client: polarClient,
-        createCustomerOnSignUp: true,
+        // Defer Polar customer creation until onboarding completes (Phase B).
+        // OAuth users land with onboardedAt = null and shouldn't yet have a
+        // Polar customer record minted on their behalf.
+        createCustomerOnSignUp: false,
         enableCustomerPortal: true,
-        // Checkout products deferred to Phase 2 (donations/patrons).
         use: [],
       }),
     ],

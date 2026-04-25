@@ -37,6 +37,12 @@ function buildEnv() {
       // Cloudflare Turnstile (bot protection on signup)
       TURNSTILE_SECRET_KEY: z.string().default(""),
 
+      // Google OAuth (v1.3.x). Both default empty so dev environments without
+      // Google credentials don't break — the auth config conditionally enables
+      // the provider only when both values are present.
+      GOOGLE_CLIENT_ID: z.string().default(""),
+      GOOGLE_CLIENT_SECRET: z.string().default(""),
+
       // Observability sinks — both optional. If neither is set, errors
       // only go to console. Wire one or both as needed.
       SENTRY_DSN: z.string().default(""),

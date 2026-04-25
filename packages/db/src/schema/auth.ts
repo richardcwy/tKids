@@ -2,9 +2,12 @@ import { relations, sql } from "drizzle-orm";
 import { sqliteTable, text, integer, index } from "drizzle-orm/sqlite-core";
 
 // Extended by Better-Auth `user.additionalFields` config in packages/auth:
-// - birthYear, over13Consent (required on signup — COPPA/consent gate)
+// - birthYear, over13Consent (form signup carries these inline; OAuth signup
+//   leaves them null/false until onboarding completes — see onboardedAt)
 // - source (which form fired: hero | ep | footer)
 // - subscribedAt, unsubscribedAt (mailing-list lifecycle)
+// - onboardedAt (null = needs onboarding; set on form-signup create or via
+//   profile.completeOnboarding for OAuth users)
 export const user = sqliteTable("user", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
@@ -19,14 +22,31 @@ export const user = sqliteTable("user", {
     .$onUpdate(() => /* @__PURE__ */ new Date())
     .notNull(),
 
-  // --- additionalFields (wired via Better-Auth config) ---
-  birthYear: integer("birth_year").notNull(),
+  birthYear: integer("birth_year"),
   over13Consent: integer("over_13_consent", { mode: "boolean" })
     .default(false)
     .notNull(),
   source: text("source").default("unknown"),
   subscribedAt: integer("subscribed_at", { mode: "timestamp_ms" }),
   unsubscribedAt: integer("unsubscribed_at", { mode: "timestamp_ms" }),
+
+  onboardedAt: integer("onboarded_at", { mode: "timestamp_ms" }),
+  handle: text("handle").unique(),
+  displayName: text("display_name"),
+  locale: text("locale", { enum: ["en", "zh-TW", "ja", "de"] })
+    .default("en")
+    .notNull(),
+  bio: text("bio"),
+  avatarStyle: text("avatar_style", {
+    enum: ["shapes", "rings", "bauhaus", "beam", "marble"],
+  })
+    .default("shapes")
+    .notNull(),
+  avatarSeed: text("avatar_seed"),
+  emailNotifications: integer("email_notifications", { mode: "boolean" })
+    .default(true)
+    .notNull(),
+  deletedAt: integer("deleted_at", { mode: "timestamp_ms" }),
 });
 
 export const session = sqliteTable(

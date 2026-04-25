@@ -34,6 +34,9 @@ export const subscribeAudit = sqliteTable(
         "email_queued",
         "email_sent",
         "db_error",
+        "oauth_signup",
+        "onboarding_completed",
+        "account_deleted",
       ],
     }).notNull(),
     source: text("source"), // 'hero' | 'ep' | 'footer' | form path
@@ -64,5 +67,74 @@ export const rateLimits = sqliteTable(
   (table) => [
     primaryKey({ columns: [table.ipHash, table.windowStart] }),
     index("rate_limits_window_idx").on(table.windowStart),
+  ],
+);
+
+// Shipping addresses — schema lands now, surfaced when first merch product exists.
+// Multiple per user; isDefault picks the one prefilled at checkout.
+export const shippingAddress = sqliteTable(
+  "shipping_address",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id").notNull(),
+    recipient: text("recipient").notNull(),
+    line1: text("line1").notNull(),
+    line2: text("line2"),
+    city: text("city").notNull(),
+    region: text("region"),
+    postal: text("postal"),
+    country: text("country").notNull(), // ISO-3166-1 alpha-2
+    phone: text("phone"),
+    isDefault: integer("is_default", { mode: "boolean" })
+      .default(false)
+      .notNull(),
+    createdAt: integer("created_at", { mode: "timestamp_ms" })
+      .default(sql`(cast(unixepoch('subsecond') * 1000 as integer))`)
+      .notNull(),
+    updatedAt: integer("updated_at", { mode: "timestamp_ms" })
+      .default(sql`(cast(unixepoch('subsecond') * 1000 as integer))`)
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
+  },
+  (table) => [index("shipping_address_user_idx").on(table.userId)],
+);
+
+// Comments — schema lands now, UI ships in a future v1.3.x.
+// Held in 'pending' until moderator approves. 13-17 may read but never write
+// (server-side enforced when the comment-write procedure ships).
+export const comment = sqliteTable(
+  "comment",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id").notNull(),
+    targetType: text("target_type", {
+      enum: ["song", "journal", "page"],
+    }).notNull(),
+    targetId: text("target_id").notNull(),
+    body: text("body").notNull(),
+    status: text("status", {
+      enum: ["pending", "approved", "rejected", "reported"],
+    })
+      .default("pending")
+      .notNull(),
+    moderatedBy: text("moderated_by"),
+    moderatedAt: integer("moderated_at", { mode: "timestamp_ms" }),
+    createdAt: integer("created_at", { mode: "timestamp_ms" })
+      .default(sql`(cast(unixepoch('subsecond') * 1000 as integer))`)
+      .notNull(),
+    updatedAt: integer("updated_at", { mode: "timestamp_ms" })
+      .default(sql`(cast(unixepoch('subsecond') * 1000 as integer))`)
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
+    deletedAt: integer("deleted_at", { mode: "timestamp_ms" }),
+  },
+  (table) => [
+    index("comment_target_idx").on(
+      table.targetType,
+      table.targetId,
+      table.status,
+    ),
+    index("comment_user_idx").on(table.userId),
+    index("comment_status_created_idx").on(table.status, table.createdAt),
   ],
 );
