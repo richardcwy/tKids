@@ -1,10 +1,22 @@
 ---
+import { Image } from "astro:assets";
 import MemberCard from "./MemberCard.astro";
 import { useI18n, dictFor } from "../lib/i18n";
+import ethanPortrait from "../assets/members/ethan.png";
+import alanPortrait from "../assets/members/alan.png";
+import albertPortrait from "../assets/members/albert.png";
+import mstPortrait from "../assets/members/mst.png";
+
 const { locale, t } = useI18n(Astro);
 const lineupDict = (dictFor(locale) as any).lineup;
 const mKey = (key: "ethan" | "alan" | "albert") => lineupDict.members[key];
 const guest = lineupDict.guest.mst;
+
+const portraitFor = {
+  ethan: ethanPortrait,
+  alan: alanPortrait,
+  albert: albertPortrait,
+};
 
 const members = [
   {
@@ -50,6 +62,7 @@ const members = [
           role={mem.role}
           roleNote={mem.roleNote}
           auraStyle={m.auraStyle}
+          portrait={portraitFor[m.slug]}
         />
       );
     })}
@@ -63,6 +76,10 @@ const members = [
     <article class="guest" aria-label={`${guest.name} — ${guest.role}`}>
       <div class="guest-bg"></div>
       <div class="guest-aura" aria-hidden="true"></div>
+
+      <div class="guest-portrait" aria-hidden="true">
+        <Image src={mstPortrait} alt="" width={640} height={640} loading="lazy" />
+      </div>
 
       <div class="guest-content">
         <div class="guest-top">
@@ -260,6 +277,46 @@ const members = [
     mix-blend-mode: overlay;
   }
 
+  .guest-portrait {
+    position: absolute;
+    z-index: 3;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 42%;
+    pointer-events: none;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+  }
+  .guest-portrait :global(img) {
+    height: 110%;
+    width: auto;
+    max-width: 100%;
+    object-fit: contain;
+    object-position: bottom right;
+    transform: translateY(2%);
+    transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+    filter: drop-shadow(0 24px 48px rgba(0, 0, 0, 0.55));
+  }
+  .guest:hover .guest-portrait :global(img) {
+    transform: translateY(0) scale(1.03);
+  }
+  .guest-portrait::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      rgba(3, 6, 26, 0.95) 0%,
+      rgba(3, 6, 26, 0.5) 25%,
+      transparent 60%
+    );
+    pointer-events: none;
+    z-index: 1;
+  }
+
   .guest-content {
     position: relative;
     z-index: 5;
@@ -269,6 +326,7 @@ const members = [
     flex-direction: column;
     justify-content: space-between;
     gap: 32px;
+    max-width: 62%;
   }
   .guest-top {
     display: flex;
@@ -405,11 +463,18 @@ const members = [
     .guest-content {
       padding: 26px 22px;
       gap: 24px;
+      max-width: 60%;
     }
     .guest-aura {
       width: 180px;
       height: 180px;
       filter: blur(45px);
+    }
+    .guest-portrait {
+      width: 50%;
+    }
+    .guest-portrait :global(img) {
+      height: 105%;
     }
   }
 </style>

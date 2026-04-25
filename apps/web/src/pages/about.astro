@@ -1,8 +1,20 @@
 ---
+import { Image } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
 import AtmosphereBg from "../components/AtmosphereBg.astro";
 import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
+import ethanPortrait from "../assets/members/ethan.png";
+import alanPortrait from "../assets/members/alan.png";
+import albertPortrait from "../assets/members/albert.png";
+import mstPortrait from "../assets/members/mst.png";
+
+const cast = [
+  { name: "Ethan", role: "vocals · songwriting", img: ethanPortrait },
+  { name: "Alan", role: "rap · production", img: alanPortrait },
+  { name: "Albert", role: "dance · visuals", img: albertPortrait },
+  { name: "Ms.T", role: "poet · guest vocal", img: mstPortrait, guest: true },
+];
 ---
 
 <Layout
@@ -95,11 +107,20 @@ import Footer from "../components/Footer.astro";
       海外華語社群，同時提供完整英文版與部分日文、德文翻譯。
     </p>
 
-    <h2>The members</h2>
-    <ul>
-      <li><strong>Ethan</strong> — vocals, songwriting</li>
-      <li><strong>Alan</strong> — rap, production</li>
-      <li><strong>Albert</strong> — dance, visuals</li>
+    <h2>The members &amp; special guest</h2>
+    <ul class="cast">
+      {cast.map((c) => (
+        <li class:list={["cast-row", { "is-guest": c.guest }]}>
+          <span class="cast-avatar" aria-hidden="true">
+            <Image src={c.img} alt="" width={120} height={120} loading="lazy" />
+          </span>
+          <span class="cast-text">
+            <strong>{c.name}</strong>
+            <span class="cast-role"> — {c.role}</span>
+            {c.guest && <span class="cast-flag">special guest</span>}
+          </span>
+        </li>
+      ))}
     </ul>
 
     <h2>Contact</h2>
@@ -203,6 +224,84 @@ import Footer from "../components/Footer.astro";
     text-transform: uppercase;
     letter-spacing: 0.2em;
     opacity: 0.7;
+  }
+
+  .about .cast {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .cast-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 14px;
+    border: 1px solid rgba(184, 204, 255, 0.12);
+    border-radius: 14px;
+    background: rgba(10, 19, 64, 0.35);
+    transition: border-color 0.25s, background 0.25s;
+  }
+  .cast-row:hover {
+    border-color: rgba(184, 204, 255, 0.3);
+    background: rgba(10, 19, 64, 0.55);
+  }
+  .cast-row.is-guest {
+    border-color: rgba(255, 216, 74, 0.35);
+    background: rgba(46, 30, 8, 0.25);
+  }
+  .cast-row.is-guest:hover {
+    border-color: var(--gold);
+  }
+  .cast-avatar {
+    flex-shrink: 0;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: radial-gradient(circle, rgba(46, 95, 255, 0.45) 0%, var(--midnight) 75%);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .cast-row.is-guest .cast-avatar {
+    background: radial-gradient(circle, rgba(255, 216, 74, 0.35) 0%, var(--midnight) 75%);
+  }
+  .cast-avatar :global(img) {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    transform: scale(1.4) translateY(8%);
+  }
+  .cast-text {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 13px;
+    color: var(--ice);
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .cast-text strong {
+    color: var(--white);
+    font-weight: 600;
+  }
+  .cast-row.is-guest .cast-text strong {
+    color: var(--gold);
+  }
+  .cast-role {
+    opacity: 0.8;
+  }
+  .cast-flag {
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    padding: 3px 9px;
+    border: 1px solid rgba(255, 216, 74, 0.4);
+    border-radius: 999px;
+    color: var(--gold);
   }
 
   @media (max-width: 600px) {

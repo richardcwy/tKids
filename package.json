@@ -53,6 +53,7 @@
     "@cloudflare/workers-types": "catalog:",
     "@my-better-t-app/config": "workspace:*",
     "@types/bun": "catalog:",
+    "sharp": "^0.34.5",
     "turbo": "^2.8.12",
     "typescript": "catalog:"
   },
