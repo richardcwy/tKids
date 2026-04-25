@@ -1,0 +1,213 @@
+---
+import Layout from "../layouts/Layout.astro";
+import AtmosphereBg from "../components/AtmosphereBg.astro";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+---
+
+<Layout
+  title="About · tKids"
+  description="tKids is a music project featuring Ethan, Alan, and Albert. Their debut EP 'Ignite!' launches 2026-06-01."
+  lang="en"
+  noindex={false}
+>
+  <AtmosphereBg />
+  <Nav />
+
+  <main class="about">
+    <h1>About tKids</h1>
+    <p class="meta">tkids.tw · the official fanclub</p>
+
+    <p class="lede">
+      tKids is a music project featuring Ethan, Alan, and Albert. Their
+      debut EP <strong>"Ignite!"</strong> launches on
+      <strong>2026-06-01</strong> at <a href="https://tkids.tw">tkids.tw</a>.
+    </p>
+
+    <p class="lede" lang="zh-TW">
+      tKids 是由 Ethan、Alan、Albert 三人組成的音樂計畫。首張 EP
+      <strong>《Ignite!》</strong>將於 <strong>2026 年 6 月 1 日</strong>
+      在 <a href="https://tkids.tw">tkids.tw</a> 發行。
+    </p>
+
+    <h2>What this site is</h2>
+    <p>
+      tkids.tw is the official home of tKids and the place where fans
+      can:
+    </p>
+    <ul>
+      <li>Listen to teasers and the EP once it drops.</li>
+      <li>Read the journal and follow each member's path to launch day.</li>
+      <li>Draw a daily fortune (本日觀星) for a moment of luck.</li>
+      <li>Donate to support the project's independent release.</li>
+      <li>
+        After launch — leave comments, access exclusive drops, and
+        receive merchandise where available.
+      </li>
+    </ul>
+
+    <p lang="zh-TW">
+      tkids.tw 是 tKids 的官方網站，粉絲可以在這裡試聽 EP 的試播片段、閱讀
+      成員日誌、抽取本日觀星、贊助這項獨立發行的計畫，並於發行後留言互動、
+      解鎖獨家內容，以及在販售商品時下單。
+    </p>
+
+    <h2>Why we ask you to sign in</h2>
+    <p>
+      Most of the site can be browsed without an account — playback,
+      journal, fortune draw, member pages. We ask you to sign in only
+      when an action requires identity:
+    </p>
+    <ul>
+      <li><strong>Donations</strong> — so we can issue a receipt and keep your support history.</li>
+      <li><strong>Comments</strong> — so the fanclub stays a real community, not a bot field.</li>
+      <li><strong>Purchases</strong> — so we can ship to you and keep an order record.</li>
+      <li><strong>Settings and notifications</strong> — so your preferences and language follow you across devices.</li>
+    </ul>
+
+    <p>
+      You can sign in with <strong>Google</strong> or with
+      <strong>email and password</strong>. Either creates a fanclub
+      account that stores your display name, language preference,
+      donation history, and your daily-fortune draw. Your privacy is
+      covered by our <a href="/privacy">privacy policy</a>.
+    </p>
+
+    <p lang="zh-TW">
+      網站絕大部分內容無需註冊即可瀏覽 (試聽、日誌、本日觀星、成員頁面)。
+      我們只在需要識別身份時請您登入：贊助 (開立收據)、留言 (維持真實社群)、
+      購買 (寄送商品)、個人設定 (跨裝置保存偏好)。您可以選擇 Google 登入或
+      使用電子郵件加密碼註冊，建立的粉絲會帳號將保存您的顯示名稱、語言偏好、
+      贊助紀錄與本日觀星紀錄。隱私規範請見
+      <a href="/privacy">隱私政策</a>。
+    </p>
+
+    <h2>Independent and bilingual</h2>
+    <p>
+      tKids is independently produced. The site is built and operated
+      from Taipei, designed for our Mandarin-speaking community in
+      Taiwan and the diaspora, with full English support and partial
+      Japanese and German.
+    </p>
+
+    <p lang="zh-TW">
+      tKids 是獨立製作的音樂計畫，網站於台北建置與維運，主要面向台灣與
+      海外華語社群，同時提供完整英文版與部分日文、德文翻譯。
+    </p>
+
+    <h2>The members</h2>
+    <ul>
+      <li><strong>Ethan</strong> — vocals, songwriting</li>
+      <li><strong>Alan</strong> — rap, production</li>
+      <li><strong>Albert</strong> — dance, visuals</li>
+    </ul>
+
+    <h2>Contact</h2>
+    <address>
+      tKids · Taipei, Taiwan<br />
+      <a href="mailto:hello@tkids.tw">hello@tkids.tw</a><br />
+      Press &amp; partnerships: <a href="mailto:hello@tkids.tw">hello@tkids.tw</a>
+    </address>
+
+    <p class="links-row">
+      <a href="/privacy">privacy policy</a> · <a href="/terms">terms of service</a> · <a href="/">home</a>
+    </p>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .about {
+    position: relative;
+    z-index: 1;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 140px 40px 120px;
+    color: var(--chrome);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+  .about h1 {
+    font-family: "Unbounded", sans-serif;
+    font-weight: 800;
+    font-size: clamp(40px, 5vw, 64px);
+    letter-spacing: -0.04em;
+    color: var(--white);
+    margin-bottom: 8px;
+  }
+  .about h2 {
+    font-family: "Unbounded", sans-serif;
+    font-weight: 600;
+    font-size: 18px;
+    color: var(--white);
+    margin-top: 36px;
+    margin-bottom: 12px;
+  }
+  .about .meta {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    color: var(--ice);
+    opacity: 0.65;
+    margin-bottom: 40px;
+  }
+  .about .lede {
+    font-family: "DM Serif Display", serif;
+    font-size: 22px;
+    line-height: 1.45;
+    color: var(--white);
+    margin-bottom: 20px;
+  }
+  .about .lede[lang="zh-TW"] {
+    font-family: "Noto Sans TC", sans-serif;
+    font-weight: 400;
+    font-size: 18px;
+    color: var(--ice);
+    margin-bottom: 32px;
+  }
+  .about p,
+  .about ul {
+    margin-bottom: 18px;
+  }
+  .about p[lang="zh-TW"] {
+    font-family: "Noto Sans TC", sans-serif;
+    font-size: 13px;
+    color: var(--ice);
+    line-height: 1.85;
+  }
+  .about ul {
+    padding-left: 22px;
+  }
+  .about li {
+    margin-bottom: 10px;
+  }
+  .about a {
+    color: var(--glow);
+    text-decoration: underline;
+  }
+  .about a:hover {
+    color: var(--gold);
+  }
+  .about address {
+    font-style: normal;
+    margin-top: 12px;
+    padding: 20px;
+    border: 1px solid rgba(184, 204, 255, 0.15);
+    border-radius: 12px;
+  }
+  .about .links-row {
+    margin-top: 28px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    opacity: 0.7;
+  }
+
+  @media (max-width: 600px) {
+    .about {
+      padding: 120px 20px 100px;
+    }
+  }
+</style>
