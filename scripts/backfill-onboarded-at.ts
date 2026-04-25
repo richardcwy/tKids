@@ -11,13 +11,25 @@
 import "dotenv/config";
 import { createClient } from "@libsql/client";
 
-const url = process.env.DATABASE_URL;
-const authToken = process.env.DATABASE_AUTH_TOKEN;
+// Stage routing matches alchemy.run.ts and drizzle.config.ts.
+const STAGE = process.env.ALCHEMY_STAGE ?? "prod";
+const IS_STAGING = STAGE === "staging";
+
+const url = IS_STAGING
+  ? process.env.STAGING_DATABASE_URL
+  : process.env.DATABASE_URL;
+const authToken = IS_STAGING
+  ? process.env.STAGING_DATABASE_AUTH_TOKEN
+  : process.env.DATABASE_AUTH_TOKEN;
 
 if (!url) {
-  console.error("DATABASE_URL not set. Aborting.");
+  console.error(
+    `${IS_STAGING ? "STAGING_DATABASE_URL" : "DATABASE_URL"} not set. Aborting.`,
+  );
   process.exit(1);
 }
+
+console.log(`[backfill] targeting ${IS_STAGING ? "STAGING" : "PROD"} DB`);
 
 const client = createClient({ url, authToken });
 

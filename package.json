@@ -36,11 +36,15 @@
     "backup": "bun run scripts/backup-turso.ts",
     "og": "./scripts/generate-og.sh",
     "db:push": "turbo -F @my-better-t-app/db db:push",
+    "db:push:staging": "ALCHEMY_STAGE=staging turbo -F @my-better-t-app/db db:push",
+    "db:push:prod": "ALCHEMY_STAGE=prod turbo -F @my-better-t-app/db db:push",
     "db:studio": "turbo -F @my-better-t-app/db db:studio",
     "db:generate": "turbo -F @my-better-t-app/db db:generate",
     "db:migrate": "turbo -F @my-better-t-app/db db:migrate",
     "db:local": "turbo -F @my-better-t-app/db db:local",
-    "deploy": "turbo -F @my-better-t-app/infra deploy",
+    "deploy": "printf '\\nERROR: pick an environment.\\n\\n  bun run deploy:staging   -> staging.tkids.tw\\n  bun run deploy:prod      -> tkids.tw (live)\\n\\nSee STAGING.md for the workflow.\\n\\n' >&2 && exit 1",
+    "deploy:staging": "ALCHEMY_STAGE=staging turbo -F @my-better-t-app/infra deploy",
+    "deploy:prod": "ALCHEMY_STAGE=richard turbo -F @my-better-t-app/infra deploy",
     "destroy": "turbo -F @my-better-t-app/infra destroy"
   },
   "dependencies": {
