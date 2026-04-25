@@ -20,6 +20,8 @@ const stargazingHref = localizedPath("/stargazing", locale);
     <li><a href="#music">{t("nav.music")}</a></li>
     <li><a href={stargazingHref} class="nav-stargazing">{t("nav.stargazing")}</a></li>
     <li><a href="#shop">{t("nav.shop")}</a></li>
+    <li class="nav-legal"><a href="/privacy">Privacy</a></li>
+    <li class="nav-legal"><a href="/terms">Terms</a></li>
   </ul>
   <div class="nav-actions">
     <div class="lang-switch" role="group" aria-label="Language">
@@ -113,6 +115,15 @@ const stargazingHref = localizedPath("/stargazing", locale);
   }
   ul a:hover {
     color: var(--white);
+  }
+  /* Visually deprioritized vs. the primary nav items, but still rendered as
+     plain text in the DOM so Google's OAuth verification crawler picks them
+     up alongside the footer links. */
+  .nav-legal a {
+    opacity: 0.55;
+  }
+  .nav-legal a:hover {
+    opacity: 1;
   }
   /* Gentle gold pulse on the stargazing link so it reads as the "fun" entry,
      not another section anchor. Kept subtle — the nav bar is already busy. */
