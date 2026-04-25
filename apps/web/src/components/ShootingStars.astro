@@ -15,6 +15,8 @@
     const mql = window.matchMedia("(prefers-reduced-motion: reduce)");
     if (mql.matches) return;
 
+    let pendingTimer: number | null = null;
+
     function spawn() {
       const star = document.createElement("div");
       star.className = "shooting-star";
@@ -43,16 +45,54 @@
     }
 
     function scheduleNext() {
+      // Don't schedule while hidden — visibilitychange will restart the loop.
+      if (document.visibilityState !== "visible") return;
       // 3–8s jitter between stars
       const delay = 3000 + Math.random() * 5000;
-      window.setTimeout(() => {
+      pendingTimer = window.setTimeout(() => {
+        pendingTimer = null;
+        if (document.visibilityState !== "visible") return;
         spawn();
         scheduleNext();
       }, delay);
     }
 
-    // Slight initial delay so the hero fade has landed first.
-    window.setTimeout(scheduleNext, 2000);
+    function stopAndClear() {
+      if (pendingTimer !== null) {
+        window.clearTimeout(pendingTimer);
+        pendingTimer = null;
+      }
+      // Wipe any in-flight stars so the browser doesn't resume their paused
+      // CSS animations all at once when the tab regains focus.
+      layer!.replaceChildren();
+    }
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible") {
+        // Defer the first star a couple seconds after refocus so the user
+        // settles in before stars start flying again.
+        if (pendingTimer === null) {
+          pendingTimer = window.setTimeout(() => {
+            pendingTimer = null;
+            if (document.visibilityState !== "visible") return;
+            spawn();
+            scheduleNext();
+          }, 2000);
+        }
+      } else {
+        stopAndClear();
+      }
+    });
+
+    // Initial: start the loop only if visible (cold-load on a backgrounded
+    // tab shouldn't spawn anything).
+    if (document.visibilityState === "visible") {
+      pendingTimer = window.setTimeout(() => {
+        pendingTimer = null;
+        if (document.visibilityState !== "visible") return;
+        scheduleNext();
+      }, 2000);
+    }
   })();
 </script>
 
