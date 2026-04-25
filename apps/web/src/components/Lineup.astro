@@ -282,25 +282,21 @@ const members = [
     top: 0;
     right: 0;
     bottom: 0;
-    width: 42%;
+    width: 32%;
     pointer-events: none;
     overflow: hidden;
-    display: flex;
-    align-items: flex-end;
-    justify-content: flex-end;
   }
   .guest-portrait :global(img) {
-    height: 110%;
-    width: auto;
-    max-width: 100%;
-    object-fit: contain;
-    object-position: bottom right;
-    transform: translateY(2%);
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 28%;
+    transform: scale(1.02);
     transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
     filter: drop-shadow(0 24px 48px rgba(0, 0, 0, 0.55));
   }
   .guest:hover .guest-portrait :global(img) {
-    transform: translateY(0) scale(1.03);
+    transform: scale(1.06);
   }
   .guest-portrait::before {
     content: "";
@@ -308,9 +304,9 @@ const members = [
     inset: 0;
     background: linear-gradient(
       90deg,
-      rgba(3, 6, 26, 0.95) 0%,
-      rgba(3, 6, 26, 0.5) 25%,
-      transparent 60%
+      rgba(3, 6, 26, 0.85) 0%,
+      rgba(3, 6, 26, 0.35) 30%,
+      transparent 65%
     );
     pointer-events: none;
     z-index: 1;
@@ -325,7 +321,7 @@ const members = [
     flex-direction: column;
     justify-content: space-between;
     gap: 32px;
-    max-width: 62%;
+    max-width: 68%;
   }
   .guest-top {
     display: flex;
@@ -459,21 +455,44 @@ const members = [
     .guest-block {
       margin-top: 60px;
     }
-    .guest-content {
-      padding: 26px 22px;
-      gap: 24px;
-      max-width: 60%;
-    }
-    .guest-aura {
-      width: 180px;
-      height: 180px;
-      filter: blur(45px);
+    /* On mobile the card stacks: portrait on top, text underneath. The
+       absolute-positioned right-column from desktop becomes a normal-flow
+       block at the top of the card. */
+    .guest {
+      min-height: 0;
     }
     .guest-portrait {
-      width: 50%;
+      position: relative;
+      width: 100%;
+      height: 280px;
+      inset: auto;
     }
     .guest-portrait :global(img) {
-      height: 105%;
+      object-position: center 22%;
+    }
+    .guest-portrait::before {
+      background: linear-gradient(
+        180deg,
+        transparent 0%,
+        transparent 55%,
+        rgba(3, 6, 26, 0.6) 85%,
+        rgba(3, 6, 26, 0.95) 100%
+      );
+    }
+    .guest-content {
+      padding: 22px 22px 26px;
+      gap: 18px;
+      max-width: 100%;
+    }
+    .guest-aura {
+      width: 200px;
+      height: 200px;
+      filter: blur(50px);
+      top: 30px;
+      right: 30px;
+    }
+    .guest-name {
+      font-size: clamp(48px, 13vw, 88px);
     }
   }
 </style>
