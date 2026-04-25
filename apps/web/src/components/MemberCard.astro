@@ -1,5 +1,4 @@
 ---
-import { Image } from "astro:assets";
 import type { ImageMetadata } from "astro";
 
 interface Props {
@@ -20,7 +19,7 @@ const num = String(index).padStart(2, "0");
   <div class="member-aura" style={auraStyle} aria-hidden="true"></div>
   {portrait && (
     <div class="member-portrait" aria-hidden="true">
-      <Image src={portrait} alt="" width={640} height={640} loading="lazy" />
+      <img src={portrait.src} alt="" width="640" height="640" loading="lazy" decoding="async" />
     </div>
   )}
   <div class="member-content">

@@ -1,5 +1,4 @@
 ---
-import { Image } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
 import AtmosphereBg from "../components/AtmosphereBg.astro";
 import Nav from "../components/Nav.astro";
@@ -112,7 +111,7 @@ const cast = [
       {cast.map((c) => (
         <li class:list={["cast-row", { "is-guest": c.guest }]}>
           <span class="cast-avatar" aria-hidden="true">
-            <Image src={c.img} alt="" width={120} height={120} loading="lazy" />
+            <img src={c.img.src} alt="" width="120" height="120" loading="lazy" decoding="async" />
           </span>
           <span class="cast-text">
             <strong>{c.name}</strong>
