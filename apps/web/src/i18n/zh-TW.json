@@ -76,6 +76,15 @@
       "ethan": { "name": "ETHAN", "role": "主唱", "roleNote": "隊長" },
       "alan":  { "name": "ALAN",  "role": "饒舌 · 製作人", "roleNote": "" },
       "albert":{ "name": "ALBERT","role": "舞蹈 · 視覺", "roleNote": "" }
+    },
+    "guestSectionLabel": "特別嘉賓",
+    "guestSectionMini": "詩句之間的聲音",
+    "guest": {
+      "mst": {
+        "name": "Ms.T",
+        "role": "詩人 · 客座主唱",
+        "roleNote": "首張 EP《Ignite!》參與獻聲"
+      }
     }
   },
   "footer": {

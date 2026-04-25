@@ -77,6 +77,15 @@
       "ethan": { "name": "ETHAN", "role": "Hauptgesang", "roleNote": "Bandleader" },
       "alan":  { "name": "ALAN",  "role": "Rap · Produzent", "roleNote": "" },
       "albert":{ "name": "ALBERT","role": "Tanz · Visuals", "roleNote": "" }
+    },
+    "guestSectionLabel": "Special Guest",
+    "guestSectionMini": "Die Stimme zwischen den Versen",
+    "guest": {
+      "mst": {
+        "name": "Ms.T",
+        "role": "Dichterin · Gastgesang",
+        "roleNote": "Auf „Ignite!\" zu hören"
+      }
     }
   },
   "footer": {

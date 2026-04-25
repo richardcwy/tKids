@@ -4,6 +4,7 @@ import { useI18n, dictFor } from "../lib/i18n";
 const { locale, t } = useI18n(Astro);
 const lineupDict = (dictFor(locale) as any).lineup;
 const mKey = (key: "ethan" | "alan" | "albert") => lineupDict.members[key];
+const guest = lineupDict.guest.mst;
 
 const members = [
   {
@@ -52,6 +53,37 @@ const members = [
         />
       );
     })}
+  </div>
+
+  <div class="guest-block">
+    <div class="guest-divider" aria-hidden="true">
+      <span class="guest-divider-label">{lineupDict.guestSectionLabel}</span>
+    </div>
+
+    <article class="guest" aria-label={`${guest.name} — ${guest.role}`}>
+      <div class="guest-bg"></div>
+      <div class="guest-aura" aria-hidden="true"></div>
+
+      <div class="guest-content">
+        <div class="guest-top">
+          <div class="guest-tag">{lineupDict.guestSectionLabel}</div>
+          <div class="guest-star" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"></polygon>
+            </svg>
+          </div>
+        </div>
+
+        <div class="guest-bottom">
+          <h3 class="guest-name">{guest.name}</h3>
+          <p class="guest-role">{guest.role}</p>
+          {guest.roleNote && <p class="guest-rolenote">{guest.roleNote}</p>}
+          <p class="guest-tagline" lang={locale === "zh-TW" ? "zh-TW" : undefined}>
+            {lineupDict.guestSectionMini}
+          </p>
+        </div>
+      </div>
+    </article>
   </div>
 
   <div class="lineup-foot">
@@ -141,6 +173,172 @@ const members = [
     margin: 0 auto;
   }
 
+  .guest-block {
+    max-width: 1400px;
+    margin: 80px auto 0;
+  }
+  .guest-divider {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 22px;
+  }
+  .guest-divider::before,
+  .guest-divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 216, 74, 0.35) 50%,
+      transparent 100%
+    );
+  }
+  .guest-divider-label {
+    font-family: "Unbounded", sans-serif;
+    font-weight: 600;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.32em;
+    color: var(--gold);
+    text-shadow: 0 0 14px rgba(255, 216, 74, 0.35);
+  }
+
+  .guest {
+    position: relative;
+    border-radius: 22px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 216, 74, 0.32);
+    transition:
+      transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
+      border-color 0.3s,
+      box-shadow 0.3s;
+    isolation: isolate;
+    min-height: 280px;
+    box-shadow: 0 0 60px rgba(255, 216, 74, 0.08);
+  }
+  .guest:hover {
+    transform: translateY(-6px);
+    border-color: var(--gold);
+    box-shadow: 0 0 90px rgba(255, 216, 74, 0.18);
+  }
+  .guest-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background:
+      radial-gradient(ellipse 70% 80% at 80% 30%, rgba(255, 216, 74, 0.18) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 70% at 20% 80%, rgba(46, 95, 255, 0.35) 0%, transparent 65%),
+      linear-gradient(135deg, #15205c 0%, var(--midnight) 100%);
+  }
+  .guest-aura {
+    position: absolute;
+    z-index: 2;
+    top: 10%;
+    right: 8%;
+    width: 260px;
+    height: 260px;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.55;
+    background: radial-gradient(circle, var(--gold) 0%, transparent 70%);
+    transition: opacity 0.4s, transform 0.6s;
+  }
+  .guest:hover .guest-aura {
+    opacity: 0.85;
+    transform: scale(1.15);
+  }
+  .guest::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    opacity: 0.1;
+    mix-blend-mode: overlay;
+  }
+
+  .guest-content {
+    position: relative;
+    z-index: 5;
+    height: 100%;
+    padding: 32px 36px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 32px;
+  }
+  .guest-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .guest-tag {
+    display: inline-block;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.28em;
+    color: var(--gold);
+    padding: 5px 12px;
+    border: 1px solid rgba(255, 216, 74, 0.4);
+    border-radius: 999px;
+  }
+  .guest-star {
+    width: 36px;
+    height: 36px;
+    color: var(--gold);
+    animation: breathShine 3.5s ease-in-out infinite;
+  }
+  .guest-star :global(svg) {
+    width: 100%;
+    height: 100%;
+    fill: currentColor;
+  }
+  .guest-bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .guest-name {
+    font-family: "Instrument Serif", serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(56px, 8vw, 120px);
+    color: var(--white);
+    letter-spacing: -0.02em;
+    line-height: 0.95;
+    margin: 0;
+  }
+  .guest-role {
+    font-family: "Unbounded", sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    color: var(--gold);
+    margin: 8px 0 0;
+  }
+  .guest-rolenote {
+    font-family: "Noto Sans TC", sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    color: var(--ice);
+    letter-spacing: 0.15em;
+    margin: 4px 0 0;
+    opacity: 0.85;
+  }
+  .guest-tagline {
+    font-family: "Instrument Serif", serif;
+    font-style: italic;
+    font-size: 16px;
+    color: var(--ice);
+    margin: 14px 0 0;
+    opacity: 0.9;
+  }
+
   .lineup-foot {
     display: flex;
     justify-content: center;
@@ -200,6 +398,18 @@ const members = [
     .members :global(.member:nth-child(3)) {
       grid-column: span 1;
       aspect-ratio: 3 / 4;
+    }
+    .guest-block {
+      margin-top: 60px;
+    }
+    .guest-content {
+      padding: 26px 22px;
+      gap: 24px;
+    }
+    .guest-aura {
+      width: 180px;
+      height: 180px;
+      filter: blur(45px);
     }
   }
 </style>

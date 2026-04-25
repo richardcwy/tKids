@@ -76,6 +76,15 @@
       "ethan": { "name": "ETHAN", "role": "lead vocals", "roleNote": "team leader" },
       "alan":  { "name": "ALAN",  "role": "rap · producer", "roleNote": "" },
       "albert":{ "name": "ALBERT","role": "dance · visuals", "roleNote": "" }
+    },
+    "guestSectionLabel": "special guest",
+    "guestSectionMini": "the voice between verses",
+    "guest": {
+      "mst": {
+        "name": "Ms.T",
+        "role": "poet · guest vocal",
+        "roleNote": "appears on \"Ignite!\""
+      }
     }
   },
   "footer": {
