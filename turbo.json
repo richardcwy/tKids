@@ -18,7 +18,8 @@
       "persistent": true
     },
     "db:push": {
-      "cache": false
+      "cache": false,
+      "env": ["ALCHEMY_STAGE"]
     },
     "db:generate": {
       "cache": false
@@ -35,7 +36,8 @@
       "cache": false
     },
     "deploy": {
-      "cache": false
+      "cache": false,
+      "env": ["ALCHEMY_STAGE"]
     },
     "destroy": {
       "cache": false
