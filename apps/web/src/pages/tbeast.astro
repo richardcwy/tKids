@@ -1,0 +1,777 @@
+---
+// Standalone teaser landing for tBeast, the fourth pillar of the t-universe
+// (companions). Lives at /tbeast. Same pattern as /tgirls and /tplanet —
+// bypasses Layout.astro, page-scoped palette + cursor via is:global.
+import "@fontsource/fredoka/400.css";
+import "@fontsource/fredoka/500.css";
+import "@fontsource/fredoka/600.css";
+import "@fontsource/fredoka/700.css";
+import "@fontsource/fraunces/400-italic.css";
+import "@fontsource/fraunces/600.css";
+import "@fontsource/fraunces/600-italic.css";
+import "@fontsource/jetbrains-mono/300.css";
+import "@fontsource/jetbrains-mono/400.css";
+import "@fontsource/jetbrains-mono/600.css";
+import "@fontsource/noto-sans-tc/300.css";
+import "@fontsource/noto-sans-tc/400.css";
+import "@fontsource/noto-sans-tc/500.css";
+import "@fontsource/noto-sans-tc/700.css";
+
+const ogImage = "/og-default.png";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>tBeast — Coming this winter</title>
+    <meta
+      name="description"
+      content="tBeast — find your wild companion in the t-universe. Coming Winter 2026."
+    />
+    <meta property="og:title" content="tBeast — Coming this winter" />
+    <meta
+      property="og:description"
+      content="tBeast — find your wild companion in the t-universe. Coming Winter 2026."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://tkids.tw/tbeast" />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href="https://tkids.tw/tbeast" />
+  </head>
+  <body>
+    <div class="bg-atmosphere"></div>
+
+    <div class="stage">
+      <div class="marquee-band top-1">
+        <div class="marquee-track scroll-left" id="track1"></div>
+      </div>
+
+      <div class="marquee-band">
+        <div class="marquee-track scroll-right slow" id="track2"></div>
+      </div>
+
+      <div class="hero-center">
+        <div class="hero-tag">
+          <span class="ht-dot" aria-hidden="true"></span>
+          companions · t-universe
+        </div>
+
+        <h1 class="wordmark hero-wordmark">
+          <span>t</span>
+          <span class="wm-paw" aria-hidden="true">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <g fill="currentColor">
+                <ellipse cx="12" cy="15.5" rx="4.8" ry="4"></ellipse>
+                <ellipse cx="6.5" cy="9.5" rx="2" ry="2.6"></ellipse>
+                <ellipse cx="10.5" cy="7" rx="2" ry="2.6"></ellipse>
+                <ellipse cx="14.5" cy="7" rx="2" ry="2.6"></ellipse>
+                <ellipse cx="17.5" cy="9.5" rx="2" ry="2.6"></ellipse>
+              </g>
+            </svg>
+          </span>
+          <span>Beast</span>
+        </h1>
+
+        <p class="slogan-en">Find your <em>wild</em> companion</p>
+        <p class="slogan-zh" lang="zh-TW">
+          在 t 宇宙中遇見你的<span class="accent">同伴</span> ·
+          收養、命名、相伴
+        </p>
+
+        <div class="coming-soon">
+          <span class="cs-dot" aria-hidden="true"></span>
+          Coming · <b>Winter 2026</b> · 今冬登場
+        </div>
+      </div>
+
+      <div class="marquee-band">
+        <div class="marquee-track scroll-left fast" id="track3"></div>
+      </div>
+
+      <div class="marquee-band bottom-2">
+        <div class="marquee-track scroll-right" id="track4"></div>
+      </div>
+    </div>
+
+    <div class="ground">
+      Part of the <a href="https://tkids.tw" rel="noopener">tKids</a> universe ·
+      與 tKids、tGirls、tPlanet 同屬 t 宇宙
+    </div>
+
+    <script is:inline>
+      // Font-loading gate
+      (function gateOnFonts() {
+        const html = document.documentElement;
+        let settled = false;
+        const reveal = (cls) => {
+          if (!settled) {
+            settled = true;
+            html.classList.add(cls);
+          }
+        };
+        if (document.fonts && document.fonts.ready) {
+          Promise.race([
+            document.fonts.ready.then(() => "ready"),
+            new Promise((r) => setTimeout(() => r("late"), 1200)),
+          ]).then((result) =>
+            reveal(result === "ready" ? "fonts-ready" : "fonts-late"),
+          );
+        } else {
+          window.addEventListener("load", () => reveal("fonts-late"));
+          setTimeout(() => reveal("fonts-late"), 300);
+        }
+      })();
+
+      // Curated animal emoji, grouped roughly by suggested habitat
+      const BEASTS = [
+        { emoji: "🦊", habitat: "forest" },
+        { emoji: "🐺", habitat: "forest" },
+        { emoji: "🐻", habitat: "forest" },
+        { emoji: "🐼", habitat: "meadow" },
+        { emoji: "🐨", habitat: "meadow" },
+        { emoji: "🐱", habitat: "rose" },
+        { emoji: "🐶", habitat: "meadow" },
+        { emoji: "🐰", habitat: "meadow" },
+        { emoji: "🐹", habitat: "rose" },
+        { emoji: "🐭", habitat: "meadow" },
+        { emoji: "🦝", habitat: "forest" },
+        { emoji: "🦁", habitat: "savanna" },
+        { emoji: "🐯", habitat: "savanna" },
+        { emoji: "🐮", habitat: "meadow" },
+        { emoji: "🐷", habitat: "rose" },
+        { emoji: "🐸", habitat: "forest" },
+        { emoji: "🦒", habitat: "savanna" },
+        { emoji: "🦓", habitat: "savanna" },
+        { emoji: "🐘", habitat: "savanna" },
+        { emoji: "🦏", habitat: "savanna" },
+        { emoji: "🦛", habitat: "savanna" },
+        { emoji: "🐪", habitat: "savanna" },
+        { emoji: "🐢", habitat: "ocean" },
+        { emoji: "🐟", habitat: "ocean" },
+        { emoji: "🐠", habitat: "ocean" },
+        { emoji: "🐡", habitat: "ocean" },
+        { emoji: "🐙", habitat: "ocean" },
+        { emoji: "🦑", habitat: "ocean" },
+        { emoji: "🦀", habitat: "ocean" },
+        { emoji: "🦞", habitat: "ocean" },
+        { emoji: "🐬", habitat: "ocean" },
+        { emoji: "🐋", habitat: "ocean" },
+        { emoji: "🦈", habitat: "ocean" },
+        { emoji: "🦭", habitat: "ocean" },
+        { emoji: "🦉", habitat: "forest" },
+        { emoji: "🦅", habitat: "sunset" },
+        { emoji: "🦜", habitat: "sunset" },
+        { emoji: "🦩", habitat: "rose" },
+        { emoji: "🦚", habitat: "sunset" },
+        { emoji: "🐧", habitat: "ocean" },
+        { emoji: "🦆", habitat: "meadow" },
+        { emoji: "🦢", habitat: "meadow" },
+        { emoji: "🐦", habitat: "meadow" },
+        { emoji: "🐤", habitat: "rose" },
+        { emoji: "🦋", habitat: "rose" },
+        { emoji: "🐝", habitat: "sunset" },
+        { emoji: "🐞", habitat: "meadow" },
+        { emoji: "🦔", habitat: "forest" },
+        { emoji: "🦘", habitat: "savanna" },
+        { emoji: "🦌", habitat: "forest" },
+        { emoji: "🐉", habitat: "sunset", legendary: true },
+        { emoji: "🦄", habitat: "rose", legendary: true },
+        { emoji: "🐲", habitat: "sunset", legendary: true },
+      ];
+
+      function shuffle(arr) {
+        const a = [...arr];
+        for (let i = a.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+      }
+
+      function buildBeast(beast, index) {
+        const div = document.createElement("div");
+        div.className = `beast hab-${beast.habitat}`;
+        if (beast.legendary) div.classList.add("legendary");
+        if (index % 7 === 3 || beast.legendary) div.classList.add("large");
+        const bobDur = (3 + Math.random() * 1.6).toFixed(2);
+        const bobDelay = (Math.random() * 2).toFixed(2);
+        const inner = document.createElement("div");
+        inner.className = "emoji";
+        inner.style.setProperty("--bob-dur", bobDur + "s");
+        inner.style.setProperty("--bob-delay", bobDelay + "s");
+        inner.textContent = beast.emoji;
+        div.appendChild(inner);
+        return div;
+      }
+
+      function buildTrack(trackEl, beasts) {
+        // duplicate so the -50% loop is seamless
+        const doubled = [...beasts, ...beasts];
+        doubled.forEach((b, i) => trackEl.appendChild(buildBeast(b, i)));
+      }
+
+      const shuffled = shuffle(BEASTS);
+      const chunks = [[], [], [], []];
+      shuffled.forEach((b, i) => chunks[i % 4].push(b));
+      buildTrack(document.getElementById("track1"), shuffle(chunks[0]));
+      buildTrack(document.getElementById("track2"), shuffle(chunks[1]));
+      buildTrack(document.getElementById("track3"), shuffle(chunks[2]));
+      buildTrack(document.getElementById("track4"), shuffle(chunks[3]));
+
+      // Pause CSS animations on hidden tab so a backgrounded tab doesn't burn
+      // CPU + so animations don't pile up on refocus.
+      document.addEventListener("visibilitychange", () => {
+        const playState =
+          document.visibilityState === "visible" ? "running" : "paused";
+        document
+          .querySelectorAll(".marquee-track, .beast .emoji, .wordmark .wm-paw")
+          .forEach((el) => {
+            el.style.animationPlayState = playState;
+          });
+      });
+    </script>
+
+    <style is:global>
+      :root {
+        --parchment: #fbf3e8;
+        --parchment-deep: #f4e7d2;
+        --blush: #f7e0d4;
+        --terracotta: #d97757;
+        --terracotta-bright: #e8916f;
+        --terracotta-deep: #b85a3d;
+        --sage: #8aab87;
+        --sage-deep: #5e8159;
+        --sage-light: #c2d6c0;
+        --cocoa: #3d2820;
+        --cocoa-soft: #5e4033;
+        --bark: #8a6e5d;
+        --honey: #e8b964;
+        --honey-warm: #d99e3f;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+
+      /* Page-scoped paw cursor — overrides the site's gold-star default
+         cursor only on /tbeast (we don't import global.css here). */
+      html,
+      body {
+        cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'><g fill='%23d97757'><ellipse cx='16' cy='20' rx='6' ry='5'/><ellipse cx='9' cy='13' rx='2.5' ry='3.2'/><ellipse cx='14' cy='10' rx='2.5' ry='3.2'/><ellipse cx='19' cy='10' rx='2.5' ry='3.2'/><ellipse cx='24' cy='13' rx='2.5' ry='3.2'/></g></svg>")
+          16 16, auto;
+      }
+      a,
+      button,
+      [role="button"] {
+        cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'><g fill='%23b85a3d'><ellipse cx='20' cy='25' rx='7.5' ry='6'/><ellipse cx='11' cy='17' rx='3.2' ry='4'/><ellipse cx='17' cy='13' rx='3.2' ry='4'/><ellipse cx='23' cy='13' rx='3.2' ry='4'/><ellipse cx='29' cy='17' rx='3.2' ry='4'/></g></svg>")
+          20 20, pointer;
+      }
+
+      body {
+        background: #ffffff;
+        color: var(--cocoa);
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .bg-atmosphere {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        background: #ffffff;
+      }
+
+      /* wordmark */
+      .wordmark {
+        display: inline-flex;
+        align-items: center;
+        font-family: "Fredoka", sans-serif;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        line-height: 0.85;
+        color: inherit;
+        white-space: nowrap;
+      }
+      .wordmark > span {
+        display: inline-block;
+      }
+      .wordmark .wm-paw {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 0.78em;
+        height: 0.78em;
+        margin: 0 0.04em;
+        color: var(--terracotta);
+        flex-shrink: 0;
+        filter: drop-shadow(0 2px 6px rgba(217, 119, 87, 0.4));
+        transform: translateY(-0.02em);
+        animation: pawWiggle 4s ease-in-out infinite;
+      }
+      .wordmark .wm-paw svg {
+        width: 100%;
+        height: 100%;
+        fill: currentColor;
+        display: block;
+      }
+      @keyframes pawWiggle {
+        0%,
+        90%,
+        100% {
+          transform: translateY(-0.02em) rotate(0deg);
+        }
+        93% {
+          transform: translateY(-0.02em) rotate(-8deg);
+        }
+        96% {
+          transform: translateY(-0.02em) rotate(8deg);
+        }
+      }
+
+      /* hero layout */
+      .stage {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+        height: 100vh;
+        display: grid;
+        grid-template-rows: auto auto 1fr auto auto;
+        align-items: center;
+      }
+
+      /* marquee bands */
+      .marquee-band {
+        overflow: hidden;
+        padding: 14px 0;
+        position: relative;
+      }
+      .marquee-band.top-1 {
+        padding-top: 80px;
+      }
+      .marquee-band.bottom-2 {
+        padding-bottom: 60px;
+      }
+      .marquee-band::before,
+      .marquee-band::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100px;
+        z-index: 2;
+        pointer-events: none;
+      }
+      .marquee-band::before {
+        left: 0;
+        background: linear-gradient(90deg, #ffffff, transparent);
+      }
+      .marquee-band::after {
+        right: 0;
+        background: linear-gradient(-90deg, #ffffff, transparent);
+      }
+      .marquee-track {
+        display: flex;
+        gap: 22px;
+        white-space: nowrap;
+        align-items: center;
+        will-change: transform;
+      }
+      .marquee-track.scroll-left {
+        animation: slideLeft 75s linear infinite;
+      }
+      .marquee-track.scroll-right {
+        animation: slideRight 95s linear infinite;
+      }
+      .marquee-track.fast {
+        animation-duration: 60s;
+      }
+      .marquee-track.slow {
+        animation-duration: 110s;
+      }
+      @keyframes slideLeft {
+        from {
+          transform: translateX(0);
+        }
+        to {
+          transform: translateX(-50%);
+        }
+      }
+      @keyframes slideRight {
+        from {
+          transform: translateX(-50%);
+        }
+        to {
+          transform: translateX(0);
+        }
+      }
+
+      /* beast bubbles */
+      .beast {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        box-shadow:
+          inset 0 3px 10px rgba(61, 40, 32, 0.08),
+          0 4px 12px rgba(61, 40, 32, 0.06);
+        position: relative;
+        transition: transform 0.3s ease;
+      }
+      .beast:hover {
+        transform: scale(1.1) translateY(-2px);
+      }
+      .beast .emoji {
+        font-size: 38px;
+        line-height: 1;
+        filter: drop-shadow(0 2px 3px rgba(61, 40, 32, 0.15));
+        animation: beastBob var(--bob-dur, 3.6s) ease-in-out infinite;
+        animation-delay: var(--bob-delay, 0s);
+      }
+      @keyframes beastBob {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-3px);
+        }
+      }
+
+      /* habitat tints */
+      .beast.hab-forest {
+        background: radial-gradient(circle at 50% 70%, var(--sage), var(--sage-light) 70%, #f5f0ea 100%);
+      }
+      .beast.hab-ocean {
+        background: radial-gradient(circle at 50% 70%, #6ba8c4, #a8d0e0 70%, #eef4f7 100%);
+      }
+      .beast.hab-savanna {
+        background: radial-gradient(circle at 50% 70%, var(--honey), #f3d488 70%, #faf2dd 100%);
+      }
+      .beast.hab-sunset {
+        background: radial-gradient(circle at 50% 70%, var(--terracotta-bright), var(--terracotta) 60%, var(--honey) 100%);
+      }
+      .beast.hab-rose {
+        background: radial-gradient(circle at 50% 70%, var(--blush), #f5c8b8 70%, #faece4 100%);
+      }
+      .beast.hab-meadow {
+        background: radial-gradient(circle at 50% 70%, var(--sage-light), #e0ebe0 70%, #eff5ee 100%);
+      }
+      .beast.large {
+        width: 80px;
+        height: 80px;
+      }
+      .beast.large .emoji {
+        font-size: 48px;
+      }
+      .beast.legendary {
+        box-shadow:
+          inset 0 3px 10px rgba(61, 40, 32, 0.08),
+          0 4px 12px rgba(232, 185, 100, 0.4),
+          0 0 0 2px var(--honey);
+      }
+
+      /* hero center */
+      .hero-center {
+        text-align: center;
+        padding: 0 32px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+      .hero-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 14px;
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(217, 119, 87, 0.3);
+        border-radius: 999px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.25em;
+        color: var(--terracotta-deep);
+        margin-bottom: 22px;
+      }
+      .hero-tag .ht-dot {
+        width: 6px;
+        height: 6px;
+        background: var(--terracotta);
+        border-radius: 50%;
+        box-shadow: 0 0 6px var(--terracotta);
+        animation: pulse 1.6s ease-in-out infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.4;
+          transform: scale(1.3);
+        }
+      }
+      .hero-wordmark {
+        font-size: clamp(80px, 14vw, 180px);
+        color: var(--cocoa);
+        margin-bottom: 22px;
+        text-shadow:
+          0 4px 20px rgba(217, 119, 87, 0.3),
+          0 0 80px rgba(232, 185, 100, 0.18);
+      }
+      .slogan-en {
+        font-family: "Fraunces", serif;
+        font-style: italic;
+        font-weight: 600;
+        font-size: clamp(22px, 2.6vw, 34px);
+        color: var(--cocoa);
+        line-height: 1.2;
+        margin-bottom: 10px;
+        letter-spacing: -0.005em;
+        max-width: 720px;
+      }
+      .slogan-en em {
+        font-family: "Fredoka", sans-serif;
+        font-style: normal;
+        font-weight: 700;
+        color: var(--terracotta);
+        font-size: 0.92em;
+        letter-spacing: -0.02em;
+      }
+      .slogan-zh {
+        font-family: "Noto Sans TC", sans-serif;
+        font-weight: 400;
+        font-size: clamp(13px, 1.05vw, 15px);
+        color: var(--cocoa-soft);
+        letter-spacing: 0.16em;
+        line-height: 1.6;
+        margin-bottom: 28px;
+      }
+      .slogan-zh .accent {
+        color: var(--terracotta-deep);
+        font-weight: 500;
+      }
+      .coming-soon {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 11px 22px;
+        border: 1px solid var(--terracotta);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.28em;
+        color: var(--cocoa);
+      }
+      .coming-soon .cs-dot {
+        width: 7px;
+        height: 7px;
+        background: var(--terracotta);
+        border-radius: 50%;
+        box-shadow: 0 0 8px var(--terracotta);
+        animation: pulse 1.6s ease-in-out infinite;
+      }
+      .coming-soon b {
+        font-family: "Fredoka", sans-serif;
+        font-weight: 700;
+        font-size: 13px;
+        letter-spacing: 0;
+        text-transform: none;
+        color: var(--terracotta-deep);
+        margin: 0 2px;
+      }
+
+      /* footer strip */
+      .ground {
+        position: fixed;
+        bottom: 14px;
+        left: 0;
+        right: 0;
+        z-index: 5;
+        text-align: center;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 9px;
+        text-transform: uppercase;
+        letter-spacing: 0.25em;
+        color: var(--cocoa-soft);
+        opacity: 0.7;
+        pointer-events: none;
+      }
+      .ground a {
+        color: var(--terracotta-deep);
+        text-decoration: none;
+        pointer-events: auto;
+        border-bottom: 1px solid transparent;
+        transition: border-color 0.2s;
+      }
+      .ground a:hover {
+        border-bottom-color: var(--terracotta-deep);
+      }
+
+      /* entrance */
+      .hero-center > * {
+        opacity: 0;
+        transform: translateY(8px);
+        transition:
+          opacity 0.7s ease-out,
+          transform 0.7s ease-out;
+      }
+      .marquee-band {
+        opacity: 0;
+        transition: opacity 0.8s ease-out;
+      }
+      .fonts-ready .hero-center > *,
+      .fonts-late .hero-center > * {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .fonts-ready .marquee-band,
+      .fonts-late .marquee-band {
+        opacity: 1;
+      }
+      .fonts-ready .hero-center > *:nth-child(1) {
+        transition-delay: 0.15s;
+      }
+      .fonts-ready .hero-center > *:nth-child(2) {
+        transition-delay: 0.22s;
+      }
+      .fonts-ready .hero-center > *:nth-child(3) {
+        transition-delay: 0.3s;
+      }
+      .fonts-ready .hero-center > *:nth-child(4) {
+        transition-delay: 0.38s;
+      }
+      .fonts-ready .hero-center > *:nth-child(5) {
+        transition-delay: 0.46s;
+      }
+      .fonts-ready .marquee-band:nth-child(1) {
+        transition-delay: 0s;
+      }
+      .fonts-ready .marquee-band:nth-child(2) {
+        transition-delay: 0.05s;
+      }
+      .fonts-ready .marquee-band:nth-child(4) {
+        transition-delay: 0.55s;
+      }
+      .fonts-ready .marquee-band:nth-child(5) {
+        transition-delay: 0.6s;
+      }
+
+      /* prefers-reduced-motion */
+      @media (prefers-reduced-motion: reduce) {
+        .marquee-track,
+        .beast .emoji,
+        .wordmark .wm-paw,
+        .hero-tag .ht-dot,
+        .coming-soon .cs-dot,
+        .hero-center > *,
+        .marquee-band {
+          animation: none !important;
+          transition: none !important;
+        }
+        .hero-center > *,
+        .marquee-band {
+          opacity: 1 !important;
+          transform: none !important;
+        }
+      }
+
+      /* responsive */
+      @media (max-width: 700px) {
+        .marquee-band.top-1 {
+          padding-top: 50px;
+        }
+        .marquee-band.bottom-2 {
+          padding-bottom: 40px;
+        }
+        .marquee-track {
+          gap: 16px;
+        }
+        .beast {
+          width: 52px;
+          height: 52px;
+        }
+        .beast .emoji {
+          font-size: 32px;
+        }
+        .beast.large {
+          width: 64px;
+          height: 64px;
+        }
+        .beast.large .emoji {
+          font-size: 40px;
+        }
+        .coming-soon {
+          padding: 9px 16px;
+          font-size: 10px;
+          letter-spacing: 0.22em;
+        }
+      }
+      @media (max-height: 700px) {
+        .marquee-band.top-1 {
+          padding-top: 32px;
+          padding-bottom: 8px;
+        }
+        .marquee-band.bottom-2 {
+          padding-bottom: 32px;
+          padding-top: 8px;
+        }
+        .marquee-band {
+          padding: 8px 0;
+        }
+        .hero-wordmark {
+          font-size: clamp(56px, 9vw, 110px);
+          margin-bottom: 14px;
+        }
+        .slogan-en {
+          margin-bottom: 6px;
+        }
+        .slogan-zh {
+          margin-bottom: 18px;
+        }
+        .hero-tag {
+          margin-bottom: 14px;
+        }
+        .beast {
+          width: 48px;
+          height: 48px;
+        }
+        .beast .emoji {
+          font-size: 28px;
+        }
+        .beast.large {
+          width: 60px;
+          height: 60px;
+        }
+        .beast.large .emoji {
+          font-size: 36px;
+        }
+      }
+    </style>
+  </body>
+</html>
