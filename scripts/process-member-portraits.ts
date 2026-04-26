@@ -16,7 +16,13 @@ import path from "node:path";
 // Set WHICH=alt to read from /ProfilePic_Alt instead of /Profile Pic.
 // Output filenames stay the same (ethan.png / alan.png / albert.png / mst.png)
 // so we just overwrite in place — no Astro import paths to update.
+//
+// Set KEEP_TRANSPARENT=true when the source PNGs ALREADY have a transparent
+// background (e.g. user-prepared cutouts). Skips the corner-sampled bg
+// removal which would otherwise misread an opaque corner pixel of the
+// figure as the bg color and chew holes through the artwork.
 const USE_ALT = process.env.WHICH === "alt";
+const KEEP_TRANSPARENT = process.env.KEEP_TRANSPARENT === "true";
 const SRC_DIR = path.resolve(
   import.meta.dir,
   USE_ALT ? "../../ProfilePic_Alt" : "../../Profile Pic",
@@ -71,6 +77,22 @@ for (const { src, out } of FILES) {
   const outPath = path.join(OUT_DIR, out);
 
   console.log(`processing ${src} → ${out}`);
+
+  if (KEEP_TRANSPARENT) {
+    // Source already has a transparent bg — just resize + re-encode.
+    await sharp(srcPath)
+      .resize(MAX_SIDE, MAX_SIDE, {
+        fit: "inside",
+        withoutEnlargement: true,
+      })
+      .png({ compressionLevel: 9, adaptiveFiltering: true })
+      .toFile(outPath);
+    const stats = await sharp(outPath).metadata();
+    console.log(
+      `  (kept source alpha) wrote ${outPath} (${stats.width}x${stats.height})`,
+    );
+    continue;
+  }
 
   // first resize to working size, then read raw pixels
   const img = sharp(srcPath).resize(MAX_SIDE, MAX_SIDE, {
