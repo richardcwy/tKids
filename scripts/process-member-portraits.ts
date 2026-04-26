@@ -34,16 +34,16 @@ const OUT_DIR = path.resolve(
 
 const FILES = USE_ALT
   ? ([
-      { src: "ethan_v2.png", out: "ethan.png" },
-      { src: "alan_v2.png", out: "alan.png" },
-      { src: "albert_v2.png", out: "albert.png" },
-      { src: "t_v2.png", out: "mst.png" },
+      { src: "ethan_v2.png", out: "ethan.webp" },
+      { src: "alan_v2.png", out: "alan.webp" },
+      { src: "albert_v2.png", out: "albert.webp" },
+      { src: "t_v2.png", out: "mst.webp" },
     ] as const)
   : ([
-      { src: "Ethan.png", out: "ethan.png" },
-      { src: "Alan.png", out: "alan.png" },
-      { src: "Albert.png", out: "albert.png" },
-      { src: "Ms.T.png", out: "mst.png" },
+      { src: "Ethan.png", out: "ethan.webp" },
+      { src: "Alan.png", out: "alan.webp" },
+      { src: "Albert.png", out: "albert.webp" },
+      { src: "Ms.T.png", out: "mst.webp" },
     ] as const);
 
 // pixel distance threshold for "this is the background" — tuned for the four
@@ -79,13 +79,15 @@ for (const { src, out } of FILES) {
   console.log(`processing ${src} → ${out}`);
 
   if (KEEP_TRANSPARENT) {
-    // Source already has a transparent bg — just resize + re-encode.
+    // Source already has a transparent bg — just resize + re-encode as WebP
+    // with alpha preserved. WebP shrinks transfer size 60-80% vs PNG with
+    // no perceptible quality loss at q=88 for illustrated artwork.
     await sharp(srcPath)
       .resize(MAX_SIDE, MAX_SIDE, {
         fit: "inside",
         withoutEnlargement: true,
       })
-      .png({ compressionLevel: 9, adaptiveFiltering: true })
+      .webp({ quality: 88, alphaQuality: 95, effort: 6 })
       .toFile(outPath);
     const stats = await sharp(outPath).metadata();
     console.log(
@@ -166,7 +168,7 @@ for (const { src, out } of FILES) {
   }
 
   await sharp(mask, { raw: { width, height, channels: 4 } })
-    .png({ compressionLevel: 9, adaptiveFiltering: true })
+    .webp({ quality: 88, alphaQuality: 95, effort: 6 })
     .toFile(outPath);
 
   const stats = await sharp(outPath).metadata();

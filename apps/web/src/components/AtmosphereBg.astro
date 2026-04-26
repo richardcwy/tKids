@@ -75,7 +75,10 @@ const STAR_SVG = `<svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="1
   .spotlight {
     position: absolute;
     border-radius: 50%;
-    filter: blur(80px);
+    /* 40px instead of 80px — halves the GPU convolution kernel (~4x cheaper)
+       while staying visually soft. Combined with the lighter alpha values
+       below, the look is preserved but scroll is much smoother. */
+    filter: blur(40px);
     mix-blend-mode: screen;
     will-change: transform;
   }

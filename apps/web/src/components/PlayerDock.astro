@@ -297,9 +297,12 @@ const {
     align-items: center;
     gap: 14px;
     padding: 9px 22px;
-    background: rgba(3, 6, 26, 0.88);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    /* Solid translucent navy in place of backdrop-filter. backdrop-filter on a
+       fixed bottom bar recomputes the blur every scroll frame because the
+       content underneath is moving — the #1 mobile-Safari scroll killer.
+       The opacity bump from 0.88 → 0.94 keeps the dock feeling distinct
+       from the page without paying the per-frame GPU cost. */
+    background: rgba(3, 6, 26, 0.94);
     border-top: 1px solid rgba(184, 204, 255, 0.15);
   }
   .pb-cluster {

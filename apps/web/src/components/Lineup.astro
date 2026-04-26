@@ -1,10 +1,10 @@
 ---
 import MemberCard from "./MemberCard.astro";
 import { useI18n, dictFor } from "../lib/i18n";
-import ethanPortrait from "../assets/members/ethan.png";
-import alanPortrait from "../assets/members/alan.png";
-import albertPortrait from "../assets/members/albert.png";
-import mstPortrait from "../assets/members/mst.png";
+import ethanPortrait from "../assets/members/ethan.webp";
+import alanPortrait from "../assets/members/alan.webp";
+import albertPortrait from "../assets/members/albert.webp";
+import mstPortrait from "../assets/members/mst.webp";
 
 const { locale, t } = useI18n(Astro);
 const lineupDict = (dictFor(locale) as any).lineup;
