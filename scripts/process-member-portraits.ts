@@ -13,18 +13,32 @@ import sharp from "sharp";
 import { mkdir } from "node:fs/promises";
 import path from "node:path";
 
-const SRC_DIR = path.resolve(import.meta.dir, "../../Profile Pic");
+// Set WHICH=alt to read from /ProfilePic_Alt instead of /Profile Pic.
+// Output filenames stay the same (ethan.png / alan.png / albert.png / mst.png)
+// so we just overwrite in place — no Astro import paths to update.
+const USE_ALT = process.env.WHICH === "alt";
+const SRC_DIR = path.resolve(
+  import.meta.dir,
+  USE_ALT ? "../../ProfilePic_Alt" : "../../Profile Pic",
+);
 const OUT_DIR = path.resolve(
   import.meta.dir,
   "../apps/web/src/assets/members",
 );
 
-const FILES = [
-  { src: "Ethan.png", out: "ethan.png" },
-  { src: "Alan.png", out: "alan.png" },
-  { src: "Albert.png", out: "albert.png" },
-  { src: "Ms.T.png", out: "mst.png" },
-] as const;
+const FILES = USE_ALT
+  ? ([
+      { src: "ethan_v2.png", out: "ethan.png" },
+      { src: "alan_v2.png", out: "alan.png" },
+      { src: "albert_v2.png", out: "albert.png" },
+      { src: "t_v2.png", out: "mst.png" },
+    ] as const)
+  : ([
+      { src: "Ethan.png", out: "ethan.png" },
+      { src: "Alan.png", out: "alan.png" },
+      { src: "Albert.png", out: "albert.png" },
+      { src: "Ms.T.png", out: "mst.png" },
+    ] as const);
 
 // pixel distance threshold for "this is the background" — tuned for the four
 // source PNGs which all have flat, near-uniform single-color backgrounds.

@@ -75,7 +75,7 @@
     "members": {
       "ethan": { "name": "ETHAN", "role": "主唱", "roleNote": "隊長" },
       "alan":  { "name": "ALAN",  "role": "饒舌 · 製作人", "roleNote": "" },
-      "albert":{ "name": "ALBERT","role": "舞蹈 · 視覺", "roleNote": "" }
+      "albert":{ "name": "ALBERT","role": "吉他手 · 主唱", "roleNote": "" }
     },
     "guestSectionLabel": "特別嘉賓",
     "guestSectionMini": "詩句之間的聲音",

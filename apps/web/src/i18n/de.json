@@ -76,7 +76,7 @@
     "members": {
       "ethan": { "name": "ETHAN", "role": "Hauptgesang", "roleNote": "Bandleader" },
       "alan":  { "name": "ALAN",  "role": "Rap · Produzent", "roleNote": "" },
-      "albert":{ "name": "ALBERT","role": "Tanz · Visuals", "roleNote": "" }
+      "albert":{ "name": "ALBERT","role": "Gitarrist · Gesang", "roleNote": "" }
     },
     "guestSectionLabel": "Special Guest",
     "guestSectionMini": "Die Stimme zwischen den Versen",

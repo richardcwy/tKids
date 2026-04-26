@@ -76,7 +76,7 @@
     "members": {
       "ethan": { "name": "ETHAN", "role": "リードボーカル", "roleNote": "リーダー" },
       "alan":  { "name": "ALAN",  "role": "ラップ · プロデューサー", "roleNote": "" },
-      "albert":{ "name": "ALBERT","role": "ダンス · ビジュアル", "roleNote": "" }
+      "albert":{ "name": "ALBERT","role": "ギタリスト · ボーカル", "roleNote": "" }
     },
     "guestSectionLabel": "スペシャルゲスト",
     "guestSectionMini": "詩と詩の間の声",
