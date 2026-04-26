@@ -24,11 +24,14 @@
       "version": "0.0.1",
       "dependencies": {
         "@astrojs/sitemap": "^3.2.1",
+        "@fontsource/bagel-fat-one": "^5.2.7",
         "@fontsource/dm-serif-display": "^5.1.0",
+        "@fontsource/fraunces": "^5.2.9",
         "@fontsource/instrument-serif": "^5.1.0",
         "@fontsource/jetbrains-mono": "^5.1.0",
         "@fontsource/noto-sans-jp": "^5.2.9",
         "@fontsource/noto-sans-tc": "^5.1.0",
+        "@fontsource/noto-serif-tc": "^5.2.10",
         "@fontsource/unbounded": "^5.1.0",
         "@libsql/client": "catalog:",
         "@my-better-t-app/api": "workspace:*",
@@ -355,7 +358,11 @@
 
     "@floating-ui/utils": ["@floating-ui/utils@0.2.11", "", {}, "sha512-RiB/yIh78pcIxl6lLMG0CgBXAZ2Y0eVHqMPYugu+9U0AeT6YBeiJpf7lbdJNIugFP5SIjwNRgo4DhR1Qxi26Gg=="],
 
+    "@fontsource/bagel-fat-one": ["@fontsource/bagel-fat-one@5.2.7", "", {}, "sha512-TD8oPUkAPuBudyTebabsvkQ9W6GmjtRSFNjSbtFyUzL4NczjT2rvhPsgfCOZtfW/fVJpqbqWaG1zO7sx02Ueuw=="],
+
     "@fontsource/dm-serif-display": ["@fontsource/dm-serif-display@5.2.8", "", {}, "sha512-GYSDSlGU6vyhv9a5MwaiVNf9HCuSVpK8hEFRyG4NNDHCDeHiX7YHDAcWsaoLKKcfXLgWG9YkBkk9T3SxM4rAjQ=="],
+
+    "@fontsource/fraunces": ["@fontsource/fraunces@5.2.9", "", {}, "sha512-XDzuddBtoC7BZgZdBn6b7hsFZY2+V1hgN7yca5fBTKuHjb/lOd45a0Ji8dTUgFhPoL7RdGupo+bC2BFSt6UH8Q=="],
 
     "@fontsource/instrument-serif": ["@fontsource/instrument-serif@5.2.8", "", {}, "sha512-s+bkz+syj2rO00Rmq9g0P+PwuLig33DR1xDR8pTWmovH1pUjwnncrFk++q9mmOex8fUQ7oW80gPpPDaw7V1MMw=="],
 
@@ -364,6 +371,8 @@
     "@fontsource/noto-sans-jp": ["@fontsource/noto-sans-jp@5.2.9", "", {}, "sha512-6yVGiofnrnbiJjU8ch4JGSs2HqyozxMvsVyVmFwOnDH3u//qQKLqmKM4n0lqN0637uaJNzUW9nIJqbbMgHVQzw=="],
 
     "@fontsource/noto-sans-tc": ["@fontsource/noto-sans-tc@5.2.9", "", {}, "sha512-Z+pXTvXYrip79lPV9X1lCYO3UTys55P25VqcifDStIzdZ86I4R6t8dz+NhGd09YdbvHWvOCB5Icw1m7glKHPNQ=="],
+
+    "@fontsource/noto-serif-tc": ["@fontsource/noto-serif-tc@5.2.10", "", {}, "sha512-oxetD2CojPqT3ckha45cUamUVOfuuae4mkULupvjIwv5nW/AGQmpKW2x8PvY62vixRXLs+uYqbZT1TY3RJ42tg=="],
 
     "@fontsource/unbounded": ["@fontsource/unbounded@5.2.8", "", {}, "sha512-tBHtKB+s5tKvQXEWy5h86sDY5hzVLsEbW6TGphSjUY9b/gawUPvXv5vFS4ZdPbGDcvSqMMy6eXkqdcsKI29dig=="],
 

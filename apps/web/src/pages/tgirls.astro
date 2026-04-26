@@ -1,0 +1,629 @@
+---
+// Standalone teaser landing for the tGirls sister group. Lives at /tgirls.
+// Deliberately does NOT use Layout.astro (no shared cosmic chrome, no
+// ShootingStars, no nav, no footer) — the floral palette and cursor are
+// page-scoped to this URL only.
+//
+// Self-hosted fonts via @fontsource per DESIGN.md (no Google Fonts CDN).
+import "@fontsource/bagel-fat-one";
+import "@fontsource/fraunces/400-italic.css";
+import "@fontsource/fraunces/600.css";
+import "@fontsource/fraunces/600-italic.css";
+import "@fontsource/jetbrains-mono/300.css";
+import "@fontsource/jetbrains-mono/400.css";
+import "@fontsource/jetbrains-mono/600.css";
+import "@fontsource/noto-serif-tc/300.css";
+import "@fontsource/noto-serif-tc/400.css";
+import "@fontsource/noto-serif-tc/500.css";
+import "@fontsource/noto-serif-tc/700.css";
+
+const ogImage = "/og-default.png";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>t✿Girls — Coming this summer</title>
+    <meta
+      name="description"
+      content="tGirls — sister group of tKids. Bloom across the universe. Coming Summer 2026."
+    />
+    <meta property="og:title" content="t✿Girls — Coming this summer" />
+    <meta
+      property="og:description"
+      content="tGirls — sister group of tKids. Bloom across the universe. Coming Summer 2026."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://tkids.tw/tgirls" />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href="https://tkids.tw/tgirls" />
+  </head>
+  <body>
+    <div class="bg-atmosphere"></div>
+    <div class="petals-layer" id="petalsLayer"></div>
+
+    <section class="hero">
+      <h1 class="wordmark hero-wordmark">
+        <span>t</span>
+        <span class="wm-flower" aria-hidden="true">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <g transform="translate(12 12)">
+              <g fill="currentColor">
+                <ellipse cx="0" cy="-5" rx="2.6" ry="4.2"></ellipse>
+                <ellipse cx="0" cy="-5" rx="2.6" ry="4.2" transform="rotate(72)"></ellipse>
+                <ellipse cx="0" cy="-5" rx="2.6" ry="4.2" transform="rotate(144)"></ellipse>
+                <ellipse cx="0" cy="-5" rx="2.6" ry="4.2" transform="rotate(216)"></ellipse>
+                <ellipse cx="0" cy="-5" rx="2.6" ry="4.2" transform="rotate(288)"></ellipse>
+              </g>
+              <circle r="2" fill="#f9c46c"></circle>
+            </g>
+          </svg>
+        </span>
+        <span>Girls</span>
+      </h1>
+
+      <p class="slogan-en">Bloom across the <em>universe</em></p>
+      <p class="slogan-zh" lang="zh-TW">
+        在宇宙裡<span class="accent">綻放</span>，柔光巨響
+      </p>
+
+      <div class="coming-soon">
+        <span class="cs-dot" aria-hidden="true"></span>
+        Coming soon · <b>Summer 2026</b> · 今夏綻放
+      </div>
+    </section>
+
+    <div class="petal-pile" id="petalPile" aria-hidden="true"></div>
+
+    <div class="ground">
+      Sister group of <a href="https://tkids.tw" rel="noopener">tKids</a> · 與
+      tKids 為姐妹團體
+    </div>
+
+    <script is:inline>
+      // Font-loading gate so the hero arrives intentionally rather than popping.
+      (function gateOnFonts() {
+        const html = document.documentElement;
+        let settled = false;
+        const reveal = (cls) => {
+          if (!settled) {
+            settled = true;
+            html.classList.add(cls);
+          }
+        };
+        if (document.fonts && document.fonts.ready) {
+          Promise.race([
+            document.fonts.ready.then(() => "ready"),
+            new Promise((r) => setTimeout(() => r("late"), 1200)),
+          ]).then((result) =>
+            reveal(result === "ready" ? "fonts-ready" : "fonts-late"),
+          );
+        } else {
+          window.addEventListener("load", () => reveal("fonts-late"));
+          setTimeout(() => reveal("fonts-late"), 300);
+        }
+      })();
+
+      // Pre-rendered cluster of flowers strewn across the bottom strip.
+      // Falling petals fade out just above this so they "land" into the pile.
+      const petalPile = document.getElementById("petalPile");
+      const PILE_HEIGHT = 140;
+      const petalColors = ["#ff7aa8", "#ff5a7e", "#ffd1d8", "#e89aaf"];
+
+      const flowerSvg = (color) =>
+        `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <g transform="translate(12 12)">
+            <g fill="${color}">
+              <ellipse cx="0" cy="-5" rx="2.6" ry="4.2"/>
+              <ellipse cx="0" cy="-5" rx="2.6" ry="4.2" transform="rotate(72)"/>
+              <ellipse cx="0" cy="-5" rx="2.6" ry="4.2" transform="rotate(144)"/>
+              <ellipse cx="0" cy="-5" rx="2.6" ry="4.2" transform="rotate(216)"/>
+              <ellipse cx="0" cy="-5" rx="2.6" ry="4.2" transform="rotate(288)"/>
+            </g>
+            <circle r="2" fill="#f9c46c"/>
+          </g>
+        </svg>`;
+
+      function buildPile() {
+        petalPile.innerHTML = "";
+        const vw = window.innerWidth;
+        const count = Math.max(20, Math.min(50, Math.round(vw / 32)));
+
+        for (let i = 0; i < count; i++) {
+          const f = document.createElement("div");
+          f.className = "pile-flower";
+
+          const size = 22 + Math.random() * 22;
+          const color = petalColors[Math.floor(Math.random() * petalColors.length)];
+          const x = Math.random() * vw;
+          const edgeBias = 1 - Math.abs(x / vw - 0.5) * 1.2;
+          const yFromBottom =
+            Math.random() * (PILE_HEIGHT - 40) * Math.max(0.25, edgeBias);
+
+          f.style.width = size + "px";
+          f.style.height = size + "px";
+          f.style.left = x - size / 2 + "px";
+          f.style.bottom = yFromBottom + "px";
+          f.style.transform = `rotate(${Math.random() * 360}deg)`;
+          f.style.opacity = (0.7 + Math.random() * 0.3).toFixed(2);
+          f.innerHTML = flowerSvg(color);
+
+          petalPile.appendChild(f);
+        }
+      }
+
+      let resizeTimer;
+      window.addEventListener("resize", () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(buildPile, 200);
+      });
+
+      // Floating petals — gentle drift, visibility-aware.
+      const petalLayer = document.getElementById("petalsLayer");
+      let petalTimer = null;
+
+      function spawnPetal() {
+        if (document.visibilityState !== "visible") return;
+        const p = document.createElement("div");
+        p.className = "petal";
+        const size = 14 + Math.random() * 14;
+        const color = petalColors[Math.floor(Math.random() * petalColors.length)];
+        p.style.width = size + "px";
+        p.style.height = size + "px";
+        const vw = window.innerWidth;
+        p.style.left = Math.random() * vw + "px";
+        p.style.top = "-30px";
+        const drift = (Math.random() - 0.4) * 200;
+        const fall = window.innerHeight - PILE_HEIGHT - 10;
+        const spin = (Math.random() - 0.5) * 720;
+        const dur = 8 + Math.random() * 8;
+        p.style.setProperty("--drift", drift + "px");
+        p.style.setProperty("--fall", fall + "px");
+        p.style.setProperty("--spin", spin + "deg");
+        p.style.animation = `petalFall ${dur}s linear forwards`;
+        p.innerHTML = flowerSvg(color);
+        petalLayer.appendChild(p);
+        p.addEventListener("animationend", () => p.remove());
+      }
+
+      function scheduleNextPetal() {
+        if (document.visibilityState !== "visible") return;
+        const delay = 1500 + Math.random() * 2500;
+        petalTimer = setTimeout(() => {
+          spawnPetal();
+          scheduleNextPetal();
+        }, delay);
+      }
+      function stopPetals() {
+        if (petalTimer) {
+          clearTimeout(petalTimer);
+          petalTimer = null;
+        }
+        petalLayer.innerHTML = "";
+      }
+      document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "visible") scheduleNextPetal();
+        else stopPetals();
+      });
+
+      buildPile();
+      setTimeout(() => {
+        if (document.visibilityState === "visible") scheduleNextPetal();
+      }, 800);
+    </script>
+
+    <style is:global>
+      :root {
+        --cream: #fff4ee;
+        --cream-deep: #ffe9dc;
+        --blush: #ffd1d8;
+        --petal: #ff7aa8;
+        --coral: #ff5a7e;
+        --rose-deep: #d63a6c;
+        --plum: #3d1d3a;
+        --plum-soft: #5e3c5b;
+        --amber: #f9c46c;
+        --amber-warm: #ffb347;
+        --lavender: #e8dff5;
+        --white: #ffffff;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+      /* Page-scoped cursor: pink flower (overrides the site's gold-star cursor
+         which doesn't apply here because we don't import global.css). */
+      html,
+      body {
+        cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'><g transform='translate(16 16)'><g fill='%23ff7aa8'><ellipse cx='0' cy='-7' rx='3.5' ry='5.5'/><ellipse cx='0' cy='-7' rx='3.5' ry='5.5' transform='rotate(72)'/><ellipse cx='0' cy='-7' rx='3.5' ry='5.5' transform='rotate(144)'/><ellipse cx='0' cy='-7' rx='3.5' ry='5.5' transform='rotate(216)'/><ellipse cx='0' cy='-7' rx='3.5' ry='5.5' transform='rotate(288)'/></g><circle r='2.5' fill='%23f9c46c'/></g></svg>")
+          16 16, auto;
+      }
+      body {
+        background: var(--cream);
+        color: var(--plum);
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* atmospheric background */
+      .bg-atmosphere {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        background:
+          radial-gradient(ellipse 1100px 700px at 80% 30%, rgba(255, 122, 168, 0.28) 0%, transparent 55%),
+          radial-gradient(ellipse 800px 600px at 15% 75%, rgba(232, 154, 175, 0.22) 0%, transparent 55%),
+          radial-gradient(ellipse 600px 500px at 50% 5%, rgba(249, 196, 108, 0.18) 0%, transparent 60%),
+          linear-gradient(180deg, var(--cream) 0%, var(--cream-deep) 100%);
+      }
+      .bg-atmosphere::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+        opacity: 0.18;
+        mix-blend-mode: multiply;
+      }
+      .bg-atmosphere::after {
+        content: "";
+        position: absolute;
+        top: 18%;
+        right: 8%;
+        width: 480px;
+        height: 480px;
+        border-radius: 50%;
+        background: radial-gradient(circle at 30% 30%, var(--blush), var(--petal) 50%, transparent 75%);
+        filter: blur(50px);
+        opacity: 0.4;
+        animation: drift 26s ease-in-out infinite;
+      }
+      @keyframes drift {
+        0%,
+        100% {
+          transform: translate(0, 0) scale(1);
+        }
+        50% {
+          transform: translate(40px, -30px) scale(1.08);
+        }
+      }
+
+      /* falling petals */
+      .petals-layer {
+        position: fixed;
+        inset: 0;
+        z-index: 1;
+        pointer-events: none;
+        overflow: hidden;
+      }
+      .petal {
+        position: absolute;
+        will-change: transform, opacity;
+        opacity: 0;
+      }
+      .petal svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+      @keyframes petalFall {
+        0% {
+          opacity: 0;
+          transform: translate(0, -20px) rotate(0deg);
+        }
+        8% {
+          opacity: 1;
+        }
+        88% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+          transform: translate(var(--drift, 80px), var(--fall, 600px)) rotate(var(--spin, 360deg));
+        }
+      }
+
+      /* petal pile */
+      .petal-pile {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 140px;
+        z-index: 2;
+        pointer-events: none;
+        overflow: hidden;
+      }
+      .petal-pile::before {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 80px;
+        background: radial-gradient(ellipse at 50% 100%, rgba(214, 58, 108, 0.18), transparent 70%);
+        filter: blur(20px);
+      }
+      .pile-flower {
+        position: absolute;
+      }
+      .pile-flower svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      /* wordmark */
+      .wordmark {
+        display: inline-flex;
+        align-items: center;
+        font-family: "Bagel Fat One", cursive;
+        letter-spacing: 0;
+        line-height: 0.85;
+        color: inherit;
+        white-space: nowrap;
+      }
+      .wordmark > span {
+        display: inline-block;
+      }
+      .wordmark .wm-flower {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 0.72em;
+        height: 0.72em;
+        margin: 0 0.04em;
+        color: var(--petal);
+        flex-shrink: 0;
+        filter: drop-shadow(0 0 0.3em rgba(255, 122, 168, 0.55));
+        transform: translateY(-0.04em);
+        animation: wmFlowerSpin 14s linear infinite;
+      }
+      .wordmark .wm-flower svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+      @keyframes wmFlowerSpin {
+        from {
+          transform: translateY(-0.04em) rotate(0deg);
+        }
+        to {
+          transform: translateY(-0.04em) rotate(360deg);
+        }
+      }
+
+      /* hero */
+      .hero {
+        position: relative;
+        z-index: 3;
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 60px 32px 160px;
+      }
+      .hero-wordmark {
+        font-size: clamp(110px, 18vw, 240px);
+        color: var(--plum);
+        margin-bottom: 30px;
+        text-shadow:
+          0 6px 30px rgba(255, 122, 168, 0.25),
+          0 0 80px rgba(249, 196, 108, 0.15);
+      }
+      .slogan-en {
+        font-family: "Fraunces", serif;
+        font-style: italic;
+        font-weight: 600;
+        font-size: clamp(28px, 3.4vw, 46px);
+        color: var(--plum);
+        line-height: 1.15;
+        margin-bottom: 14px;
+        letter-spacing: -0.01em;
+        max-width: 720px;
+      }
+      .slogan-en em {
+        font-family: "Bagel Fat One", cursive;
+        font-style: normal;
+        color: var(--coral);
+        font-size: 0.92em;
+        letter-spacing: -0.02em;
+      }
+      .slogan-zh {
+        font-family: "Noto Serif TC", serif;
+        font-weight: 400;
+        font-size: clamp(14px, 1.2vw, 17px);
+        color: var(--plum-soft);
+        letter-spacing: 0.18em;
+        line-height: 1.6;
+        margin-bottom: 50px;
+      }
+      .slogan-zh .accent {
+        color: var(--rose-deep);
+        font-weight: 500;
+      }
+      .coming-soon {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 22px;
+        border: 1px solid var(--blush);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.5);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.28em;
+        color: var(--plum);
+      }
+      .coming-soon .cs-dot {
+        width: 7px;
+        height: 7px;
+        background: var(--coral);
+        border-radius: 50%;
+        box-shadow: 0 0 8px var(--coral);
+        animation: pulse 1.6s ease-in-out infinite;
+      }
+      .coming-soon b {
+        font-family: "Bagel Fat One", cursive;
+        font-weight: 400;
+        font-size: 13px;
+        letter-spacing: 0.05em;
+        text-transform: none;
+        color: var(--rose-deep);
+        margin: 0 2px;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.4;
+          transform: scale(1.3);
+        }
+      }
+
+      /* ground strip */
+      .ground {
+        position: fixed;
+        bottom: 16px;
+        left: 0;
+        right: 0;
+        z-index: 4;
+        text-align: center;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 9px;
+        text-transform: uppercase;
+        letter-spacing: 0.25em;
+        color: var(--plum-soft);
+        opacity: 0.7;
+        pointer-events: none;
+        text-shadow:
+          0 0 8px var(--cream),
+          0 0 14px var(--cream);
+      }
+      .ground a {
+        color: var(--rose-deep);
+        text-decoration: none;
+        pointer-events: auto;
+        border-bottom: 1px solid transparent;
+        transition: border-color 0.2s;
+      }
+      .ground a:hover {
+        border-bottom-color: var(--rose-deep);
+      }
+
+      /* entrance */
+      .hero > * {
+        opacity: 0;
+        transform: translateY(8px);
+        transition:
+          opacity 0.7s ease-out,
+          transform 0.7s ease-out;
+      }
+      .fonts-ready .hero > *,
+      .fonts-late .hero > * {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .fonts-ready .hero > *:nth-child(1) {
+        transition-delay: 0s;
+      }
+      .fonts-ready .hero > *:nth-child(2) {
+        transition-delay: 0.1s;
+      }
+      .fonts-ready .hero > *:nth-child(3) {
+        transition-delay: 0.18s;
+      }
+      .fonts-ready .hero > *:nth-child(4) {
+        transition-delay: 0.26s;
+      }
+      .ground {
+        opacity: 0;
+        transition: opacity 0.6s ease-out 0.5s;
+      }
+      .fonts-ready .ground,
+      .fonts-late .ground {
+        opacity: 0.7;
+      }
+
+      /* prefers-reduced-motion */
+      @media (prefers-reduced-motion: reduce) {
+        .bg-atmosphere::after,
+        .wordmark .wm-flower,
+        .coming-soon .cs-dot,
+        .hero > *,
+        .ground {
+          animation: none !important;
+          transition: none !important;
+        }
+        .hero > *,
+        .ground {
+          opacity: 1 !important;
+          transform: none !important;
+        }
+      }
+
+      /* responsive */
+      @media (max-width: 600px) {
+        .hero {
+          padding: 40px 20px 140px;
+        }
+        .slogan-zh {
+          margin-bottom: 36px;
+        }
+        .coming-soon {
+          padding: 8px 16px;
+          font-size: 10px;
+          letter-spacing: 0.22em;
+        }
+        .coming-soon b {
+          font-size: 11px;
+        }
+        .ground {
+          font-size: 8px;
+          padding: 0 20px;
+        }
+      }
+      @media (max-height: 600px) {
+        .hero-wordmark {
+          font-size: clamp(70px, 12vw, 140px);
+          margin-bottom: 16px;
+        }
+        .slogan-en {
+          font-size: clamp(20px, 2.4vw, 32px);
+          margin-bottom: 8px;
+        }
+        .slogan-zh {
+          margin-bottom: 24px;
+        }
+        .hero {
+          padding-bottom: 110px;
+        }
+        .petal-pile {
+          height: 100px;
+        }
+      }
+    </style>
+  </body>
+</html>
