@@ -8,8 +8,16 @@
 //
 // Idempotent: only updates rows where onboarded_at IS NULL. Safe to re-run.
 
-import "dotenv/config";
+import { config } from "dotenv";
+import { fileURLToPath } from "node:url";
 import { createClient } from "@libsql/client";
+
+// Match drizzle.config.ts + alchemy.run.ts — env lives in apps/web/.env.
+// Use fileURLToPath so paths with spaces in them (e.g. "Claude Projects")
+// don't get URL-encoded.
+config({
+  path: fileURLToPath(new URL("../apps/web/.env", import.meta.url)),
+});
 
 // Stage routing matches alchemy.run.ts and drizzle.config.ts.
 const STAGE = process.env.ALCHEMY_STAGE ?? "prod";
