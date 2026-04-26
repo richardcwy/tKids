@@ -18,6 +18,9 @@ const num = String(index).padStart(2, "0");
   <div class="member-bg"></div>
   <div class="member-aura" style={auraStyle} aria-hidden="true"></div>
   {portrait && (
+    <div class="member-stage" aria-hidden="true"></div>
+  )}
+  {portrait && (
     <div class="member-portrait" aria-hidden="true">
       <img src={portrait.src} alt="" width="640" height="640" loading="lazy" decoding="async" />
     </div>
@@ -86,6 +89,31 @@ const num = String(index).padStart(2, "0");
     opacity: 1;
     transform: scale(1.15);
   }
+  /* Stage backing — sits behind the portrait, brightens the area where the
+     figure stands so dark hair / dark clothing don't disappear into the
+     navy card. Soft gold radial like a stage spotlight from above. */
+  .member-stage {
+    position: absolute;
+    z-index: 2;
+    top: 4%;
+    left: 8%;
+    right: 8%;
+    bottom: 28%;
+    pointer-events: none;
+    background: radial-gradient(
+      ellipse 78% 80% at 50% 38%,
+      rgba(255, 216, 74, 0.22) 0%,
+      rgba(255, 216, 74, 0.08) 32%,
+      transparent 68%
+    );
+    filter: blur(18px);
+    opacity: 0.9;
+    transition: opacity 0.4s, transform 0.6s;
+  }
+  .member:hover .member-stage {
+    opacity: 1;
+    transform: scale(1.04);
+  }
   .member-portrait {
     position: absolute;
     inset: 0;
@@ -106,7 +134,11 @@ const num = String(index).padStart(2, "0");
     transition:
       transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1),
       filter 0.4s;
-    filter: drop-shadow(0 18px 36px rgba(0, 0, 0, 0.45));
+    /* Two shadows: deep navy ground shadow + faint warm glow tracing the
+       silhouette so dark figures lift off the dark card. */
+    filter:
+      drop-shadow(0 18px 36px rgba(0, 0, 0, 0.55))
+      drop-shadow(0 0 14px rgba(255, 216, 74, 0.18));
   }
   .member:hover .member-portrait :global(img) {
     transform: translateY(0) scale(1.04);
