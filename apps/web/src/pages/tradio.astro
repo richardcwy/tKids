@@ -3,8 +3,11 @@
 // Lives at /tradio. Same standalone pattern as /tgirls, /tplanet, /tbeast —
 // bypasses Layout.astro, page-scoped palette + cursor via is:global.
 //
-// New dep: @fontsource/inter. Other fonts (Fraunces, JetBrains Mono,
-// Noto Sans TC, Noto Serif TC) already self-hosted from prior pages.
+// v2 layout (from tRadio Concept/tradio-landing_v2.html):
+//   - Spotify embed used bare per Spotify Widget Terms — no faux chrome
+//     wrapping the iframe.
+//   - Nominations grid renders an honest empty-state with arrow pointing
+//     at the sign-in CTA. No mock user data, no fake listener counts.
 import "@fontsource/inter/400.css";
 import "@fontsource/inter/500.css";
 import "@fontsource/inter/600.css";
@@ -32,80 +35,6 @@ const ogImage = "/og-default.png";
 
 const spotifyIconPath =
   "M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.84-.179-.94-.6-.12-.421.18-.84.6-.94 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.282 1.121zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.42 1.56-.299.421-1.02.599-1.559.3z";
-
-const noms = [
-  {
-    cover: "linear-gradient(135deg, #ff7aa8, #ffd84a)",
-    title: "綻放",
-    artist: "tGirls",
-    comment: "姐姐婚禮上的歌，今晚要大聲播",
-    by: "Mika",
-    avatar: "linear-gradient(135deg, #ff7aa8, #ffd84a)",
-    votes: 42,
-    voted: true,
-  },
-  {
-    cover: "linear-gradient(135deg, #ffd84a, #22e88a)",
-    title: "點亮宇宙 (Live)",
-    artist: "tKids · 世界巡演",
-    comment: "有人也在台北場嗎?? 整場雞皮疙瘩",
-    by: "Wei",
-    avatar: "linear-gradient(135deg, #ffd84a, #22e88a)",
-    votes: 38,
-    voted: false,
-  },
-  {
-    cover: "linear-gradient(135deg, #5fdec9, #a855f7)",
-    title: "Heat Waves",
-    artist: "Glass Animals",
-    comment: "2024 夏天的回憶 🌊",
-    by: "Alex",
-    avatar: "linear-gradient(135deg, #5fdec9, #a855f7)",
-    votes: 27,
-    voted: false,
-  },
-  {
-    cover: "linear-gradient(135deg, #ff6dba, #5fdec9)",
-    title: "天黑黑",
-    artist: "孫燕姿",
-    comment: "阿嬤以前常常哼的歌，獻給她 💛",
-    by: "Jasmine",
-    avatar: "linear-gradient(135deg, #ff6dba, #5fdec9)",
-    votes: 19,
-    voted: false,
-  },
-  {
-    cover: "linear-gradient(135deg, #d97757, #ffd84a)",
-    title: "Star Walkin'",
-    artist: "Lil Nas X",
-    comment: "期末考週需要這種能量",
-    by: "Kai",
-    avatar: "linear-gradient(135deg, #d97757, #ffd84a)",
-    votes: 14,
-    voted: false,
-  },
-  {
-    cover: "linear-gradient(135deg, #2e5fff, #5b85ff)",
-    title: "Sugar Fault",
-    artist: "tKids",
-    comment: "最愛的一首，等了好久 ✨",
-    by: "Nora",
-    avatar: "linear-gradient(135deg, #5b85ff, #5fdec9)",
-    votes: 9,
-    voted: false,
-  },
-];
-
-const activeAvatars = [
-  { initial: "M", grad: "linear-gradient(135deg, #ff7aa8, #ffd84a)" },
-  { initial: "W", grad: "linear-gradient(135deg, #ffd84a, #22e88a)" },
-  { initial: "A", grad: "linear-gradient(135deg, #5fdec9, #a855f7)" },
-  { initial: "J", grad: "linear-gradient(135deg, #ff6dba, #5fdec9)" },
-  { initial: "K", grad: "linear-gradient(135deg, #d97757, #ffd84a)" },
-  { initial: "N", grad: "linear-gradient(135deg, #5b85ff, #5fdec9)" },
-  { initial: "L", grad: "linear-gradient(135deg, #22e88a, #ffd84a)" },
-  { initial: "S", grad: "linear-gradient(135deg, #ff6dba, #ffd84a)" },
-];
 ---
 
 <!doctype html>
@@ -214,98 +143,55 @@ const activeAvatars = [
       </div>
 
       <div class="player-stack">
-        <div class="spotify-embed-frame">
-          <div class="embed-header">
-            <div class="embed-title">
-              <span class="live-marker">preview</span>
-              tRadio Channel 07 · 共頻歌單
-            </div>
-            <div class="embed-meta">上線時顯示<b>即時</b>聽眾數</div>
-          </div>
-          <div class="embed-iframe-wrap">
-            <iframe
-              class="spotify-iframe"
-              src="https://open.spotify.com/embed/playlist/2UxU4vMWf9VlUuFvhbbPs8?utm_source=generator&theme=0"
-              width="100%"
-              height="352"
-              frameborder="0"
-              allowfullscreen=""
-              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-              loading="lazy"
-              title="tRadio · 共頻歌單 — Spotify"
-            ></iframe>
-          </div>
-          <div class="embed-attribution">
-            歌單由
-            <a
-              href="https://open.spotify.com/playlist/2UxU4vMWf9VlUuFvhbbPs8"
-              target="_blank"
-              rel="noopener">Spotify</a> 提供 ·
-            <a href="https://www.spotify.com" target="_blank" rel="noopener">
-              Spotify
-            </a> is a trademark of Spotify AB · tRadio 為獨立第三方網站，與 Spotify
-            無關
-          </div>
-        </div>
+        <iframe
+          class="spotify-embed"
+          style="border-radius: 12px"
+          src="https://open.spotify.com/embed/playlist/2UxU4vMWf9VlUuFvhbbPs8?utm_source=generator"
+          width="100%"
+          height="352"
+          frameborder="0"
+          allowfullscreen=""
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+          loading="lazy"
+          title="tRadio · 共頻歌單 — Spotify"
+        ></iframe>
 
         <div class="noms-frame">
           <div class="noms-header">
             <div>
-              <div class="noms-label">候選歌曲 · 待 Richard 挑選</div>
+              <div class="noms-label">候選歌曲 · 待 tAdmin 挑選</div>
               <div class="noms-sublabel">
-                為你支持的歌曲投票，越多人投票越有機會被加入歌單
+                登入後即可點歌、留言，並為你喜歡的歌曲投票
               </div>
             </div>
-            <div class="noms-count">
-              候選中 <b id="nomCount">{noms.length}</b> 首
-            </div>
+            <div class="noms-count">候選中 <b id="nomCount">0</b> 首</div>
           </div>
 
-          <div class="noms-grid" id="nomsGrid">
-            {noms.map((n) => (
-              <div class="nom-card">
-                <div class="nom-cover" style={`background: ${n.cover};`}>
-                  <span class="nom-cover-mark">♪</span>
-                </div>
-                <div class="nom-body">
-                  <div class="nom-titles">
-                    <div class="nom-title">{n.title}</div>
-                    <div class="nom-artist">{n.artist}</div>
-                  </div>
-                  <div class="nom-comment">{n.comment}</div>
-                  <div class="nom-foot">
-                    <div class="nom-by">
-                      <span class="mini-avatar" style={`background: ${n.avatar};`}>
-                        {n.by[0]}
-                      </span>
-                      <span class="mini-name">{n.by}</span>
-                    </div>
-                    <button
-                      class:list={["nom-vote", { "is-voted": n.voted }]}
-                      data-votes={n.votes}
-                    >
-                      <svg viewBox="0 0 24 24"
-                        ><path d="M12 4l8 8h-5v8h-6v-8H4z"></path></svg>
-                      <span class="vote-count">{n.votes}</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div class="active-users">
-            <div class="au-label">
-              <span class="au-pulse" aria-hidden="true"></span>
-              現在線上 · <b>23</b> 人
+          <div class="noms-empty">
+            <div class="noms-empty-glyph" aria-hidden="true">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <ellipse
+                  cx="12"
+                  cy="12"
+                  rx="10"
+                  ry="3.6"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.4"
+                  transform="rotate(-22 12 12)"></ellipse>
+                <circle cx="12" cy="12" r="3.4" fill="currentColor"></circle>
+              </svg>
             </div>
-            <div class="au-avatars">
-              {activeAvatars.map((a) => (
-                <span class="au-avatar" style={`background: ${a.grad};`}>
-                  {a.initial}
-                </span>
-              ))}
-              <span class="au-avatar au-more">+15</span>
+            <div class="noms-empty-title">等待第一個訊號</div>
+            <div class="noms-empty-desc">
+              歌單還是一片寧靜的星空。<br />
+              登入後就能點下你的第一首歌，<br />
+              你的點播也會顯示在這裡，<br />
+              讓其他人為它投票支持。
+            </div>
+            <div class="noms-empty-hint">
+              <span class="emp-arrow" aria-hidden="true">←</span>
+              使用左側的 Spotify 帳號登入開始
             </div>
           </div>
         </div>
@@ -408,17 +294,6 @@ const activeAvatars = [
           );
         });
       }
-
-      // Upvote behavior
-      document.querySelectorAll(".nom-vote").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          const isVoted = btn.classList.toggle("is-voted");
-          const countEl = btn.querySelector(".vote-count");
-          let n = parseInt(countEl.textContent, 10);
-          n = isVoted ? n + 1 : n - 1;
-          countEl.textContent = n;
-        });
-      });
     </script>
 
     <style is:global>
@@ -948,275 +823,15 @@ const activeAvatars = [
         gap: 16px;
         min-height: 0;
       }
-      .spotify-embed-frame {
-        background: rgba(19, 24, 38, 0.85);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: 1px solid rgba(34, 232, 138, 0.25);
-        border-radius: 16px;
-        padding: 14px 16px;
-        flex-shrink: 0;
-        position: relative;
-      }
-      .spotify-embed-frame::before {
-        content: "";
-        position: absolute;
-        top: 0; left: 0; right: 0;
-        height: 1px;
-        background: linear-gradient(90deg, transparent, var(--beacon), var(--gold), transparent);
-      }
-      .embed-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 12px;
-        flex-wrap: wrap;
-        gap: 10px;
-      }
-      .embed-title {
-        font-family: "Inter", sans-serif;
-        font-weight: 700;
-        font-size: 13px;
-        color: var(--hydrogen);
-        letter-spacing: -0.01em;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-      .embed-title .live-marker {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 2px 8px;
-        background: var(--beacon);
-        color: var(--void);
-        border-radius: 3px;
-        font-family: "Inter", sans-serif;
-        font-weight: 800;
-        font-size: 9px;
-        letter-spacing: 0.2em;
-        text-transform: uppercase;
-      }
-      .embed-title .live-marker::before {
-        content: "";
-        width: 5px; height: 5px;
-        background: var(--void);
-        border-radius: 50%;
-        animation: pulse 1s ease-in-out infinite;
-      }
-      .embed-meta {
-        font-family: "JetBrains Mono", monospace;
-        font-size: 10px;
-        color: var(--hydrogen-dim);
-        letter-spacing: 0.18em;
-        text-transform: uppercase;
-      }
-      .embed-meta b {
-        color: var(--gold);
-        font-weight: 700;
-        text-shadow: 0 0 8px rgba(255, 216, 74, 0.4);
-      }
-      .embed-iframe-wrap {
-        position: relative;
-        border-radius: 12px;
-        overflow: hidden;
-        background: var(--void);
-      }
-      .spotify-iframe {
+
+      /* Spotify embed — used as-provided per Spotify Widget Terms.
+         Bare iframe sized only; no styling of the iframe content
+         (cross-origin anyway). */
+      .spotify-embed {
         display: block;
         width: 100%;
         border: 0;
-        border-radius: 12px;
-      }
-      .embed-mock {
-        position: relative;
-        background: linear-gradient(165deg, #1f3a2e 0%, #0a1612 100%);
-        border-radius: 12px;
-        padding: 14px;
-        color: #ffffff;
-        font-family: "Inter", sans-serif;
-      }
-      .embed-mock-flag {
-        position: absolute;
-        top: 6px; right: 6px;
-        font-family: "JetBrains Mono", monospace;
-        font-size: 7px;
-        letter-spacing: 0.18em;
-        text-transform: uppercase;
-        color: var(--gold);
-        background: rgba(0, 0, 0, 0.5);
-        padding: 2px 7px;
-        border-radius: 3px;
-        border: 1px dashed rgba(255, 216, 74, 0.5);
-        z-index: 2;
-        pointer-events: none;
-      }
-      .embed-mock-top {
-        display: grid;
-        grid-template-columns: auto 1fr auto;
-        gap: 12px;
-        align-items: center;
-        margin-bottom: 12px;
-        padding-bottom: 12px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      }
-      .embed-mock-art {
-        width: 56px;
-        height: 56px;
-        border-radius: 4px;
-        background: linear-gradient(135deg, #1ED760 0%, #0a4d28 100%);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
         flex-shrink: 0;
-      }
-      .embed-mock-art svg { width: 26px; height: 26px; opacity: 0.9; }
-      .embed-mock-info { min-width: 0; }
-      .embed-mock-type {
-        font-family: "Inter", sans-serif;
-        font-weight: 700;
-        font-size: 9px;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
-        color: rgba(255, 255, 255, 0.7);
-        margin-bottom: 2px;
-      }
-      .embed-mock-title {
-        font-family: "Inter", sans-serif;
-        font-weight: 800;
-        font-size: 16px;
-        letter-spacing: -0.02em;
-        color: #ffffff;
-        margin-bottom: 3px;
-        line-height: 1.1;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-      .embed-mock-meta {
-        font-family: "Inter", sans-serif;
-        font-weight: 400;
-        font-size: 11px;
-        color: rgba(255, 255, 255, 0.65);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-      .embed-mock-play {
-        width: 38px; height: 38px;
-        border-radius: 50%;
-        background: #1ED760;
-        color: #000000;
-        border: none;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 4px 14px rgba(30, 215, 96, 0.4);
-        transition: transform 0.2s, box-shadow 0.2s;
-        flex-shrink: 0;
-      }
-      .embed-mock-play:hover {
-        transform: scale(1.06);
-        box-shadow: 0 6px 22px rgba(30, 215, 96, 0.55);
-      }
-      .embed-mock-play svg { width: 17px; height: 17px; margin-left: 2px; }
-
-      .embed-mock-list {
-        list-style: none;
-        margin: 0; padding: 0;
-        display: flex;
-        flex-direction: column;
-        gap: 1px;
-      }
-      .embed-mock-track {
-        display: grid;
-        grid-template-columns: 26px 1fr auto auto;
-        gap: 10px;
-        align-items: center;
-        padding: 5px 6px;
-        border-radius: 3px;
-        transition: background 0.15s;
-      }
-      .embed-mock-track:hover { background: rgba(255, 255, 255, 0.06); }
-      .embed-mock-track.is-playing .emt-title { color: #1ED760; }
-      .emt-art {
-        width: 26px;
-        height: 26px;
-        border-radius: 3px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: rgba(255, 255, 255, 0.8);
-        font-size: 12px;
-        flex-shrink: 0;
-      }
-      .emt-info {
-        display: flex;
-        flex-direction: column;
-        min-width: 0;
-        gap: 0;
-      }
-      .emt-title {
-        font-family: "Inter", sans-serif;
-        font-weight: 500;
-        font-size: 12px;
-        color: #ffffff;
-        letter-spacing: -0.005em;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-      .emt-artist {
-        font-family: "Inter", sans-serif;
-        font-weight: 400;
-        font-size: 10px;
-        color: rgba(255, 255, 255, 0.6);
-      }
-      .emt-eq {
-        display: inline-flex;
-        align-items: flex-end;
-        gap: 2px;
-        height: 14px;
-      }
-      .emt-eq span {
-        display: block;
-        width: 2px;
-        background: #1ED760;
-        border-radius: 1px;
-        animation: emtEq 0.9s ease-in-out infinite;
-      }
-      .emt-eq span:nth-child(1) { height: 60%; animation-delay: 0s; }
-      .emt-eq span:nth-child(2) { height: 100%; animation-delay: 0.18s; }
-      .emt-eq span:nth-child(3) { height: 75%; animation-delay: 0.32s; }
-      @keyframes emtEq {
-        0%, 100% { transform: scaleY(0.4); }
-        50% { transform: scaleY(1); }
-      }
-      .emt-dur {
-        font-family: "Inter", sans-serif;
-        font-weight: 400;
-        font-size: 11px;
-        color: rgba(255, 255, 255, 0.6);
-        font-variant-numeric: tabular-nums;
-      }
-      .embed-attribution {
-        margin-top: 10px;
-        font-family: "JetBrains Mono", monospace;
-        font-size: 9px;
-        letter-spacing: 0.15em;
-        color: var(--lunar);
-        text-align: right;
-        text-transform: uppercase;
-      }
-      .embed-attribution a {
-        color: var(--lunar);
-        text-decoration: none;
-        border-bottom: 1px dashed rgba(125, 138, 163, 0.4);
-      }
-      .embed-attribution a:hover {
-        color: var(--hydrogen);
-        border-bottom-color: var(--hydrogen);
       }
 
       .noms-frame {
@@ -1275,228 +890,81 @@ const activeAvatars = [
         text-transform: none;
         text-shadow: 0 0 8px rgba(255, 216, 74, 0.4);
       }
-      .noms-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-        overflow-y: auto;
-        padding-right: 4px;
-        margin-right: -4px;
-        flex: 1;
-      }
-      .noms-grid::-webkit-scrollbar { width: 4px; }
-      .noms-grid::-webkit-scrollbar-track { background: transparent; }
-      .noms-grid::-webkit-scrollbar-thumb { background: rgba(95, 222, 201, 0.25); border-radius: 2px; }
-      .noms-grid::-webkit-scrollbar-thumb:hover { background: rgba(95, 222, 201, 0.4); }
 
-      .nom-card {
-        background: rgba(232, 240, 255, 0.025);
-        border: 1px solid rgba(232, 240, 255, 0.07);
-        border-radius: 10px;
-        padding: 12px;
-        display: grid;
-        grid-template-columns: 56px 1fr;
-        gap: 12px;
-        transition: border-color 0.2s, background 0.2s;
-      }
-      .nom-card:hover {
-        background: rgba(34, 232, 138, 0.04);
-        border-color: rgba(34, 232, 138, 0.3);
-      }
-      .nom-cover {
-        width: 56px;
-        height: 56px;
-        border-radius: 6px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
-      }
-      .nom-cover-mark {
-        color: rgba(0, 0, 0, 0.4);
-        font-size: 20px;
-        line-height: 1;
-      }
-      .nom-body {
+      /* empty state — day-1 launch when no nominations exist */
+      .noms-empty {
+        flex: 1;
         display: flex;
         flex-direction: column;
-        gap: 6px;
-        min-width: 0;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 30px 24px;
+        gap: 12px;
       }
-      .nom-titles { min-width: 0; }
-      .nom-title {
-        font-family: "Inter", sans-serif;
-        font-weight: 600;
-        font-size: 13px;
-        color: var(--hydrogen);
-        letter-spacing: -0.01em;
-        line-height: 1.25;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+      .noms-empty-glyph {
+        width: 56px;
+        height: 56px;
+        color: var(--beacon);
+        margin-bottom: 6px;
+        opacity: 0.85;
+        animation: emptyGlyphFloat 4s ease-in-out infinite;
+        filter: drop-shadow(0 0 18px rgba(34, 232, 138, 0.5));
       }
-      .nom-artist {
-        font-family: "Inter", sans-serif;
-        font-weight: 400;
-        font-size: 11px;
-        color: var(--hydrogen-dim);
-        letter-spacing: 0;
-        margin-top: 1px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+      @keyframes emptyGlyphFloat {
+        0%, 100% { transform: translateY(0) scale(1); opacity: 0.85; }
+        50% { transform: translateY(-4px) scale(1.05); opacity: 1; }
       }
-      .nom-comment {
+      .noms-empty-glyph svg {
+        width: 100%; height: 100%;
+        display: block;
+      }
+      .noms-empty-glyph svg ellipse {
+        transform-origin: center;
+        transform-box: fill-box;
+        animation: orbitSpin 9s linear infinite;
+      }
+      .noms-empty-title {
         font-family: "Noto Serif TC", serif;
-        font-weight: 400;
-        font-size: 11.5px;
-        color: var(--hydrogen-dim);
-        line-height: 1.45;
-        letter-spacing: 0.02em;
-        padding: 4px 8px;
-        background: rgba(255, 216, 74, 0.05);
-        border-left: 2px solid rgba(255, 216, 74, 0.4);
-        border-radius: 0 4px 4px 0;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-      }
-      .nom-foot {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 8px;
-        margin-top: 2px;
-      }
-      .nom-by {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        min-width: 0;
-      }
-      .nom-by .mini-avatar {
-        width: 18px; height: 18px;
-        border-radius: 50%;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        font-family: "Inter", sans-serif;
-        font-weight: 700;
-        font-size: 8px;
-        color: var(--void);
-        flex-shrink: 0;
-      }
-      .nom-by .mini-name {
-        font-family: "Inter", sans-serif;
-        font-weight: 500;
-        font-size: 11px;
-        color: var(--hydrogen-dim);
-        letter-spacing: 0;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-      .nom-vote {
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-        padding: 4px 9px;
-        background: transparent;
-        border: 1px solid rgba(232, 240, 255, 0.15);
-        border-radius: 999px;
-        color: var(--hydrogen-dim);
-        transition: all 0.15s;
-        flex-shrink: 0;
-      }
-      .nom-vote:hover {
-        color: var(--beacon);
-        border-color: var(--beacon);
-        background: rgba(34, 232, 138, 0.08);
-      }
-      .nom-vote.is-voted {
-        color: var(--void);
-        background: var(--beacon);
-        border-color: var(--beacon);
-        box-shadow: 0 0 12px rgba(34, 232, 138, 0.4);
-      }
-      .nom-vote svg { width: 12px; height: 12px; fill: currentColor; }
-      .nom-vote .vote-count {
-        font-family: "Inter", sans-serif;
-        font-weight: 700;
-        font-size: 11px;
-        letter-spacing: -0.01em;
-        font-variant-numeric: tabular-nums;
-      }
-
-      .active-users {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 14px;
-        padding-top: 12px;
-        margin-top: 12px;
-        border-top: 1px solid rgba(232, 240, 255, 0.06);
-        flex-shrink: 0;
-      }
-      .au-label {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-family: "JetBrains Mono", monospace;
-        font-size: 10px;
-        letter-spacing: 0.15em;
-        text-transform: uppercase;
-        color: var(--hydrogen-dim);
-        flex-shrink: 0;
-      }
-      .au-label b {
-        font-family: "Inter", sans-serif;
-        font-weight: 800;
-        font-size: 14px;
-        color: var(--beacon);
-        letter-spacing: -0.02em;
-        text-transform: none;
-        text-shadow: 0 0 8px rgba(34, 232, 138, 0.4);
-      }
-      .au-pulse {
-        width: 8px; height: 8px;
-        background: var(--beacon);
-        border-radius: 50%;
-        box-shadow: 0 0 8px var(--beacon);
-        animation: pulse 1.6s ease-in-out infinite;
-      }
-      .au-avatars {
-        display: flex;
-        align-items: center;
-        flex-wrap: nowrap;
-        overflow: hidden;
-      }
-      .au-avatar {
-        width: 26px; height: 26px;
-        border-radius: 50%;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        font-family: "Inter", sans-serif;
-        font-weight: 700;
-        font-size: 10px;
-        color: var(--void);
-        border: 2px solid var(--indigo);
-        margin-left: -6px;
-        flex-shrink: 0;
-        transition: transform 0.15s;
-      }
-      .au-avatar:first-child { margin-left: 0; }
-      .au-avatar:hover {
-        transform: translateY(-2px) scale(1.05);
-        z-index: 2;
-      }
-      .au-avatar.au-more {
-        background: rgba(232, 240, 255, 0.08);
+        font-weight: 600;
+        font-size: 20px;
         color: var(--hydrogen);
-        font-size: 9px;
-        letter-spacing: -0.01em;
+        letter-spacing: 0.06em;
+        line-height: 1.3;
+      }
+      .noms-empty-desc {
+        font-family: "Noto Sans TC", sans-serif;
+        font-weight: 400;
+        font-size: 13px;
+        color: var(--hydrogen-dim);
+        letter-spacing: 0.04em;
+        line-height: 1.85;
+        max-width: 360px;
+      }
+      .noms-empty-hint {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 12px;
+        padding: 8px 16px;
+        background: rgba(34, 232, 138, 0.08);
+        border: 1px dashed rgba(34, 232, 138, 0.4);
+        border-radius: 999px;
+        font-family: "Noto Sans TC", sans-serif;
+        font-weight: 500;
+        font-size: 11.5px;
+        color: var(--beacon-bright);
+        letter-spacing: 0.05em;
+      }
+      .noms-empty-hint .emp-arrow {
+        color: var(--beacon);
+        font-weight: 700;
+        animation: empArrowNudge 2.4s ease-in-out infinite;
+        display: inline-block;
+      }
+      @keyframes empArrowNudge {
+        0%, 100% { transform: translateX(0); }
+        50% { transform: translateX(-3px); }
       }
 
       .signin-prompt {
@@ -1581,7 +1049,7 @@ const activeAvatars = [
       .signin-btn:active { transform: translateY(0); }
       .signin-btn svg { width: 14px; height: 14px; }
 
-      /* prefers-reduced-motion: pause every keyframed thing */
+      /* prefers-reduced-motion */
       @media (prefers-reduced-motion: reduce) {
         .aurora,
         .card-curtain,
@@ -1590,9 +1058,9 @@ const activeAvatars = [
         .wordmark .wm-orbit .core,
         .hero-tag .ht-dot,
         .coming-soon .cs-dot,
-        .au-pulse,
-        .embed-title .live-marker::before,
-        .emt-eq span {
+        .noms-empty-glyph,
+        .noms-empty-glyph svg ellipse,
+        .noms-empty-hint .emp-arrow {
           animation: none !important;
           transition: none !important;
         }
@@ -1610,13 +1078,13 @@ const activeAvatars = [
         }
         .player-stack { min-height: 0; }
         .noms-frame { max-height: 600px; }
+        /* on stacked layout, sign-in is ABOVE the noms — flip the hint arrow */
+        .noms-empty-hint .emp-arrow { transform: rotate(90deg); }
       }
       @media (max-width: 700px) {
         .stage { padding: 20px 16px; }
         .wordmark-card { padding: 28px 24px; }
-        .spotify-embed-frame, .noms-frame, .signin-prompt { padding: 14px; }
-        .noms-grid { grid-template-columns: 1fr; }
-        .active-users { flex-direction: column; align-items: flex-start; }
+        .noms-frame, .signin-prompt { padding: 14px; }
       }
     </style>
   </body>
