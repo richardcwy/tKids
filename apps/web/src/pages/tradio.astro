@@ -223,65 +223,17 @@ const activeAvatars = [
             <div class="embed-meta"><b>847</b> 人收聽中</div>
           </div>
           <div class="embed-iframe-wrap">
-            <div class="embed-mock" aria-hidden="true">
-              <div class="embed-mock-flag">MOCK · 上線時為真實 Spotify Embed</div>
-              <div class="embed-mock-top">
-                <div class="embed-mock-art">
-                  <svg viewBox="0 0 24 24" fill="#1ED760">
-                    <path d={spotifyIconPath}></path>
-                  </svg>
-                </div>
-                <div class="embed-mock-info">
-                  <div class="embed-mock-type">Playlist</div>
-                  <div class="embed-mock-title">tRadio · 共頻歌單</div>
-                  <div class="embed-mock-meta">
-                    由 Richard · 47 首 · 由社群點播
-                  </div>
-                </div>
-                <button class="embed-mock-play" aria-label="play">
-                  <svg viewBox="0 0 24 24" fill="currentColor"
-                    ><path d="M8 5v14l11-7z"></path></svg>
-                </button>
-              </div>
-              <ul class="embed-mock-list">
-                <li class="embed-mock-track is-playing">
-                  <span
-                    class="emt-art"
-                    style="background: linear-gradient(135deg, #2e5fff, #5b85ff);"
-                    >♪</span>
-                  <span class="emt-info">
-                    <span class="emt-title">星空下的告白</span>
-                    <span class="emt-artist">tKids</span>
-                  </span>
-                  <span class="emt-eq" aria-hidden="true">
-                    <span></span><span></span><span></span>
-                  </span>
-                  <span class="emt-dur">3:18</span>
-                </li>
-                <li class="embed-mock-track">
-                  <span
-                    class="emt-art"
-                    style="background: linear-gradient(135deg, #ff7aa8, #ffd84a);"
-                    >♪</span>
-                  <span class="emt-info">
-                    <span class="emt-title">綻放</span>
-                    <span class="emt-artist">tGirls</span>
-                  </span>
-                  <span class="emt-dur">3:24</span>
-                </li>
-                <li class="embed-mock-track">
-                  <span
-                    class="emt-art"
-                    style="background: linear-gradient(135deg, #5fdec9, #a855f7);"
-                    >♪</span>
-                  <span class="emt-info">
-                    <span class="emt-title">Heat Waves</span>
-                    <span class="emt-artist">Glass Animals</span>
-                  </span>
-                  <span class="emt-dur">3:58</span>
-                </li>
-              </ul>
-            </div>
+            <iframe
+              class="spotify-iframe"
+              src="https://open.spotify.com/embed/playlist/2UxU4vMWf9VlUuFvhbbPs8?utm_source=generator&theme=0"
+              width="100%"
+              height="352"
+              frameborder="0"
+              allowfullscreen=""
+              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+              loading="lazy"
+              title="tRadio · 共頻歌單 — Spotify"
+            ></iframe>
           </div>
           <div class="embed-attribution">
             播放由 <a href="https://www.spotify.com" rel="noopener">Spotify</a> 提供
@@ -1062,6 +1014,12 @@ const activeAvatars = [
         border-radius: 12px;
         overflow: hidden;
         background: var(--void);
+      }
+      .spotify-iframe {
+        display: block;
+        width: 100%;
+        border: 0;
+        border-radius: 12px;
       }
       .embed-mock {
         position: relative;
