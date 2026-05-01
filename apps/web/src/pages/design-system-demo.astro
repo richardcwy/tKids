@@ -1,0 +1,18 @@
+---
+// Standalone design-system presentation deck (warm-paper editorial palette,
+// not the cosmic tKids style). Lives at /design-system-demo.
+//
+// The source HTML is a complete <!DOCTYPE html> document with its own fonts,
+// scripts, and styles. Rather than transplant it into Astro's template
+// system (which would mangle the inline JS expression syntax inside
+// <style>/<script> blocks), we import the file as raw text at build time
+// and return it as the page response verbatim.
+import demoHtml from "../_static/design-system-demo.html?raw";
+
+return new Response(demoHtml, {
+  headers: {
+    "content-type": "text/html; charset=utf-8",
+    "cache-control": "public, max-age=300",
+  },
+});
+---
