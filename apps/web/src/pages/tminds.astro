@@ -1,0 +1,14 @@
+---
+// Standalone tMinds landing — "回到內心的安靜處". Lives at /tminds.
+// Same pattern as /tcoach, /design-system-demo, /agent-design-system:
+// raw HTML pass-through with GA injected at request time.
+import demoHtml from "../_static/tminds-landing.html?raw";
+import { injectGA } from "../lib/inject-ga";
+
+return new Response(injectGA(demoHtml), {
+  headers: {
+    "content-type": "text/html; charset=utf-8",
+    "cache-control": "public, max-age=300",
+  },
+});
+---

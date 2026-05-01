@@ -1,0 +1,1439 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>tMinds · 回到內心的安靜處</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&family=Noto+Serif+TC:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --parchment: #f5efe4;
+    --parchment-deep: #ede4d1;
+    --oat: #e8dfc9;
+    --paper: #faf6ec;
+
+    --sage: #9aac8e;
+    --sage-bright: #b6c4ab;
+    --sage-deep: #5d6f54;
+
+    --clay: #c89684;
+    --clay-deep: #a47363;
+
+    --lavender: #bbb0c9;
+    --lavender-deep: #8d80a3;
+
+    --brass: #b89559;
+    --brass-deep: #8a6e3f;
+
+    --moss-ink: #2d3528;
+    --bark: #5e5849;
+    --stone: #7d7466;
+    --stone-light: #a8a094;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--parchment);
+    color: var(--moss-ink);
+    font-family: "Inter", "Noto Sans TC", sans-serif;
+    font-size: 14.5px;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* paper grain */
+  body::before {
+    content: "";
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    opacity: 0.07;
+    mix-blend-mode: multiply;
+  }
+  body::after {
+    content: "";
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background:
+      radial-gradient(ellipse 1100px 800px at 15% 10%, rgba(154, 172, 142, 0.1) 0%, transparent 60%),
+      radial-gradient(ellipse 800px 600px at 90% 90%, rgba(200, 150, 132, 0.08) 0%, transparent 60%);
+  }
+
+  /* ============== WORDMARK ============== */
+  .wordmark {
+    display: inline-flex;
+    align-items: center;
+    font-family: "Cormorant Garamond", serif;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    color: inherit;
+    white-space: nowrap;
+    text-decoration: none;
+  }
+  .wordmark > span { display: inline-block; }
+  .wordmark .wm-glyph {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 0.65em;
+    height: 0.65em;
+    margin: 0 0.06em;
+    color: var(--brass);
+    flex-shrink: 0;
+    transform: translateY(-0.04em);
+  }
+  .wordmark .wm-glyph svg { width: 100%; height: 100%; display: block; fill: none; stroke: currentColor; }
+
+  /* ============== TOP NAV ============== */
+  .topnav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 22px 48px;
+    background: rgba(245, 239, 228, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(45, 53, 40, 0.05);
+  }
+  .topnav-brand { font-size: 22px; }
+  .topnav-links {
+    display: flex;
+    gap: 32px;
+    align-items: center;
+  }
+  .topnav-links a {
+    font-family: "Inter", sans-serif;
+    font-weight: 500;
+    font-size: 13px;
+    color: var(--bark);
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    transition: color 0.2s;
+  }
+  .topnav-links a:hover { color: var(--moss-ink); }
+  .topnav-cta {
+    padding: 9px 20px !important;
+    background: var(--moss-ink) !important;
+    color: var(--parchment) !important;
+    border-radius: 999px;
+    font-size: 12.5px !important;
+  }
+  .topnav-cta:hover { background: var(--sage-deep) !important; color: var(--parchment) !important; }
+
+  /* ============== CONTAINER ============== */
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 48px;
+  }
+  .container-tight {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 48px;
+  }
+
+  /* ============== HERO ============== */
+  .hero {
+    text-align: center;
+    padding: 140px 0 160px;
+    position: relative;
+  }
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 14px;
+    background: var(--paper);
+    border: 1px solid rgba(45, 53, 40, 0.1);
+    border-radius: 999px;
+    font-family: "Inter", sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--bark);
+    margin-bottom: 36px;
+  }
+  .hero-tag .pt-dot {
+    width: 5px; height: 5px;
+    background: var(--sage-deep);
+    border-radius: 50%;
+  }
+  .hero-wordmark {
+    font-size: clamp(96px, 13vw, 160px);
+    color: var(--moss-ink);
+    margin-bottom: 36px;
+    font-weight: 400;
+  }
+  .hero-slogan-zh {
+    font-family: "Noto Serif TC", serif;
+    font-weight: 400;
+    font-size: clamp(24px, 2.6vw, 32px);
+    color: var(--moss-ink);
+    line-height: 1.6;
+    margin-bottom: 16px;
+    letter-spacing: 0.1em;
+  }
+  .hero-slogan-en {
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: clamp(18px, 2vw, 22px);
+    color: var(--bark);
+    line-height: 1.4;
+    margin-bottom: 56px;
+  }
+  .hero-cta-row {
+    display: inline-flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 28px;
+    font-family: "Inter", sans-serif;
+    font-weight: 500;
+    font-size: 13.5px;
+    letter-spacing: 0.04em;
+    border: none;
+    border-radius: 999px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .btn-primary {
+    background: var(--moss-ink);
+    color: var(--parchment);
+  }
+  .btn-primary:hover {
+    background: var(--sage-deep);
+    transform: translateY(-1px);
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--bark);
+    border: 1px solid rgba(45, 53, 40, 0.18);
+  }
+  .btn-ghost:hover {
+    background: var(--oat);
+    border-color: var(--bark);
+    color: var(--moss-ink);
+  }
+  .btn svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.5; }
+
+  /* ============== SECTION COMMON ============== */
+  section { position: relative; z-index: 1; }
+  .section-pad { padding: 100px 0; }
+
+  .section-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    font-family: "Inter", sans-serif;
+    font-weight: 500;
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--sage-deep);
+    margin-bottom: 24px;
+  }
+  .section-label::before, .section-label::after {
+    content: "";
+    width: 32px; height: 1px;
+    background: var(--sage-deep);
+    opacity: 0.4;
+  }
+
+  .section-title {
+    font-family: "Cormorant Garamond", serif;
+    font-weight: 400;
+    font-style: italic;
+    font-size: clamp(36px, 4.5vw, 56px);
+    color: var(--moss-ink);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  .section-title em {
+    font-style: normal;
+    font-weight: 500;
+    color: var(--sage-deep);
+  }
+
+  .section-subtitle {
+    font-family: "Noto Serif TC", serif;
+    font-weight: 400;
+    font-size: 16px;
+    color: var(--bark);
+    line-height: 1.85;
+    letter-spacing: 0.06em;
+    text-align: center;
+    max-width: 540px;
+    margin: 0 auto 64px;
+  }
+
+  /* ============== OPENING / WELCOME ============== */
+  .welcome {
+    background: var(--paper);
+    border-top: 1px solid rgba(45, 53, 40, 0.06);
+    border-bottom: 1px solid rgba(45, 53, 40, 0.06);
+    padding: 90px 0;
+    text-align: center;
+  }
+  .welcome-prose {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 0 48px;
+  }
+  .welcome-mark {
+    width: 40px;
+    height: 40px;
+    margin: 0 auto 32px;
+    color: var(--brass);
+  }
+  .welcome-mark svg { width: 100%; height: 100%; fill: none; stroke: currentColor; }
+  .welcome-prose p {
+    font-family: "Noto Serif TC", serif;
+    font-weight: 400;
+    font-size: 18px;
+    color: var(--moss-ink);
+    line-height: 2;
+    letter-spacing: 0.08em;
+    margin-bottom: 22px;
+  }
+  .welcome-prose p:last-child { margin-bottom: 0; }
+  .welcome-prose .signature {
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 16px;
+    color: var(--bark);
+    margin-top: 36px;
+    letter-spacing: 0.02em;
+  }
+
+  /* ============== SERVICE DOORS ============== */
+  .doors-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 22px;
+    max-width: 980px;
+    margin: 0 auto;
+  }
+  .door {
+    background: var(--paper);
+    border: 1px solid rgba(45, 53, 40, 0.08);
+    border-radius: 18px;
+    padding: 40px 36px;
+    transition: transform 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+  }
+  .door:hover {
+    transform: translateY(-4px);
+    border-color: rgba(154, 172, 142, 0.4);
+    box-shadow: 0 12px 30px rgba(45, 53, 40, 0.06);
+  }
+  .door::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 3px;
+    background: var(--accent);
+  }
+  .door.cat-counsel { --accent: var(--sage-deep); }
+  .door.cat-coach { --accent: var(--clay); }
+  .door.cat-spiritual { --accent: var(--lavender-deep); }
+  .door.cat-relax { --accent: var(--brass); }
+
+  .door-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+    margin-bottom: 22px;
+  }
+  .door-icon {
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    border: 1px solid var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
+    background: var(--parchment);
+    flex-shrink: 0;
+  }
+  .door-icon svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.4; }
+  .door-mood {
+    font-family: "Inter", sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+    padding-top: 14px;
+  }
+  .door-name {
+    font-family: "Cormorant Garamond", serif;
+    font-weight: 500;
+    font-size: 32px;
+    color: var(--moss-ink);
+    letter-spacing: -0.01em;
+    line-height: 1.05;
+    margin-bottom: 4px;
+  }
+  .door-name-zh {
+    font-family: "Noto Serif TC", serif;
+    font-weight: 400;
+    font-size: 18px;
+    color: var(--moss-ink);
+    letter-spacing: 0.08em;
+    margin-bottom: 16px;
+  }
+  .door-desc {
+    font-family: "Noto Sans TC", sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    color: var(--bark);
+    line-height: 1.85;
+    letter-spacing: 0.04em;
+    margin-bottom: 22px;
+  }
+  .door-for {
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 15px;
+    color: var(--stone);
+    line-height: 1.5;
+    margin-bottom: 24px;
+    padding: 14px 16px;
+    background: var(--parchment);
+    border-radius: 10px;
+    border-left: 2px solid var(--accent);
+  }
+  .door-for strong {
+    font-style: normal;
+    font-weight: 500;
+    color: var(--bark);
+    display: block;
+    font-family: "Inter", sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .door-meta-row {
+    display: flex;
+    gap: 16px;
+    padding: 16px 0;
+    border-top: 1px solid rgba(45, 53, 40, 0.08);
+    font-family: "Inter", sans-serif;
+    font-size: 11px;
+    color: var(--stone);
+    letter-spacing: 0.04em;
+    margin-bottom: 18px;
+  }
+  .door-meta-row .meta-item {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+  }
+  .door-meta-row b {
+    font-family: "Cormorant Garamond", serif;
+    font-weight: 500;
+    font-size: 15px;
+    color: var(--moss-ink);
+    letter-spacing: 0;
+  }
+  .door-foot {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+  .door-price {
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 14px;
+    color: var(--stone);
+    letter-spacing: 0.02em;
+  }
+  .door-price b {
+    font-family: "Inter", sans-serif;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--moss-ink);
+    letter-spacing: -0.01em;
+    margin-right: 2px;
+  }
+  .door-cta {
+    font-family: "Inter", sans-serif;
+    font-weight: 500;
+    font-size: 12.5px;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    text-decoration: none;
+    padding: 8px 14px;
+    border: 1px solid var(--accent);
+    border-radius: 999px;
+    transition: all 0.25s ease;
+    background: transparent;
+  }
+  .door-cta:hover {
+    background: var(--accent);
+    color: var(--paper);
+  }
+
+  /* ============== PRACTITIONERS ============== */
+  .practitioners {
+    background: var(--oat);
+    border-top: 1px solid rgba(45, 53, 40, 0.06);
+    border-bottom: 1px solid rgba(45, 53, 40, 0.06);
+  }
+  .practitioner-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+    max-width: 980px;
+    margin: 0 auto;
+  }
+  .practitioner {
+    background: var(--paper);
+    border: 1px solid rgba(45, 53, 40, 0.06);
+    border-radius: 16px;
+    padding: 32px 28px 28px;
+    text-align: center;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+  }
+  .practitioner:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 22px rgba(45, 53, 40, 0.06);
+  }
+  .practitioner-avatar {
+    width: 88px; height: 88px;
+    border-radius: 50%;
+    margin: 0 auto 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Cormorant Garamond", serif;
+    font-weight: 500;
+    font-size: 32px;
+    color: var(--paper);
+    box-shadow: 0 3px 12px rgba(45, 53, 40, 0.1);
+  }
+  .pa-1 { background: linear-gradient(135deg, var(--sage), var(--sage-deep)); }
+  .pa-2 { background: linear-gradient(135deg, var(--clay), var(--clay-deep)); }
+  .pa-3 { background: linear-gradient(135deg, var(--lavender), var(--lavender-deep)); }
+  .practitioner-name {
+    font-family: "Cormorant Garamond", serif;
+    font-weight: 500;
+    font-size: 22px;
+    color: var(--moss-ink);
+    letter-spacing: -0.01em;
+    margin-bottom: 4px;
+  }
+  .practitioner-name-zh {
+    font-family: "Noto Serif TC", serif;
+    font-weight: 400;
+    font-size: 14px;
+    color: var(--bark);
+    letter-spacing: 0.08em;
+    margin-bottom: 12px;
+  }
+  .practitioner-bio {
+    font-family: "Noto Sans TC", sans-serif;
+    font-size: 13px;
+    color: var(--bark);
+    line-height: 1.75;
+    letter-spacing: 0.04em;
+    margin-bottom: 16px;
+    text-align: left;
+  }
+  .practitioner-quals {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: center;
+  }
+  .qual-pill {
+    font-family: "Inter", sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    color: var(--sage-deep);
+    border: 1px solid rgba(154, 172, 142, 0.5);
+    padding: 3px 9px;
+    border-radius: 4px;
+    background: rgba(154, 172, 142, 0.06);
+  }
+
+  /* ============== MOOD CHECK ============== */
+  .moodcheck {
+    text-align: center;
+  }
+  .moodcheck-card {
+    max-width: 580px;
+    margin: 0 auto;
+    background: var(--paper);
+    border: 1px solid rgba(45, 53, 40, 0.08);
+    border-radius: 18px;
+    padding: 48px 40px;
+  }
+  .moodcheck-q {
+    font-family: "Noto Serif TC", serif;
+    font-weight: 400;
+    font-size: 22px;
+    color: var(--moss-ink);
+    line-height: 1.5;
+    letter-spacing: 0.06em;
+    margin-bottom: 28px;
+  }
+  .moodcheck-options {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 28px;
+  }
+  .mood-opt {
+    padding: 11px 20px;
+    background: var(--parchment);
+    border: 1px solid rgba(45, 53, 40, 0.1);
+    border-radius: 999px;
+    font-family: "Noto Sans TC", sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    color: var(--bark);
+    letter-spacing: 0.06em;
+    transition: all 0.25s ease;
+    cursor: pointer;
+  }
+  .mood-opt:hover {
+    background: var(--sage-bright);
+    border-color: var(--sage);
+    color: var(--moss-ink);
+  }
+  .mood-opt.is-selected {
+    background: var(--sage-deep);
+    border-color: var(--sage-deep);
+    color: var(--paper);
+  }
+  .moodcheck-followup {
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 16px;
+    color: var(--stone);
+    line-height: 1.6;
+    padding-top: 20px;
+    border-top: 1px solid rgba(45, 53, 40, 0.06);
+  }
+
+  /* ============== PRACTICES ============== */
+  .practices {
+    background: var(--paper);
+    border-top: 1px solid rgba(45, 53, 40, 0.06);
+    border-bottom: 1px solid rgba(45, 53, 40, 0.06);
+  }
+  .practices-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    max-width: 920px;
+    margin: 0 auto;
+  }
+  .practice {
+    background: var(--parchment);
+    border: 1px solid rgba(45, 53, 40, 0.06);
+    border-radius: 14px;
+    padding: 28px 26px;
+    transition: transform 0.4s ease, border-color 0.4s ease;
+  }
+  .practice:hover {
+    transform: translateY(-2px);
+    border-color: rgba(184, 149, 89, 0.3);
+  }
+  .practice-icon {
+    width: 38px; height: 38px;
+    color: var(--brass);
+    margin-bottom: 18px;
+  }
+  .practice-icon svg { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 1.2; }
+  .practice-duration {
+    font-family: "Inter", sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--brass-deep);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .practice-name {
+    font-family: "Cormorant Garamond", serif;
+    font-weight: 500;
+    font-size: 20px;
+    color: var(--moss-ink);
+    letter-spacing: -0.01em;
+    margin-bottom: 4px;
+    line-height: 1.2;
+  }
+  .practice-name-zh {
+    font-family: "Noto Serif TC", serif;
+    font-weight: 400;
+    font-size: 14px;
+    color: var(--bark);
+    letter-spacing: 0.08em;
+    margin-bottom: 14px;
+  }
+  .practice-desc {
+    font-family: "Noto Sans TC", sans-serif;
+    font-size: 13px;
+    color: var(--bark);
+    line-height: 1.75;
+    letter-spacing: 0.04em;
+    margin-bottom: 18px;
+  }
+  .practice-link {
+    font-family: "Inter", sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+    color: var(--brass-deep);
+    text-decoration: none;
+    letter-spacing: 0.06em;
+    border-bottom: 1px solid rgba(184, 149, 89, 0.3);
+    padding-bottom: 1px;
+    transition: border-color 0.2s;
+  }
+  .practice-link:hover { border-bottom-color: var(--brass-deep); }
+
+  /* ============== FAQ ============== */
+  .faq-list {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .faq-item {
+    border-bottom: 1px solid rgba(45, 53, 40, 0.1);
+    padding: 28px 0;
+  }
+  .faq-item:first-child { border-top: 1px solid rgba(45, 53, 40, 0.1); }
+  .faq-q {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    gap: 20px;
+  }
+  .faq-q-text {
+    font-family: "Noto Serif TC", serif;
+    font-weight: 500;
+    font-size: 18px;
+    color: var(--moss-ink);
+    letter-spacing: 0.06em;
+    line-height: 1.5;
+  }
+  .faq-toggle {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    border: 1px solid rgba(45, 53, 40, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--bark);
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+    background: transparent;
+  }
+  .faq-toggle::before {
+    content: "+";
+    font-family: "Inter", sans-serif;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 1;
+  }
+  .faq-item.is-open .faq-toggle {
+    background: var(--moss-ink);
+    color: var(--parchment);
+    border-color: var(--moss-ink);
+    transform: rotate(45deg);
+  }
+  .faq-a {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.4s ease;
+    font-family: "Noto Sans TC", sans-serif;
+    font-weight: 400;
+    font-size: 14.5px;
+    color: var(--bark);
+    line-height: 1.95;
+    letter-spacing: 0.04em;
+  }
+  .faq-item.is-open .faq-a {
+    max-height: 500px;
+    padding-top: 18px;
+  }
+  .faq-a a {
+    color: var(--sage-deep);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(93, 111, 84, 0.3);
+  }
+  .faq-a a:hover { border-bottom-color: var(--sage-deep); }
+
+  /* ============== CTA BLOCK ============== */
+  .closing {
+    text-align: center;
+    background: var(--moss-ink);
+    color: var(--parchment);
+  }
+  .closing .section-label { color: var(--sage-bright); }
+  .closing .section-label::before, .closing .section-label::after {
+    background: var(--sage-bright); opacity: 0.4;
+  }
+  .closing .section-title { color: var(--parchment); }
+  .closing .section-title em { color: var(--sage-bright); }
+  .closing .section-subtitle { color: var(--oat); }
+  .closing .btn-primary {
+    background: var(--brass);
+    color: var(--moss-ink);
+  }
+  .closing .btn-primary:hover {
+    background: var(--brass-deep);
+    color: var(--parchment);
+  }
+  .closing .btn-ghost {
+    color: var(--oat);
+    border-color: rgba(245, 239, 228, 0.25);
+  }
+  .closing .btn-ghost:hover {
+    background: rgba(245, 239, 228, 0.08);
+    border-color: var(--oat);
+    color: var(--parchment);
+  }
+
+  /* ============== FOOTER ============== */
+  footer {
+    background: var(--parchment-deep);
+    padding: 64px 48px 36px;
+    border-top: 1px solid rgba(45, 53, 40, 0.08);
+  }
+  .foot-grid {
+    max-width: 1080px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 40px;
+  }
+  .foot-brand {
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 16px;
+    color: var(--bark);
+    line-height: 1.7;
+    letter-spacing: 0.02em;
+    max-width: 320px;
+    margin-top: 14px;
+  }
+  .foot h4 {
+    font-family: "Inter", sans-serif;
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--moss-ink);
+    margin-bottom: 16px;
+  }
+  .foot ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .foot ul a {
+    font-family: "Noto Sans TC", "Inter", sans-serif;
+    font-weight: 400;
+    font-size: 13px;
+    color: var(--bark);
+    text-decoration: none;
+    letter-spacing: 0.02em;
+    transition: color 0.2s;
+  }
+  .foot ul a:hover { color: var(--moss-ink); }
+  .foot-crisis {
+    background: var(--paper);
+    border: 1px solid rgba(45, 53, 40, 0.08);
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-top: 16px;
+  }
+  .foot-crisis-label {
+    font-family: "Inter", sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--clay-deep);
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .foot-crisis-text {
+    font-family: "Noto Sans TC", sans-serif;
+    font-size: 12.5px;
+    color: var(--bark);
+    line-height: 1.65;
+    letter-spacing: 0.02em;
+  }
+  .foot-crisis-text b {
+    font-family: "Cormorant Garamond", serif;
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--moss-ink);
+    letter-spacing: 0;
+  }
+  .foot-bottom {
+    max-width: 1080px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding-top: 32px;
+    border-top: 1px solid rgba(45, 53, 40, 0.08);
+    font-family: "Inter", sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--stone);
+  }
+  .foot-bottom a { color: var(--bark); text-decoration: none; }
+  .foot-bottom a:hover { color: var(--moss-ink); }
+
+  /* ============== RESPONSIVE ============== */
+  @media (max-width: 900px) {
+    .container, .container-tight { padding: 0 32px; }
+    .topnav { padding: 18px 24px; }
+    .topnav-links { gap: 16px; }
+    .topnav-links a:not(.topnav-cta) { display: none; }
+    .doors-grid { grid-template-columns: 1fr; }
+    .practitioner-grid { grid-template-columns: 1fr; }
+    .practices-grid { grid-template-columns: 1fr; }
+    .foot-grid { grid-template-columns: 1fr 1fr; gap: 30px; }
+    .foot-brand-cell { grid-column: span 2; }
+    .hero { padding: 80px 0 100px; }
+    .section-pad { padding: 70px 0; }
+    .welcome { padding: 70px 0; }
+  }
+  @media (max-width: 600px) {
+    .container, .container-tight { padding: 0 24px; }
+    .foot { padding: 48px 24px 30px; }
+    .foot-grid { grid-template-columns: 1fr; }
+    .foot-brand-cell { grid-column: span 1; }
+    .door { padding: 32px 26px; }
+    .door-meta-row { flex-wrap: wrap; gap: 12px; }
+    .moodcheck-card { padding: 36px 28px; }
+    .moodcheck-q { font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ TOP NAV ============ -->
+<nav class="topnav">
+  <a href="#" class="wordmark topnav-brand" aria-label="tMinds home">
+    <span>t</span>
+    <span class="wm-glyph">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="12" r="10" stroke-width="1.4"/>
+        <circle cx="12" cy="12" r="3.4" fill="currentColor" stroke="none"/>
+      </svg>
+    </span>
+    <span>Minds</span>
+  </a>
+  <div class="topnav-links">
+    <a href="#doors">服務</a>
+    <a href="#practitioners">諮商師</a>
+    <a href="#practices">日常練習</a>
+    <a href="#faq">常見問題</a>
+    <a href="#book" class="topnav-cta">預約對話</a>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-tag">
+      <span class="pt-dot"></span>
+      心理諮商 · 輔導 · 靈性探索
+    </div>
+    <h1 class="wordmark hero-wordmark">
+      <span>t</span>
+      <span class="wm-glyph">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="12" r="10" stroke-width="1.4"/>
+          <circle cx="12" cy="12" r="3.4" fill="currentColor" stroke="none"/>
+        </svg>
+      </span>
+      <span>Minds</span>
+    </h1>
+    <p class="hero-slogan-zh">回到內心的安靜處</p>
+    <p class="hero-slogan-en">A quiet place to return to.</p>
+    <div class="hero-cta-row">
+      <a href="#book" class="btn btn-primary">預約一次對話</a>
+      <a href="#doors" class="btn btn-ghost">了解我們的服務</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WELCOME ============ -->
+<section class="welcome">
+  <div class="welcome-prose">
+    <div class="welcome-mark">
+      <svg viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="10" stroke-width="1.2"/>
+        <circle cx="12" cy="12" r="3.4" fill="currentColor" stroke="none"/>
+      </svg>
+    </div>
+    <p>有時候我們不知道自己怎麼了，只是覺得一切都重了一點。</p>
+    <p>tMinds 是一個讓你停下來、好好照顧自己的地方。在這裡，你可以選擇深度的諮商陪伴，或只是花十五分鐘做一個呼吸練習。</p>
+    <p>我們不急著告訴你「該怎麼辦」，而是先陪你看看「現在的你是什麼樣子」。</p>
+    <div class="signature">— tMinds 團隊</div>
+  </div>
+</section>
+
+<!-- ============ THE FOUR DOORS ============ -->
+<section class="section-pad" id="doors">
+  <div class="container">
+    <div class="section-label">服務</div>
+    <h2 class="section-title">four <em>doors</em> in</h2>
+    <p class="section-subtitle">我們提供四種不同深度的支持，沒有對錯，只有此刻最適合你的那扇門。</p>
+
+    <div class="doors-grid">
+      <!-- counseling -->
+      <div class="door cat-counsel">
+        <div class="door-header">
+          <div class="door-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 6 a6 6 0 0 1 6 6c0 3.5-3 6-6 8c-3-2-6-4.5-6-8a6 6 0 0 1 6-6z"/><circle cx="12" cy="12" r="2"/></svg>
+          </div>
+          <span class="door-mood">深度</span>
+        </div>
+        <div class="door-name">Counseling</div>
+        <div class="door-name-zh">心理諮商</div>
+        <p class="door-desc">
+          與專業諮商心理師建立穩定的對話關係，逐次梳理情緒、過去經驗、人際模式。適合需要長期陪伴與深度自我探索的人。
+        </p>
+        <div class="door-for">
+          <strong>適合此刻的你，如果</strong>
+          有些事情困擾你已經一段時間了，你想要好好被聽見、被看懂。
+        </div>
+        <div class="door-meta-row">
+          <span class="meta-item"><b>50</b> 分鐘 / 次</span>
+          <span class="meta-item">1:1 私人</span>
+          <span class="meta-item">每週 或 雙週</span>
+        </div>
+        <div class="door-foot">
+          <div class="door-price"><b>NT$ 2,000</b> / 50 分鐘</div>
+          <a href="#" class="door-cta">預約諮商</a>
+        </div>
+      </div>
+
+      <!-- coaching -->
+      <div class="door cat-coach">
+        <div class="door-header">
+          <div class="door-icon">
+            <svg viewBox="0 0 24 24"><path d="M5 17 L9 13 L13 16 L19 9"/><path d="M16 9 L19 9 L19 12"/></svg>
+          </div>
+          <span class="door-mood">前進</span>
+        </div>
+        <div class="door-name">Coaching</div>
+        <div class="door-name-zh">生命輔導</div>
+        <p class="door-desc">
+          當你有方向卻卡住時，我們陪你釐清目標、建立步驟。著重行動與當下的決策，給未來的自己更清晰的路。
+        </p>
+        <div class="door-for">
+          <strong>適合此刻的你，如果</strong>
+          你知道想去哪裡，只是不確定該怎麼走第一步。
+        </div>
+        <div class="door-meta-row">
+          <span class="meta-item"><b>60</b> 分鐘 / 次</span>
+          <span class="meta-item">主題式</span>
+          <span class="meta-item">6–12 次</span>
+        </div>
+        <div class="door-foot">
+          <div class="door-price"><b>NT$ 1,800</b> / 60 分鐘</div>
+          <a href="#" class="door-cta">了解輔導</a>
+        </div>
+      </div>
+
+      <!-- spiritual -->
+      <div class="door cat-spiritual">
+        <div class="door-header">
+          <div class="door-icon">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3 A 9 9 0 0 1 12 21"/><path d="M3 12 A 9 9 0 0 1 21 12"/></svg>
+          </div>
+          <span class="door-mood">向內</span>
+        </div>
+        <div class="door-name">Inner Work</div>
+        <div class="door-name-zh">靈性探索</div>
+        <p class="door-desc">
+          靜坐、書寫、夢的工作、儀式設計。這不是宗教，而是與內在自我對話的時間，讓你重新感知自己的存在。
+        </p>
+        <div class="door-for">
+          <strong>適合此刻的你，如果</strong>
+          你想花時間和自己安靜相處，不為了「修好什麼」，只為認識自己。
+        </div>
+        <div class="door-meta-row">
+          <span class="meta-item"><b>90</b> 分鐘 / 次</span>
+          <span class="meta-item">小團體 (4–6 人)</span>
+          <span class="meta-item">月度</span>
+        </div>
+        <div class="door-foot">
+          <div class="door-price"><b>NT$ 1,200</b> / 次</div>
+          <a href="#" class="door-cta">參加團體</a>
+        </div>
+      </div>
+
+      <!-- relax -->
+      <div class="door cat-relax">
+        <div class="door-header">
+          <div class="door-icon">
+            <svg viewBox="0 0 24 24"><path d="M3 12 Q 6 7 12 12 T 21 12"/><path d="M3 16 Q 6 12 12 16 T 21 16" opacity="0.5"/></svg>
+          </div>
+          <span class="door-mood">放下</span>
+        </div>
+        <div class="door-name">Unwind</div>
+        <div class="door-name-zh">放鬆減壓</div>
+        <p class="door-desc">
+          引導式呼吸、身體掃描、漸進式肌肉放鬆。短時間就能上手的工具，幫你在忙碌的一天中找回幾分鐘的安穩。
+        </p>
+        <div class="door-for">
+          <strong>適合此刻的你，如果</strong>
+          你只是需要喘一口氣，不想承諾什麼，先試試看就好。
+        </div>
+        <div class="door-meta-row">
+          <span class="meta-item"><b>15–30</b> 分鐘</span>
+          <span class="meta-item">隨時</span>
+          <span class="meta-item">免費試用</span>
+        </div>
+        <div class="door-foot">
+          <div class="door-price"><b>免費</b> 開始</div>
+          <a href="#" class="door-cta">立即試用</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRACTITIONERS ============ -->
+<section class="practitioners section-pad" id="practitioners">
+  <div class="container">
+    <div class="section-label">諮商師</div>
+    <h2 class="section-title">the people who <em>listen</em></h2>
+    <p class="section-subtitle">每位諮商師都通過台灣諮商心理師執照認證，並各自有自己擅長與深耕的領域。</p>
+
+    <div class="practitioner-grid">
+      <div class="practitioner">
+        <div class="practitioner-avatar pa-1">林</div>
+        <div class="practitioner-name">Lin Yi-shan</div>
+        <div class="practitioner-name-zh">林宜珊　諮商心理師</div>
+        <p class="practitioner-bio">
+          擅長創傷修復、情緒調節、人際關係議題。曾任職醫療系統八年，相信穩定的對話是改變的起點。
+        </p>
+        <div class="practitioner-quals">
+          <span class="qual-pill">EMDR</span>
+          <span class="qual-pill">CBT</span>
+          <span class="qual-pill">家族治療</span>
+        </div>
+      </div>
+
+      <div class="practitioner">
+        <div class="practitioner-avatar pa-2">陳</div>
+        <div class="practitioner-name">Chen Wei</div>
+        <div class="practitioner-name-zh">陳威　諮商心理師</div>
+        <p class="practitioner-bio">
+          擅長職涯轉換、青年焦慮、伴侶溝通。喜歡用故事和隱喻陪人看見不一樣的可能性。
+        </p>
+        <div class="practitioner-quals">
+          <span class="qual-pill">敘事治療</span>
+          <span class="qual-pill">伴侶諮商</span>
+          <span class="qual-pill">職涯諮商</span>
+        </div>
+      </div>
+
+      <div class="practitioner">
+        <div class="practitioner-avatar pa-3">蔡</div>
+        <div class="practitioner-name">Tsai Yuwen</div>
+        <div class="practitioner-name-zh">蔡郁雯　靈性陪伴師</div>
+        <p class="practitioner-bio">
+          引導靜坐、書寫、夢的工作十二年。她相信內在的聲音值得被認真聆聽，無論你信仰什麼。
+        </p>
+        <div class="practitioner-quals">
+          <span class="qual-pill">MBSR</span>
+          <span class="qual-pill">夢的工作</span>
+          <span class="qual-pill">表達性藝術</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MOOD CHECK ============ -->
+<section class="moodcheck section-pad">
+  <div class="container">
+    <div class="section-label">先從這裡開始</div>
+    <h2 class="section-title">how is your <em>weather</em>?</h2>
+    <p class="section-subtitle">你不一定要知道自己想要什麼，但可以從感受開始。</p>
+    <div class="moodcheck-card">
+      <div class="moodcheck-q">今天，你的內心是什麼樣的天氣？</div>
+      <div class="moodcheck-options" id="moodOptions">
+        <button class="mood-opt" data-mood="sunny">晴朗</button>
+        <button class="mood-opt" data-mood="cloudy">多雲</button>
+        <button class="mood-opt" data-mood="drizzle">有點雨</button>
+        <button class="mood-opt" data-mood="heavy">沉重</button>
+        <button class="mood-opt" data-mood="unclear">說不清</button>
+      </div>
+      <div class="moodcheck-followup" id="moodFollowup">
+        無論答案是什麼，都可以從這裡開始。
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DAILY PRACTICES ============ -->
+<section class="practices section-pad" id="practices">
+  <div class="container">
+    <div class="section-label">日常練習</div>
+    <h2 class="section-title">small <em>moments</em></h2>
+    <p class="section-subtitle">不需要諮商也可以開始照顧自己。這些練習短到只要幾分鐘，免費試用。</p>
+
+    <div class="practices-grid">
+      <div class="practice">
+        <div class="practice-icon">
+          <svg viewBox="0 0 24 24"><path d="M3 12 Q 6 8 12 12 T 21 12"/><path d="M3 15 Q 6 11 12 15 T 21 15" opacity="0.6"/></svg>
+        </div>
+        <div class="practice-duration">3 min</div>
+        <div class="practice-name">The 4-7-8 Breath</div>
+        <div class="practice-name-zh">478 呼吸法</div>
+        <p class="practice-desc">
+          吸氣 4 秒、屏息 7 秒、吐氣 8 秒。最簡單的減壓工具，三分鐘有效。
+        </p>
+        <a href="#" class="practice-link">開始練習 →</a>
+      </div>
+
+      <div class="practice">
+        <div class="practice-icon">
+          <svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 9 h8 M8 13 h6 M8 17 h4"/></svg>
+        </div>
+        <div class="practice-duration">5 min</div>
+        <div class="practice-name">Morning Pages</div>
+        <div class="practice-name-zh">晨間隨筆</div>
+        <p class="practice-desc">
+          每天早上自由書寫五分鐘。不修改、不評論，只把腦中有的東西寫出來。
+        </p>
+        <a href="#" class="practice-link">取得提示 →</a>
+      </div>
+
+      <div class="practice">
+        <div class="practice-icon">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>
+        </div>
+        <div class="practice-duration">10 min</div>
+        <div class="practice-name">Body Scan</div>
+        <div class="practice-name-zh">身體掃描</div>
+        <p class="practice-desc">
+          從頭到腳慢慢觀察身體感受，不用解決什麼，只是感覺自己「在」。
+        </p>
+        <a href="#" class="practice-link">引導音訊 →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section class="section-pad" id="faq">
+  <div class="container">
+    <div class="section-label">常見問題</div>
+    <h2 class="section-title">questions, <em>honestly</em> answered</h2>
+    <p class="section-subtitle">如果你還有疑問，下面是我們最常被問到的。</p>
+
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q">
+          <div class="faq-q-text">tMinds 是心理治療嗎？</div>
+          <button class="faq-toggle" aria-label="展開"></button>
+        </div>
+        <div class="faq-a">
+          <p>tMinds 提供「諮商」與「輔導」兩種專業服務，由領有台灣諮商心理師執照的人員進行。心理諮商著重情緒、人際與深層議題的長期陪伴；輔導則更聚焦於具體目標的釐清與行動。</p>
+          <p style="margin-top: 12px;">我們不開立藥物、不進行精神科診斷。如果你的狀況需要精神醫療，我們會協助轉介合適的精神科醫師。</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">
+          <div class="faq-q-text">會被健保給付嗎？費用怎麼算？</div>
+          <button class="faq-toggle" aria-label="展開"></button>
+        </div>
+        <div class="faq-a">
+          <p>自費諮商目前不在健保給付範圍內。我們的費用為每 50 分鐘 NT$ 2,000，與多數台灣諮商所的市場行情相近。</p>
+          <p style="margin-top: 12px;">學生、低收入戶或長期穩定諮商的個案可申請費用減免，請於初次預約時告知我們。如果經濟是阻礙，我們會盡力一起想辦法。</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">
+          <div class="faq-q-text">我不知道我需要什麼，可以怎麼開始？</div>
+          <button class="faq-toggle" aria-label="展開"></button>
+        </div>
+        <div class="faq-a">
+          <p>不需要先想清楚再來找我們，「不知道」本身就是一個值得探索的起點。</p>
+          <p style="margin-top: 12px;">建議從以下其中一個開始：(1) 先做免費的「放鬆減壓」練習試試看；(2) 預約一次 20 分鐘的免費「初次對話」，由諮商師陪你判斷哪一種服務適合你；(3) 直接寫信告訴我們現在的狀況，我們會回覆。</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">
+          <div class="faq-q-text">線上諮商還是面對面？</div>
+          <button class="faq-toggle" aria-label="展開"></button>
+        </div>
+        <div class="faq-a">
+          <p>兩種都可以。我們的諮商所位於台北大安區，也提供透過加密視訊的線上諮商。第一次諮商建議面對面，後續可以依你的方便彈性選擇。</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">
+          <div class="faq-q-text">資料安全與隱私？</div>
+          <button class="faq-toggle" aria-label="展開"></button>
+        </div>
+        <div class="faq-a">
+          <p>諮商內容受《心理師法》與《個人資料保護法》保障，所有諮商記錄為加密保存，僅個案本人與該位諮商師可查閱。</p>
+          <p style="margin-top: 12px;">例外狀況包含：當有自傷或傷人立即危險時，諮商師依法須通報相關單位。完整隱私政策請見 <a href="#">隱私聲明</a>。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CLOSING CTA ============ -->
+<section class="closing section-pad" id="book">
+  <div class="container">
+    <div class="section-label">下一步</div>
+    <h2 class="section-title">a small step is <em>still</em> a step</h2>
+    <p class="section-subtitle">你不需要先準備好。可以先寫一封信給我們，或預約一次免費的初次對話。</p>
+    <div class="hero-cta-row">
+      <a href="#" class="btn btn-primary">預約一次對話</a>
+      <a href="#" class="btn btn-ghost">寫信給我們</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="foot-grid">
+    <div class="foot-brand-cell">
+      <a href="#" class="wordmark" style="font-size: 26px;">
+        <span>t</span>
+        <span class="wm-glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="1.4"/><circle cx="12" cy="12" r="3.4" fill="currentColor" stroke="none"/></svg></span>
+        <span>Minds</span>
+      </a>
+      <p class="foot-brand">回到內心的安靜處。台北大安區諮商所，提供心理諮商、生命輔導、靈性探索與放鬆減壓服務。</p>
+      <div class="foot-crisis">
+        <div class="foot-crisis-label">緊急協助</div>
+        <div class="foot-crisis-text">
+          如果你或身邊的人正面臨立即危險，請撥打<br>
+          <b>1925 安心專線</b>（24 小時）或 <b>110</b>。
+        </div>
+      </div>
+    </div>
+    <div>
+      <h4>服務</h4>
+      <ul>
+        <li><a href="#doors">心理諮商</a></li>
+        <li><a href="#doors">生命輔導</a></li>
+        <li><a href="#doors">靈性探索</a></li>
+        <li><a href="#doors">放鬆減壓</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>關於</h4>
+      <ul>
+        <li><a href="#practitioners">諮商師</a></li>
+        <li><a href="#faq">常見問題</a></li>
+        <li><a href="#">收費與減免</a></li>
+        <li><a href="#">聯絡我們</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>資源</h4>
+      <ul>
+        <li><a href="#practices">日常練習</a></li>
+        <li><a href="#">隱私聲明</a></li>
+        <li><a href="#">服務條款</a></li>
+        <li><a href="#">心理健康資源</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <span>© 2027 tMinds · 台北大安區忠孝東路 · 02-2700-0000</span>
+    <span>part of the <a href="#">tKids</a> universe</span>
+  </div>
+</footer>
+
+<script>
+  // FAQ accordion
+  document.querySelectorAll('.faq-q').forEach(q => {
+    q.addEventListener('click', () => {
+      const item = q.closest('.faq-item');
+      item.classList.toggle('is-open');
+    });
+  });
+
+  // Mood check — adapts followup copy based on selection
+  const followups = {
+    sunny: '很好。也許今天可以做一件讓自己更感到滿足的事。',
+    cloudy: '多雲也很好，不需要強迫自己晴天。試試一個 3 分鐘的呼吸練習？',
+    drizzle: '謝謝你誠實地說出來。也許值得花一段時間和自己安靜相處。',
+    heavy: '我們聽到了。當沉重的時候，預約一次對話可能會有幫助。',
+    unclear: '不知道也是一種答案。我們陪你慢慢看清楚。'
+  };
+  document.querySelectorAll('.mood-opt').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.mood-opt').forEach(b => b.classList.remove('is-selected'));
+      btn.classList.add('is-selected');
+      const fu = followups[btn.dataset.mood];
+      const followupEl = document.getElementById('moodFollowup');
+      followupEl.style.opacity = '0';
+      setTimeout(() => {
+        followupEl.textContent = fu;
+        followupEl.style.transition = 'opacity 0.4s ease';
+        followupEl.style.opacity = '1';
+      }, 200);
+    });
+  });
+</script>
+
+</body>
+</html>
