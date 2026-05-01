@@ -1,0 +1,15 @@
+---
+// Standalone tCoach landing — Albert's pickleball coaching site. Lives at
+// /tcoach. Cream-warm functional palette (own design system, not the cosmic
+// tKids style). Full <!DOCTYPE html> document served verbatim via Vite's
+// ?raw import — same pattern as /design-system-demo. The portrait references
+// /tcoach/albert.png, served directly from apps/web/public/tcoach/.
+import demoHtml from "../_static/tcoach-landing.html?raw";
+
+return new Response(demoHtml, {
+  headers: {
+    "content-type": "text/html; charset=utf-8",
+    "cache-control": "public, max-age=300",
+  },
+});
+---

@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>tCoach — Albert 的匹克球教練站</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* tCoach palette — pickleball-inspired, warm-functional */
+    --cream: #faf6ed;
+    --cream-deep: #f3ecd9;
+    --paper: #fffaf0;
+    --paper-dim: #f8f1de;
+
+    --court: #2b6cb5;
+    --court-bright: #4287d2;
+    --court-deep: #1e4f88;
+
+    --pickle: #d4e635;
+    --pickle-bright: #e5ee2c;
+    --pickle-deep: #97a712;
+
+    --sage: #7ea990;
+    --sage-deep: #5b836f;
+
+    --charcoal: #2a2a30;
+    --slate: #4a4a55;
+    --stone: #7a7a85;
+    --stone-light: #b8b8c0;
+
+    --line: rgba(42, 42, 48, 0.08);
+    --line-strong: rgba(42, 42, 48, 0.16);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--cream);
+    color: var(--charcoal);
+    font-family: "Inter", "Noto Sans TC", sans-serif;
+    font-size: 14px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+
+  /* subtle paper grain — internal tool warmth */
+  body::before {
+    content: "";
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    opacity: 0.04;
+    mix-blend-mode: multiply;
+  }
+
+  /* ============== WORDMARK ============== */
+  .wordmark {
+    display: inline-flex;
+    align-items: center;
+    font-family: "Inter", sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    color: inherit;
+    white-space: nowrap;
+    text-decoration: none;
+  }
+  .wordmark > span { display: inline-block; }
+  .wordmark .wm-paddle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 0.78em;
+    height: 0.78em;
+    margin: 0 0.04em;
+    color: var(--pickle-deep);
+    flex-shrink: 0;
+    transform: translateY(-0.04em);
+    filter: drop-shadow(0 1px 2px rgba(151, 167, 18, 0.3));
+  }
+  .wordmark .wm-paddle svg { width: 100%; height: 100%; display: block; fill: currentColor; }
+
+  /* ============== TOP NAV ============== */
+  .topnav {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 22px 36px;
+    border-bottom: 1px solid var(--line);
+    background: rgba(250, 246, 237, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  .topnav-brand { font-size: 22px; }
+  .topnav-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    color: var(--stone);
+    letter-spacing: 0.08em;
+  }
+  .topnav-meta .internal-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: var(--pickle);
+    color: var(--charcoal);
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .topnav-meta .internal-tag::before {
+    content: "";
+    width: 5px; height: 5px;
+    background: var(--charcoal);
+    border-radius: 50%;
+  }
+  .topnav-user {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: "Inter", sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+    color: var(--slate);
+  }
+  .topnav-user .user-dot {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--court-bright), var(--sage));
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-family: "Inter", sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: -0.02em;
+  }
+
+  /* ============== STAGE ============== */
+  .stage {
+    position: relative;
+    z-index: 1;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 32px 36px 48px;
+    display: grid;
+    grid-template-columns: 5fr 7fr;
+    gap: 24px;
+    align-items: stretch;
+  }
+
+  /* ============== ALBERT HERO CARD ============== */
+  .albert-card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .albert-card::before {
+    content: "";
+    position: absolute;
+    top: 0; right: 0;
+    width: 220px; height: 220px;
+    background: radial-gradient(circle at 70% 30%, rgba(212, 230, 53, 0.18), transparent 60%);
+    pointer-events: none;
+  }
+  .albert-card::after {
+    content: "";
+    position: absolute;
+    bottom: -40px; left: -30px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(126, 169, 144, 0.18), transparent 65%);
+    pointer-events: none;
+  }
+  .albert-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    margin-bottom: 22px;
+    position: relative;
+    z-index: 1;
+  }
+  .albert-portrait {
+    width: 100px;
+    height: 100px;
+    border-radius: 18px;
+    overflow: hidden;
+    flex-shrink: 0;
+    box-shadow: 0 4px 14px rgba(43, 108, 181, 0.18);
+    position: relative;
+    background: linear-gradient(135deg, var(--pickle) 0%, var(--sage) 100%);
+  }
+  .albert-portrait img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 18%;
+    display: block;
+  }
+  .albert-meta { flex: 1; min-width: 0; padding-top: 2px; }
+  .albert-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px;
+    background: rgba(43, 108, 181, 0.1);
+    border: 1px solid rgba(43, 108, 181, 0.25);
+    border-radius: 999px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--court-deep);
+    margin-bottom: 10px;
+  }
+  .albert-tag::before {
+    content: "";
+    width: 5px; height: 5px;
+    background: var(--court);
+    border-radius: 50%;
+  }
+  .albert-name {
+    font-family: "Inter", sans-serif;
+    font-weight: 800;
+    font-size: 32px;
+    letter-spacing: -0.025em;
+    color: var(--charcoal);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .albert-role {
+    font-family: "Noto Sans TC", sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--stone);
+    letter-spacing: 0.05em;
+  }
+
+  .albert-bio {
+    font-family: "Noto Sans TC", sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--slate);
+    letter-spacing: 0.02em;
+    margin-bottom: 22px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* certifications / quick stats */
+  .albert-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+    position: relative;
+    z-index: 1;
+  }
+  .stat-tile {
+    background: var(--cream);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 12px 14px;
+  }
+  .stat-num {
+    font-family: "Inter", sans-serif;
+    font-weight: 800;
+    font-size: 24px;
+    color: var(--charcoal);
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+  .stat-label {
+    font-family: "Noto Sans TC", sans-serif;
+    font-weight: 500;
+    font-size: 11px;
+    color: var(--stone);
+    margin-top: 4px;
+    letter-spacing: 0.04em;
+  }
+
+  /* primary action row */
+  .albert-cta-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 1;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 20px;
+    font-family: "Inter", sans-serif;
+    font-weight: 600;
+    font-size: 13.5px;
+    letter-spacing: -0.005em;
+    border: none;
+    border-radius: 10px;
+    transition: all 0.15s ease;
+    background: var(--court);
+    color: white;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05), 0 4px 14px rgba(43, 108, 181, 0.25);
+  }
+  .btn:hover {
+    background: var(--court-deep);
+    transform: translateY(-1px);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05), 0 6px 18px rgba(43, 108, 181, 0.35);
+  }
+  .btn.btn-ghost {
+    background: transparent;
+    color: var(--court);
+    box-shadow: none;
+    border: 1px solid var(--line-strong);
+  }
+  .btn.btn-ghost:hover {
+    background: rgba(43, 108, 181, 0.06);
+    border-color: var(--court);
+    color: var(--court-deep);
+    transform: translateY(-1px);
+    box-shadow: none;
+  }
+  .btn svg { width: 14px; height: 14px; fill: currentColor; }
+
+  /* ============== BOT CARD ============== */
+  .bot-card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 22px 24px;
+    margin-top: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .bot-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .bot-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: "Inter", sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--charcoal);
+    letter-spacing: -0.01em;
+  }
+  .bot-title .bot-dot {
+    width: 8px; height: 8px;
+    background: var(--pickle-deep);
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px rgba(212, 230, 53, 0.35);
+    animation: botPulse 2s ease-in-out infinite;
+  }
+  @keyframes botPulse {
+    0%, 100% { box-shadow: 0 0 0 3px rgba(212, 230, 53, 0.35); }
+    50% { box-shadow: 0 0 0 6px rgba(212, 230, 53, 0.15); }
+  }
+  .bot-status {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--stone);
+    text-transform: uppercase;
+  }
+  .bot-thread {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .bot-msg {
+    max-width: 85%;
+    padding: 10px 14px;
+    border-radius: 14px;
+    font-family: "Noto Sans TC", sans-serif;
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 1.55;
+    letter-spacing: 0.02em;
+  }
+  .bot-msg.from-bot {
+    align-self: flex-start;
+    background: var(--cream-deep);
+    color: var(--charcoal);
+    border-bottom-left-radius: 4px;
+  }
+  .bot-msg.from-user {
+    align-self: flex-end;
+    background: var(--court);
+    color: white;
+    border-bottom-right-radius: 4px;
+  }
+  .bot-msg.from-bot.has-pill {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .bot-msg-availability {
+    display: inline-flex;
+    align-self: flex-start;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-family: "Inter", sans-serif;
+    font-weight: 600;
+    font-size: 11.5px;
+    color: var(--charcoal);
+  }
+  .bot-msg-availability .court-dot {
+    width: 8px; height: 8px;
+    background: var(--pickle-bright);
+    border-radius: 50%;
+  }
+  .bot-input {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: var(--cream);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+  }
+  .bot-input input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-family: "Noto Sans TC", "Inter", sans-serif;
+    font-size: 13px;
+    color: var(--charcoal);
+    letter-spacing: 0.02em;
+  }
+  .bot-input input::placeholder { color: var(--stone-light); }
+  .bot-input button {
+    background: var(--court);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-family: "Inter", sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+  }
+  .bot-input button:hover { background: var(--court-deep); }
+  .bot-hint {
+    margin-top: 8px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    color: var(--stone);
+    letter-spacing: 0.05em;
+    text-align: center;
+  }
+
+  /* ============== RESERVATION PANEL ============== */
+  .reservation-panel {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 24px 26px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+    gap: 12px;
+  }
+  .panel-title-block { min-width: 0; }
+  .panel-title {
+    font-family: "Inter", sans-serif;
+    font-weight: 800;
+    font-size: 22px;
+    letter-spacing: -0.025em;
+    color: var(--charcoal);
+    line-height: 1.1;
+    margin-bottom: 4px;
+  }
+  .panel-sub {
+    font-family: "Noto Sans TC", sans-serif;
+    font-weight: 400;
+    font-size: 12.5px;
+    color: var(--stone);
+    letter-spacing: 0.04em;
+  }
+  /* venue selector */
+  .venue-pills {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .venue-pill {
+    padding: 7px 12px;
+    background: var(--cream);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-family: "Inter", sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+    color: var(--slate);
+    letter-spacing: -0.005em;
+    transition: all 0.15s ease;
+  }
+  .venue-pill:hover { background: var(--paper-dim); }
+  .venue-pill.is-active {
+    background: var(--court);
+    color: white;
+    border-color: var(--court);
+  }
+
+  /* date row */
+  .date-row {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 14px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+  }
+  .date-pill {
+    flex-shrink: 0;
+    background: var(--cream);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 10px 14px;
+    text-align: center;
+    transition: all 0.15s ease;
+    min-width: 64px;
+  }
+  .date-pill:hover { background: var(--paper-dim); }
+  .date-pill.is-active {
+    background: var(--charcoal);
+    border-color: var(--charcoal);
+  }
+  .date-pill.is-active .dp-day,
+  .date-pill.is-active .dp-num,
+  .date-pill.is-active .dp-month { color: white; }
+  .date-pill.is-active .dp-num { color: var(--pickle); }
+  .dp-day {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--stone);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .dp-num {
+    font-family: "Inter", sans-serif;
+    font-weight: 800;
+    font-size: 22px;
+    color: var(--charcoal);
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin: 4px 0 2px;
+  }
+  .dp-month {
+    font-family: "Inter", sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--stone);
+    letter-spacing: 0.05em;
+  }
+
+  /* legend */
+  .legend {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 12px;
+    padding: 10px 14px;
+    background: var(--cream);
+    border-radius: 10px;
+  }
+  .legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: "Inter", sans-serif;
+    font-weight: 500;
+    font-size: 11px;
+    color: var(--slate);
+    letter-spacing: 0.02em;
+  }
+  .legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .legend-dot.open { background: var(--pickle-bright); border: 1px solid var(--pickle-deep); }
+  .legend-dot.booked { background: var(--stone-light); }
+  .legend-dot.albert { background: var(--court); border: 1px solid var(--court-deep); }
+
+  /* time slot list */
+  .slot-list {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-right: 4px;
+    margin-right: -4px;
+  }
+  .slot-list::-webkit-scrollbar { width: 5px; }
+  .slot-list::-webkit-scrollbar-track { background: transparent; }
+  .slot-list::-webkit-scrollbar-thumb { background: var(--stone-light); border-radius: 3px; }
+  .slot-list::-webkit-scrollbar-thumb:hover { background: var(--stone); }
+
+  .slot-row {
+    display: grid;
+    grid-template-columns: 80px 1fr auto;
+    gap: 14px;
+    align-items: center;
+    padding: 10px 14px;
+    background: var(--cream);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+  .slot-row:hover { background: var(--paper-dim); border-color: var(--line-strong); }
+  .slot-row.is-full { opacity: 0.55; }
+  .slot-time {
+    font-family: "JetBrains Mono", monospace;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--charcoal);
+    letter-spacing: 0.02em;
+  }
+  .slot-courts {
+    display: flex;
+    gap: 4px;
+  }
+  .court-chip {
+    height: 24px;
+    padding: 0 10px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: "Inter", sans-serif;
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: -0.005em;
+    border: 1px solid;
+  }
+  .court-chip.open {
+    background: rgba(212, 230, 53, 0.25);
+    color: var(--charcoal);
+    border-color: rgba(151, 167, 18, 0.4);
+  }
+  .court-chip.booked {
+    background: var(--cream-deep);
+    color: var(--stone);
+    border-color: var(--line);
+  }
+  .court-chip.albert {
+    background: rgba(43, 108, 181, 0.12);
+    color: var(--court-deep);
+    border-color: rgba(43, 108, 181, 0.35);
+  }
+  .court-chip.albert::before {
+    content: "★";
+    font-size: 9px;
+    color: var(--court);
+  }
+  .slot-action {
+    font-family: "Inter", sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--court);
+    padding: 6px 12px;
+    border: 1px solid var(--court);
+    border-radius: 8px;
+    background: transparent;
+    transition: all 0.15s ease;
+    letter-spacing: -0.005em;
+  }
+  .slot-action:hover {
+    background: var(--court);
+    color: white;
+  }
+  .slot-row.is-full .slot-action {
+    color: var(--stone-light);
+    border-color: var(--line);
+  }
+  .slot-row.is-full .slot-action:hover {
+    background: transparent;
+    color: var(--stone-light);
+  }
+
+  /* ============== FOOTER ============== */
+  .foot {
+    text-align: center;
+    padding: 18px 36px 32px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    color: var(--stone);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .foot a { color: var(--court); text-decoration: none; }
+  .foot a:hover { color: var(--court-deep); }
+
+  /* ============== RESPONSIVE ============== */
+  @media (max-width: 1024px) {
+    .stage {
+      grid-template-columns: 1fr;
+      gap: 20px;
+      padding: 24px 24px 32px;
+    }
+  }
+  @media (max-width: 600px) {
+    .topnav { padding: 18px 20px; flex-wrap: wrap; gap: 10px; }
+    .stage { padding: 20px 18px 28px; }
+    .albert-card, .reservation-panel, .bot-card { padding: 20px; }
+    .albert-row { gap: 14px; }
+    .albert-portrait { width: 72px; height: 72px; font-size: 44px; }
+    .albert-name { font-size: 26px; }
+    .albert-stats { grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+    .stat-tile { padding: 10px; }
+    .stat-num { font-size: 20px; }
+    .panel-header { flex-direction: column; align-items: stretch; }
+    .panel-title { font-size: 18px; }
+    .slot-row { grid-template-columns: 70px 1fr; }
+    .slot-row .slot-action { grid-column: 1 / -1; justify-self: stretch; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <a href="#" class="wordmark topnav-brand" aria-label="tCoach home">
+    <span>t</span>
+    <span class="wm-paddle">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <!-- pickleball: distinctive perforated plastic ball -->
+        <circle cx="12" cy="12" r="10" fill="currentColor"/>
+        <!-- the iconic round holes pattern -->
+        <g fill="#fffaf0" opacity="0.85">
+          <circle cx="12" cy="6" r="1.4"/>
+          <circle cx="8.5" cy="8.5" r="1.4"/>
+          <circle cx="15.5" cy="8.5" r="1.4"/>
+          <circle cx="6" cy="12" r="1.4"/>
+          <circle cx="12" cy="12" r="1.4"/>
+          <circle cx="18" cy="12" r="1.4"/>
+          <circle cx="8.5" cy="15.5" r="1.4"/>
+          <circle cx="15.5" cy="15.5" r="1.4"/>
+          <circle cx="12" cy="18" r="1.4"/>
+        </g>
+      </svg>
+    </span>
+    <span>Coach</span>
+  </a>
+  <div class="topnav-meta">
+    <span class="internal-tag">internal</span>
+    <span class="topnav-user">
+      <span class="user-dot">RY</span>
+      Richard
+    </span>
+  </div>
+</nav>
+
+<div class="stage">
+
+  <!-- LEFT COLUMN: Albert hero + bot preview -->
+  <div class="left-col">
+
+    <div class="albert-card">
+      <div class="albert-row">
+        <div class="albert-portrait">
+          <img src="/tcoach/albert.png" alt="Albert" />
+        </div>
+        <div class="albert-meta">
+          <div class="albert-tag">your coach</div>
+          <div class="albert-name">Albert</div>
+          <div class="albert-role">匹克球教練 · 認證 PPR Pro · 12 年經驗</div>
+        </div>
+      </div>
+
+      <p class="albert-bio">
+        在台北教球十二年的 Albert，從 NCAA 網球選手轉戰匹克球，擅長帶新手快速入門，也能陪資深選手調整戰術。每週三、五晚間及週末固定開課，私人指導也歡迎預約。
+      </p>
+
+      <div class="albert-stats">
+        <div class="stat-tile">
+          <div class="stat-num">240+</div>
+          <div class="stat-label">指導過的學生</div>
+        </div>
+        <div class="stat-tile">
+          <div class="stat-num">4.9</div>
+          <div class="stat-label">學生評分</div>
+        </div>
+        <div class="stat-tile">
+          <div class="stat-num">3.5–5.0</div>
+          <div class="stat-label">DUPR 等級指導</div>
+        </div>
+      </div>
+
+      <div class="albert-cta-row">
+        <a href="#" class="btn">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <!-- pickleball paddle: rounded rectangular face + handle -->
+            <path d="M8 2.5C5.5 2.5 4 4.5 4 7.5v3.5c0 2.8 2 5 4.5 5h.5v5.5c0 .8.5 1.3 1 1.3s1-.5 1-1.3V16h.5C13.5 16 16 13.8 16 11v-3.5c0-3-2-5-4.5-5z" transform="translate(2 0)"/>
+          </svg>
+          預約 Albert 私人課
+        </a>
+        <a href="#" class="btn btn-ghost">
+          <svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/></svg>
+          公開課程表
+        </a>
+      </div>
+    </div>
+
+    <!-- BOT PREVIEW -->
+    <div class="bot-card">
+      <div class="bot-header">
+        <div class="bot-title">
+          <span class="bot-dot"></span>
+          tCoach 助手
+        </div>
+        <span class="bot-status">線上 · 平均 5 秒回覆</span>
+      </div>
+      <div class="bot-thread">
+        <div class="bot-msg from-bot">
+          👋 嗨 Richard！我是 tCoach 助手，可以幫你查場地、預約時段，或回答打球的問題。
+        </div>
+        <div class="bot-msg from-user">
+          我想週六上午跟朋友打 90 分鐘
+        </div>
+        <div class="bot-msg from-bot has-pill">
+          幫你查到了 — 內湖場館週六 10:00 還有 2 個球場可預約。要直接幫你訂嗎？
+          <span class="bot-msg-availability">
+            <span class="court-dot"></span>
+            內湖場館 · 週六 10:00 · 球場 2、4
+          </span>
+        </div>
+      </div>
+      <div class="bot-input">
+        <input type="text" placeholder="跟我說你想要的時段，例如 “明天傍晚”" />
+        <button>傳送</button>
+      </div>
+      <div class="bot-hint">↑ 預覽 · 完整功能即將上線</div>
+    </div>
+
+  </div>
+
+  <!-- RIGHT COLUMN: reservation panel -->
+  <div class="reservation-panel">
+    <div class="panel-header">
+      <div class="panel-title-block">
+        <div class="panel-title">場地預約</div>
+        <div class="panel-sub">點選日期與時段，一鍵預約球場 · 顯示 60 分鐘區段</div>
+      </div>
+      <div class="venue-pills">
+        <button class="venue-pill is-active">內湖場館</button>
+        <button class="venue-pill">大安公園</button>
+        <button class="venue-pill">士林</button>
+      </div>
+    </div>
+
+    <div class="date-row">
+      <button class="date-pill">
+        <div class="dp-day">今</div>
+        <div class="dp-num">28</div>
+        <div class="dp-month">4 月</div>
+      </button>
+      <button class="date-pill">
+        <div class="dp-day">明</div>
+        <div class="dp-num">29</div>
+        <div class="dp-month">4 月</div>
+      </button>
+      <button class="date-pill">
+        <div class="dp-day">三</div>
+        <div class="dp-num">30</div>
+        <div class="dp-month">4 月</div>
+      </button>
+      <button class="date-pill is-active">
+        <div class="dp-day">六</div>
+        <div class="dp-num">03</div>
+        <div class="dp-month">5 月</div>
+      </button>
+      <button class="date-pill">
+        <div class="dp-day">日</div>
+        <div class="dp-num">04</div>
+        <div class="dp-month">5 月</div>
+      </button>
+      <button class="date-pill">
+        <div class="dp-day">一</div>
+        <div class="dp-num">05</div>
+        <div class="dp-month">5 月</div>
+      </button>
+      <button class="date-pill">
+        <div class="dp-day">二</div>
+        <div class="dp-num">06</div>
+        <div class="dp-month">5 月</div>
+      </button>
+    </div>
+
+    <div class="legend">
+      <span class="legend-item"><span class="legend-dot open"></span>可預約</span>
+      <span class="legend-item"><span class="legend-dot booked"></span>已滿</span>
+      <span class="legend-item"><span class="legend-dot albert"></span>Albert 課程</span>
+    </div>
+
+    <div class="slot-list">
+      <div class="slot-row">
+        <div class="slot-time">07:00</div>
+        <div class="slot-courts">
+          <span class="court-chip open">場 1</span>
+          <span class="court-chip open">場 2</span>
+          <span class="court-chip open">場 3</span>
+          <span class="court-chip open">場 4</span>
+        </div>
+        <button class="slot-action">預約</button>
+      </div>
+      <div class="slot-row">
+        <div class="slot-time">08:00</div>
+        <div class="slot-courts">
+          <span class="court-chip open">場 1</span>
+          <span class="court-chip booked">場 2</span>
+          <span class="court-chip open">場 3</span>
+          <span class="court-chip open">場 4</span>
+        </div>
+        <button class="slot-action">預約</button>
+      </div>
+      <div class="slot-row">
+        <div class="slot-time">09:00</div>
+        <div class="slot-courts">
+          <span class="court-chip albert">場 1 Albert 初階班</span>
+          <span class="court-chip booked">場 2</span>
+          <span class="court-chip booked">場 3</span>
+          <span class="court-chip open">場 4</span>
+        </div>
+        <button class="slot-action">預約</button>
+      </div>
+      <div class="slot-row">
+        <div class="slot-time">10:00</div>
+        <div class="slot-courts">
+          <span class="court-chip booked">場 1</span>
+          <span class="court-chip open">場 2</span>
+          <span class="court-chip booked">場 3</span>
+          <span class="court-chip open">場 4</span>
+        </div>
+        <button class="slot-action">預約</button>
+      </div>
+      <div class="slot-row">
+        <div class="slot-time">11:00</div>
+        <div class="slot-courts">
+          <span class="court-chip booked">場 1</span>
+          <span class="court-chip albert">場 2 Albert 私人課</span>
+          <span class="court-chip booked">場 3</span>
+          <span class="court-chip booked">場 4</span>
+        </div>
+        <button class="slot-action">預約</button>
+      </div>
+      <div class="slot-row is-full">
+        <div class="slot-time">12:00</div>
+        <div class="slot-courts">
+          <span class="court-chip booked">場 1</span>
+          <span class="court-chip booked">場 2</span>
+          <span class="court-chip booked">場 3</span>
+          <span class="court-chip booked">場 4</span>
+        </div>
+        <button class="slot-action">已滿</button>
+      </div>
+      <div class="slot-row">
+        <div class="slot-time">13:00</div>
+        <div class="slot-courts">
+          <span class="court-chip open">場 1</span>
+          <span class="court-chip open">場 2</span>
+          <span class="court-chip booked">場 3</span>
+          <span class="court-chip open">場 4</span>
+        </div>
+        <button class="slot-action">預約</button>
+      </div>
+      <div class="slot-row">
+        <div class="slot-time">14:00</div>
+        <div class="slot-courts">
+          <span class="court-chip open">場 1</span>
+          <span class="court-chip open">場 2</span>
+          <span class="court-chip open">場 3</span>
+          <span class="court-chip booked">場 4</span>
+        </div>
+        <button class="slot-action">預約</button>
+      </div>
+      <div class="slot-row">
+        <div class="slot-time">15:00</div>
+        <div class="slot-courts">
+          <span class="court-chip albert">場 1 Albert 進階班</span>
+          <span class="court-chip booked">場 2</span>
+          <span class="court-chip open">場 3</span>
+          <span class="court-chip open">場 4</span>
+        </div>
+        <button class="slot-action">預約</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="foot">
+  tCoach v0.1 · internal beta · part of the <a href="https://tkids.tw" target="_blank" rel="noopener">tKids</a> universe
+</div>
+
+<script>
+  // Date pill switching
+  document.querySelectorAll('.date-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      document.querySelectorAll('.date-pill').forEach(p => p.classList.remove('is-active'));
+      pill.classList.add('is-active');
+    });
+  });
+  // Venue pill switching
+  document.querySelectorAll('.venue-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      document.querySelectorAll('.venue-pill').forEach(p => p.classList.remove('is-active'));
+      pill.classList.add('is-active');
+    });
+  });
+  // Slot action toggle (book / booked)
+  document.querySelectorAll('.slot-action').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (btn.textContent.trim() === '已滿') return;
+      const original = btn.textContent;
+      btn.textContent = '已預約 ✓';
+      btn.style.background = 'var(--court)';
+      btn.style.color = 'white';
+      setTimeout(() => {
+        btn.textContent = original;
+        btn.style.background = '';
+        btn.style.color = '';
+      }, 1800);
+    });
+  });
+</script>
+
+</body>
+</html>
