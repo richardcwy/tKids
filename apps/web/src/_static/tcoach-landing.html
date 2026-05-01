@@ -725,6 +725,60 @@
   .foot a { color: var(--court); text-decoration: none; }
   .foot a:hover { color: var(--court-deep); }
 
+  /* ============== MARQUEE ============== */
+  .marquee {
+    overflow: hidden;
+    background: var(--cream-deep);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    padding: 12px 0;
+    position: relative;
+  }
+  /* edge fades so text eases in/out instead of clipping */
+  .marquee::before, .marquee::after {
+    content: "";
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 60px;
+    z-index: 2;
+    pointer-events: none;
+  }
+  .marquee::before {
+    left: 0;
+    background: linear-gradient(90deg, var(--cream-deep), transparent);
+  }
+  .marquee::after {
+    right: 0;
+    background: linear-gradient(-90deg, var(--cream-deep), transparent);
+  }
+  .marquee-track {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    white-space: nowrap;
+    animation: marqueeSlide 60s linear infinite;
+    font-family: "Noto Sans TC", "Inter", sans-serif;
+    font-weight: 500;
+    font-size: 13px;
+    color: var(--slate);
+    letter-spacing: 0.05em;
+  }
+  .marquee-ball {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    color: var(--pickle-deep);
+    flex-shrink: 0;
+    filter: drop-shadow(0 1px 1.5px rgba(151, 167, 18, 0.25));
+  }
+  .marquee-ball svg { width: 100%; height: 100%; display: block; fill: currentColor; }
+  @keyframes marqueeSlide {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
   /* ============== RESPONSIVE ============== */
   @media (max-width: 1024px) {
     .stage {
@@ -1020,6 +1074,23 @@
     </div>
   </div>
 
+</div>
+
+<div class="marquee">
+  <div class="marquee-track">
+    <span class="marquee-ball"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><g fill="#fffaf0" opacity="0.85"><circle cx="12" cy="6" r="1.4"/><circle cx="8.5" cy="8.5" r="1.4"/><circle cx="15.5" cy="8.5" r="1.4"/><circle cx="6" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="18" cy="12" r="1.4"/><circle cx="8.5" cy="15.5" r="1.4"/><circle cx="15.5" cy="15.5" r="1.4"/><circle cx="12" cy="18" r="1.4"/></g></svg></span>
+    <span>Albert 教練的好大家都知道</span>
+    <span class="marquee-ball"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><g fill="#fffaf0" opacity="0.85"><circle cx="12" cy="6" r="1.4"/><circle cx="8.5" cy="8.5" r="1.4"/><circle cx="15.5" cy="8.5" r="1.4"/><circle cx="6" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="18" cy="12" r="1.4"/><circle cx="8.5" cy="15.5" r="1.4"/><circle cx="15.5" cy="15.5" r="1.4"/><circle cx="12" cy="18" r="1.4"/></g></svg></span>
+    <span>誠摯歡迎大家一起來體驗 Pickleball</span>
+    <span class="marquee-ball"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><g fill="#fffaf0" opacity="0.85"><circle cx="12" cy="6" r="1.4"/><circle cx="8.5" cy="8.5" r="1.4"/><circle cx="15.5" cy="8.5" r="1.4"/><circle cx="6" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="18" cy="12" r="1.4"/><circle cx="8.5" cy="15.5" r="1.4"/><circle cx="15.5" cy="15.5" r="1.4"/><circle cx="12" cy="18" r="1.4"/></g></svg></span>
+    <span>魔球隊暑訓即將開放報名</span>
+    <span class="marquee-ball"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><g fill="#fffaf0" opacity="0.85"><circle cx="12" cy="6" r="1.4"/><circle cx="8.5" cy="8.5" r="1.4"/><circle cx="15.5" cy="8.5" r="1.4"/><circle cx="6" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="18" cy="12" r="1.4"/><circle cx="8.5" cy="15.5" r="1.4"/><circle cx="15.5" cy="15.5" r="1.4"/><circle cx="12" cy="18" r="1.4"/></g></svg></span>
+    <span>Albert 教練的好大家都知道</span>
+    <span class="marquee-ball"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><g fill="#fffaf0" opacity="0.85"><circle cx="12" cy="6" r="1.4"/><circle cx="8.5" cy="8.5" r="1.4"/><circle cx="15.5" cy="8.5" r="1.4"/><circle cx="6" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="18" cy="12" r="1.4"/><circle cx="8.5" cy="15.5" r="1.4"/><circle cx="15.5" cy="15.5" r="1.4"/><circle cx="12" cy="18" r="1.4"/></g></svg></span>
+    <span>誠摯歡迎大家一起來體驗 Pickleball</span>
+    <span class="marquee-ball"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><g fill="#fffaf0" opacity="0.85"><circle cx="12" cy="6" r="1.4"/><circle cx="8.5" cy="8.5" r="1.4"/><circle cx="15.5" cy="8.5" r="1.4"/><circle cx="6" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="18" cy="12" r="1.4"/><circle cx="8.5" cy="15.5" r="1.4"/><circle cx="15.5" cy="15.5" r="1.4"/><circle cx="12" cy="18" r="1.4"/></g></svg></span>
+    <span>魔球隊暑訓即將開放報名</span>
+  </div>
 </div>
 
 <div class="foot">
