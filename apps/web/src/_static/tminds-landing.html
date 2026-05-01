@@ -153,16 +153,20 @@
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    padding: 6px 14px;
+    padding: 7px 16px;
     background: var(--paper);
     border: 1px solid rgba(45, 53, 40, 0.1);
     border-radius: 999px;
-    font-family: "Inter", sans-serif;
-    font-size: 11px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
+    /* CJK-friendly stack — Inter has no CJK glyphs, which previously caused
+       the pill text to fall back to system fonts at a smaller baseline and
+       letter-spacing 0.18em to inflate the pill width awkwardly. */
+    font-family: "Noto Serif TC", "Inter", serif;
+    font-weight: 400;
+    font-size: 13px;
+    letter-spacing: 0.05em;
     color: var(--bark);
     margin-bottom: 36px;
+    line-height: 1.4;
   }
   .hero-tag .pt-dot {
     width: 5px; height: 5px;
