@@ -1,0 +1,3564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agent UI — A design system for corporate AI agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ========================================================================
+   RESET
+   ======================================================================== */
+*, *::before, *::after { box-sizing: border-box; }
+html, body, h1, h2, h3, h4, h5, h6, p, ul, ol, figure, blockquote, dl, dd, pre { margin: 0; padding: 0; }
+ul, ol { list-style: none; }
+img, svg { max-width: 100%; display: block; }
+button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; padding: 0; }
+input, textarea, select { font: inherit; color: inherit; }
+a { color: inherit; text-decoration: none; }
+
+/* ========================================================================
+   DESIGN TOKENS
+   ======================================================================== */
+:root {
+  /* Color — neutrals (warm) */
+  --bg: #F5F1E8;
+  --surface: #FFFFFF;
+  --surface-2: #FAF7EF;
+  --surface-3: #EFEADC;
+  --ink: #1F1B16;
+  --ink-2: #5C5852;
+  --ink-3: #8C8782;
+  --ink-4: #B5B0A4;
+  --line: #E0DAC8;
+  --line-2: #CDC6B0;
+  --line-3: #B5AD92;
+
+  /* Color — brand */
+  --accent: #B7410E;
+  --accent-soft: #F4E1D6;
+  --accent-deep: #6B2406;
+
+  /* Color — semantic */
+  --info: #1D4ED8;
+  --info-soft: #DBEAFE;
+  --info-deep: #1E3A8A;
+  --success: #15803D;
+  --success-soft: #DCFCE7;
+  --success-deep: #14532D;
+  --warning: #B45309;
+  --warning-soft: #FEF3C7;
+  --warning-deep: #78350F;
+  --danger: #B91C1C;
+  --danger-soft: #FEE2E2;
+  --danger-deep: #7F1D1D;
+
+  /* Type */
+  --display: 'Fraunces', Georgia, serif;
+  --sans: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+  --mono: 'IBM Plex Mono', 'SF Mono', Menlo, monospace;
+
+  /* Spacing scale */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 24px;
+  --s-6: 32px;
+  --s-7: 48px;
+  --s-8: 64px;
+  --s-9: 96px;
+  --s-10: 128px;
+
+  /* Radius */
+  --r-sm: 4px;
+  --r-md: 8px;
+  --r-lg: 12px;
+  --r-xl: 16px;
+  --r-pill: 999px;
+}
+
+/* ========================================================================
+   BASE
+   ======================================================================== */
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection { background: var(--accent); color: var(--surface); }
+
+/* ========================================================================
+   TYPOGRAPHY UTILITIES
+   ======================================================================== */
+.display { font-family: var(--display); font-weight: 300; letter-spacing: -0.02em; }
+.italic { font-style: italic; }
+.mono { font-family: var(--mono); }
+
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--ink-3);
+}
+
+.label-mono {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-2);
+  letter-spacing: -0.01em;
+}
+
+.lead {
+  font-size: 19px;
+  line-height: 1.55;
+  color: var(--ink-2);
+  max-width: 64ch;
+}
+
+.prose p { color: var(--ink-2); margin-bottom: var(--s-4); max-width: 64ch; }
+.prose p:last-child { margin-bottom: 0; }
+.prose strong { color: var(--ink); font-weight: 500; }
+.prose a { color: var(--accent); border-bottom: 1px solid var(--accent-soft); }
+.prose a:hover { border-bottom-color: var(--accent); }
+
+/* ========================================================================
+   LAYOUT
+   ======================================================================== */
+.container {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 var(--s-6);
+}
+
+.container-narrow {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 0 var(--s-6);
+}
+
+/* ========================================================================
+   TOP NAV
+   ======================================================================== */
+.topnav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(245, 241, 232, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+.topnav-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: var(--s-3) var(--s-6);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-5);
+}
+.topnav-brand {
+  font-family: var(--display);
+  font-size: 19px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+.topnav-brand em { color: var(--accent); font-style: italic; }
+.topnav-links {
+  display: flex;
+  gap: var(--s-5);
+  font-family: var(--mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.topnav-links a { color: var(--ink-2); transition: color 0.15s; }
+.topnav-links a:hover { color: var(--ink); }
+.topnav-meta {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-3);
+  letter-spacing: 0.05em;
+}
+@media (max-width: 760px) {
+  .topnav-links { display: none; }
+}
+
+/* ========================================================================
+   HERO
+   ======================================================================== */
+.hero {
+  padding: var(--s-9) 0 var(--s-9);
+  border-bottom: 1px solid var(--line);
+  position: relative;
+}
+.hero-meta {
+  display: flex;
+  gap: var(--s-5);
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--ink-3);
+  margin-bottom: var(--s-7);
+}
+.hero-meta span::before { content: "—"; margin-right: var(--s-2); color: var(--line-3); }
+.hero-meta span:first-child::before { display: none; }
+.hero-title {
+  font-family: var(--display);
+  font-weight: 300;
+  font-size: clamp(56px, 11vw, 144px);
+  line-height: 0.92;
+  letter-spacing: -0.045em;
+  margin-bottom: var(--s-6);
+}
+.hero-title em {
+  font-style: italic;
+  color: var(--accent);
+  font-weight: 400;
+}
+.hero-subtitle {
+  font-size: clamp(18px, 2.4vw, 24px);
+  line-height: 1.4;
+  color: var(--ink-2);
+  max-width: 720px;
+  margin-bottom: var(--s-7);
+}
+.hero-toc {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--s-1);
+  border-top: 1px solid var(--line);
+  padding-top: var(--s-5);
+  margin-top: var(--s-7);
+}
+.hero-toc a {
+  display: flex;
+  gap: var(--s-3);
+  padding: var(--s-3) 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 14px;
+  transition: padding 0.2s;
+}
+.hero-toc a:hover { padding-left: var(--s-2); }
+.hero-toc-num {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-3);
+  letter-spacing: 0.1em;
+  padding-top: 2px;
+}
+
+/* ========================================================================
+   SECTION
+   ======================================================================== */
+.section { padding: var(--s-10) 0; border-top: 1px solid var(--line); }
+.section-header {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  gap: var(--s-6);
+  align-items: baseline;
+  margin-bottom: var(--s-8);
+}
+.section-num {
+  font-family: var(--display);
+  font-size: 56px;
+  font-weight: 300;
+  color: var(--accent);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.section-title-block { padding-top: var(--s-2); }
+.section-title {
+  font-family: var(--display);
+  font-size: clamp(36px, 5vw, 56px);
+  font-weight: 300;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin-bottom: var(--s-4);
+}
+.section-title em { font-style: italic; color: var(--accent); }
+.section-intro {
+  color: var(--ink-2);
+  font-size: 18px;
+  max-width: 64ch;
+  line-height: 1.55;
+}
+@media (max-width: 760px) {
+  .section-header { grid-template-columns: 1fr; gap: var(--s-3); }
+  .section-num { font-size: 36px; }
+}
+
+/* ========================================================================
+   SUB-HEADINGS
+   ======================================================================== */
+.subhead {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-4);
+  margin: var(--s-8) 0 var(--s-5);
+  padding-bottom: var(--s-3);
+  border-bottom: 1px solid var(--line);
+}
+.subhead-num {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-3);
+  letter-spacing: 0.08em;
+}
+.subhead-title {
+  font-family: var(--display);
+  font-size: 28px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.minihead {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--ink-3);
+  margin-bottom: var(--s-3);
+}
+
+/* ========================================================================
+   CARDS / BLOCKS
+   ======================================================================== */
+.surface-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+}
+
+.surface-card-2 {
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+}
+
+/* ========================================================================
+   COMPONENT SHOWCASE GRID
+   ======================================================================== */
+.showcase {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: var(--s-6);
+  padding: var(--s-6) 0;
+  border-bottom: 1px solid var(--line);
+}
+.showcase:last-child { border-bottom: none; }
+.showcase-meta {
+  font-size: 14px;
+}
+.showcase-name {
+  font-family: var(--display);
+  font-size: 22px;
+  font-weight: 400;
+  margin-bottom: var(--s-2);
+  letter-spacing: -0.01em;
+}
+.showcase-tag {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-3);
+  background: var(--surface-3);
+  padding: 2px 7px;
+  border-radius: var(--r-sm);
+  margin-bottom: var(--s-3);
+}
+.showcase-desc {
+  color: var(--ink-2);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.showcase-canvas {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  padding: var(--s-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+  align-items: flex-start;
+  justify-content: center;
+  min-height: 140px;
+}
+.showcase-canvas.tight { padding: var(--s-4); }
+.showcase-canvas.row { flex-direction: row; flex-wrap: wrap; align-items: center; }
+.showcase-canvas.dark { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+@media (max-width: 880px) {
+  .showcase { grid-template-columns: 1fr; }
+}
+
+/* ========================================================================
+   CORE COMPONENT STYLES (the design system itself)
+   ======================================================================== */
+
+/* --- Buttons --- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 14px;
+  border-radius: var(--r-md);
+  transition: all 0.15s;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+.btn-primary { background: var(--ink); color: var(--surface); }
+.btn-primary:hover { background: #000; }
+.btn-secondary { background: var(--surface); color: var(--ink); border-color: var(--line-2); }
+.btn-secondary:hover { background: var(--surface-2); border-color: var(--line-3); }
+.btn-ghost { color: var(--ink-2); }
+.btn-ghost:hover { color: var(--ink); background: var(--surface-3); }
+.btn-accent { background: var(--accent); color: var(--surface); }
+.btn-accent:hover { background: var(--accent-deep); }
+.btn-danger { background: var(--surface); color: var(--danger); border-color: var(--danger-soft); }
+.btn-danger:hover { background: var(--danger-soft); }
+.btn-sm { font-size: 13px; padding: 6px 10px; }
+.btn-lg { font-size: 15px; padding: 10px 18px; }
+
+/* --- Input --- */
+.input {
+  font-family: var(--sans);
+  font-size: 14px;
+  padding: 8px 12px;
+  background: var(--surface);
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-md);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  width: 100%;
+}
+.input:focus { border-color: var(--ink); box-shadow: 0 0 0 3px var(--surface-3); }
+.input::placeholder { color: var(--ink-3); }
+.input-search {
+  padding-left: 34px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238C8782' stroke-width='2'><circle cx='11' cy='11' r='7'/><path d='m20 20-3.5-3.5'/></svg>");
+  background-repeat: no-repeat;
+  background-position: 12px center;
+}
+
+/* --- Badge / Pill / Chip --- */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: var(--r-pill);
+  border: 1px solid transparent;
+}
+.badge-default { background: var(--surface-3); color: var(--ink-2); }
+.badge-info { background: var(--info-soft); color: var(--info-deep); }
+.badge-success { background: var(--success-soft); color: var(--success-deep); }
+.badge-warning { background: var(--warning-soft); color: var(--warning-deep); }
+.badge-danger { background: var(--danger-soft); color: var(--danger-deep); }
+.badge-accent { background: var(--accent-soft); color: var(--accent-deep); }
+.badge-outline { background: transparent; border-color: var(--line-2); color: var(--ink-2); }
+.badge-dot::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* --- Avatar --- */
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 500;
+  flex-shrink: 0;
+  position: relative;
+}
+.avatar-sm { width: 24px; height: 24px; font-size: 10px; }
+.avatar-lg { width: 44px; height: 44px; font-size: 15px; }
+.avatar-blue { background: var(--info-soft); color: var(--info-deep); }
+.avatar-accent { background: var(--accent-soft); color: var(--accent-deep); }
+.avatar-green { background: var(--success-soft); color: var(--success-deep); }
+.avatar-stone { background: var(--surface-3); color: var(--ink-2); }
+.avatar-status::after {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--success);
+  border: 2px solid var(--surface);
+  bottom: -1px;
+  right: -1px;
+}
+
+/* --- Toggle --- */
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  width: 36px;
+  height: 20px;
+  background: var(--line-2);
+  border-radius: var(--r-pill);
+  position: relative;
+  transition: background 0.15s;
+}
+.toggle::after {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background: var(--surface);
+  border-radius: 50%;
+  top: 2px;
+  left: 2px;
+  transition: left 0.15s;
+}
+.toggle.on { background: var(--ink); }
+.toggle.on::after { left: 18px; }
+
+/* --- Dropdown menu --- */
+.menu {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: var(--s-1);
+  min-width: 200px;
+  box-shadow: 0 4px 12px rgba(31, 27, 22, 0.06);
+}
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: 6px 10px;
+  border-radius: var(--r-sm);
+  font-size: 14px;
+  cursor: pointer;
+}
+.menu-item:hover { background: var(--surface-2); }
+.menu-item .shortcut {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-3);
+}
+.menu-divider { height: 1px; background: var(--line); margin: var(--s-1) 0; }
+
+/* --- User message --- */
+.msg-user {
+  align-self: flex-end;
+  max-width: 85%;
+  background: var(--surface-3);
+  padding: 10px 14px;
+  border-radius: var(--r-lg);
+  border-bottom-right-radius: 4px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* --- Assistant message --- */
+.msg-assistant {
+  font-size: 14px;
+  line-height: 1.65;
+  max-width: 100%;
+  color: var(--ink);
+}
+.msg-assistant strong { font-weight: 500; }
+
+/* --- Tool call card --- */
+.tool-card {
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  font-family: var(--sans);
+  font-size: 13px;
+  overflow: hidden;
+}
+.tool-card-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  color: var(--ink-2);
+}
+.tool-card-head .tool-name { color: var(--ink); font-weight: 500; }
+.tool-card-head .tool-meta { margin-left: auto; font-family: var(--mono); font-size: 11px; color: var(--ink-3); }
+.tool-card.expanded .tool-card-body { display: block; }
+.tool-card-body {
+  display: none;
+  padding: 0 12px 10px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-2);
+  line-height: 1.5;
+  border-top: 1px solid var(--line);
+  padding-top: 10px;
+}
+.tool-card.error .tool-card-head { color: var(--danger); }
+.tool-card.error { border-color: var(--danger-soft); background: var(--danger-soft); }
+
+/* --- Spinner --- */
+.spinner {
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid var(--line-3);
+  border-top-color: var(--ink);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* --- Status indicator (animated) --- */
+.status-line {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  font-size: 13px;
+  color: var(--ink-2);
+}
+.status-line::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; transform: scale(0.85); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+
+/* --- Citation chip --- */
+.cite {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  background: var(--surface-3);
+  color: var(--ink-2);
+  padding: 1px 6px;
+  border-radius: var(--r-sm);
+  margin: 0 2px;
+  vertical-align: super;
+  line-height: 1.4;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: border-color 0.15s;
+}
+.cite:hover { border-color: var(--line-2); }
+
+/* --- Suggestion chip --- */
+.suggest {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  padding: 6px 12px;
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.suggest:hover { border-color: var(--ink); background: var(--surface-2); }
+.suggest .arrow { color: var(--ink-3); }
+
+/* --- File card --- */
+.file-card {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: var(--s-3);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  font-size: 13px;
+  max-width: 320px;
+}
+.file-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+.file-icon.pdf { background: var(--danger-soft); color: var(--danger-deep); }
+.file-icon.doc { background: var(--info-soft); color: var(--info-deep); }
+.file-icon.img { background: var(--success-soft); color: var(--success-deep); }
+.file-icon.csv { background: var(--warning-soft); color: var(--warning-deep); }
+.file-name { font-weight: 500; }
+.file-meta { font-family: var(--mono); font-size: 11px; color: var(--ink-3); }
+
+/* --- Code block --- */
+.code-block {
+  background: var(--ink);
+  color: #E8E2D5;
+  border-radius: var(--r-md);
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.6;
+  overflow: hidden;
+}
+.code-block-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px;
+  border-bottom: 1px solid #2C2823;
+  font-size: 11px;
+  color: var(--ink-4);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.code-block-body { padding: 14px; overflow-x: auto; }
+.code-block-body .kw { color: #D7826B; }
+.code-block-body .str { color: #B5C99A; }
+.code-block-body .com { color: var(--ink-3); font-style: italic; }
+
+/* --- Composer --- */
+.composer {
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  padding: var(--s-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  width: 100%;
+  transition: border-color 0.15s;
+}
+.composer:focus-within { border-color: var(--ink); }
+.composer-attachments {
+  display: flex;
+  gap: var(--s-2);
+  flex-wrap: wrap;
+}
+.composer-attach-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: var(--surface-3);
+  border-radius: var(--r-pill);
+  font-size: 12px;
+}
+.composer-attach-chip .x {
+  color: var(--ink-3);
+  cursor: pointer;
+}
+.composer-textarea {
+  border: none;
+  outline: none;
+  resize: none;
+  min-height: 24px;
+  font-size: 14px;
+  line-height: 1.5;
+  background: transparent;
+  font-family: var(--sans);
+  width: 100%;
+}
+.composer-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+.composer-tools {
+  display: flex;
+  gap: var(--s-1);
+}
+.composer-tool-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--r-md);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink-2);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.composer-tool-btn:hover { background: var(--surface-2); border-color: var(--line); }
+.composer-tool-btn.active { background: var(--accent-soft); color: var(--accent-deep); border-color: var(--accent-soft); }
+.composer-mode-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 4px 10px;
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-pill);
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-2);
+}
+.composer-send {
+  margin-left: auto;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--surface);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* --- Artifact panel --- */
+.artifact {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.artifact-head {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: var(--s-3) var(--s-4);
+  border-bottom: 1px solid var(--line);
+  background: var(--surface-2);
+}
+.artifact-title {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 500;
+}
+.artifact-tabs {
+  display: flex;
+  gap: var(--s-1);
+  margin-left: auto;
+  background: var(--surface-3);
+  padding: 2px;
+  border-radius: var(--r-md);
+}
+.artifact-tab {
+  padding: 3px 10px;
+  font-size: 12px;
+  font-family: var(--mono);
+  border-radius: var(--r-sm);
+  color: var(--ink-2);
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.artifact-tab.active { background: var(--surface); color: var(--ink); }
+.artifact-actions { display: flex; gap: var(--s-1); }
+.artifact-action-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--r-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink-2);
+  cursor: pointer;
+}
+.artifact-action-btn:hover { background: var(--surface-3); color: var(--ink); }
+.artifact-body {
+  padding: var(--s-5);
+  font-size: 13px;
+  line-height: 1.6;
+  flex: 1;
+  overflow: auto;
+}
+.artifact-foot {
+  border-top: 1px solid var(--line);
+  padding: var(--s-2) var(--s-4);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-3);
+}
+
+/* --- Connector card --- */
+.connector-card {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: var(--s-4);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  font-size: 14px;
+}
+.connector-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--r-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-weight: 500;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+.connector-info { flex: 1; min-width: 0; }
+.connector-name { font-weight: 500; }
+.connector-desc { font-size: 12px; color: var(--ink-3); }
+
+/* --- Permission dialog --- */
+.dialog {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  padding: var(--s-5);
+  max-width: 460px;
+  box-shadow: 0 8px 32px rgba(31, 27, 22, 0.08);
+}
+.dialog-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-md);
+  background: var(--accent-soft);
+  color: var(--accent-deep);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--s-3);
+}
+.dialog-title {
+  font-family: var(--display);
+  font-size: 22px;
+  font-weight: 400;
+  margin-bottom: var(--s-2);
+  letter-spacing: -0.01em;
+}
+.dialog-desc { color: var(--ink-2); font-size: 14px; margin-bottom: var(--s-4); line-height: 1.5; }
+.dialog-actions { display: flex; gap: var(--s-2); justify-content: flex-end; margin-top: var(--s-5); }
+.dialog-payload {
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: var(--s-3);
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-2);
+  line-height: 1.6;
+}
+.dialog-payload-row { display: flex; gap: var(--s-3); }
+.dialog-payload-row .key { color: var(--ink-3); min-width: 80px; }
+
+/* --- Citation source card --- */
+.cite-source {
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: var(--s-3);
+  background: var(--surface);
+  display: flex;
+  gap: var(--s-3);
+  font-size: 13px;
+  max-width: 460px;
+}
+.cite-source-num {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--accent);
+  background: var(--accent-soft);
+  padding: 2px 7px;
+  border-radius: var(--r-sm);
+  height: fit-content;
+}
+.cite-source-title { font-weight: 500; margin-bottom: 2px; }
+.cite-source-url { font-family: var(--mono); font-size: 11px; color: var(--ink-3); margin-bottom: 4px; }
+.cite-source-snippet { color: var(--ink-2); font-size: 12.5px; line-height: 1.5; }
+
+/* --- Audit log entry --- */
+.audit-row {
+  display: grid;
+  grid-template-columns: 96px 1fr auto;
+  gap: var(--s-4);
+  padding: var(--s-3) 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 13px;
+  align-items: center;
+}
+.audit-time { font-family: var(--mono); font-size: 11px; color: var(--ink-3); }
+.audit-action .verb { color: var(--ink-2); }
+.audit-action .what { font-family: var(--mono); font-size: 12px; }
+
+/* --- Compliance banner --- */
+.compliance-banner {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: var(--s-3) var(--s-4);
+  background: var(--info-soft);
+  border: 1px solid color-mix(in srgb, var(--info) 30%, transparent);
+  border-radius: var(--r-md);
+  font-size: 13px;
+  color: var(--info-deep);
+}
+
+/* --- Reasoning trace --- */
+.trace {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-3);
+  line-height: 1.7;
+  border-left: 2px solid var(--line);
+  padding-left: var(--s-4);
+  white-space: pre-wrap;
+}
+
+/* ========================================================================
+   SURVEY SECTION
+   ======================================================================== */
+.survey-row {
+  display: grid;
+  grid-template-columns: 80px 240px 1fr;
+  gap: var(--s-6);
+  padding: var(--s-7) 0;
+  border-bottom: 1px solid var(--line);
+  align-items: start;
+}
+.survey-row:last-child { border-bottom: none; }
+.survey-num {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-3);
+  letter-spacing: 0.08em;
+  padding-top: 4px;
+}
+.survey-name {
+  font-family: var(--display);
+  font-size: 32px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  margin-bottom: var(--s-2);
+  line-height: 1.05;
+}
+.survey-tag {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: var(--s-3);
+}
+.survey-meta { font-family: var(--mono); font-size: 11px; color: var(--ink-3); line-height: 1.7; }
+.survey-meta .row { display: flex; gap: var(--s-2); }
+.survey-meta .row .key { color: var(--ink-3); min-width: 64px; }
+.survey-meta .row .val { color: var(--ink-2); }
+.survey-content p { color: var(--ink-2); margin-bottom: var(--s-3); font-size: 15px; line-height: 1.6; }
+.survey-takeaways {
+  border-top: 1px solid var(--line);
+  padding-top: var(--s-4);
+  margin-top: var(--s-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+.survey-takeaway {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  gap: var(--s-3);
+  font-size: 14px;
+}
+.survey-takeaway .label {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding-top: 3px;
+}
+.survey-takeaway .text { color: var(--ink-2); line-height: 1.5; }
+@media (max-width: 880px) {
+  .survey-row { grid-template-columns: 1fr; gap: var(--s-3); }
+  .survey-num { display: none; }
+}
+
+/* ========================================================================
+   PRINCIPLES
+   ======================================================================== */
+.principles { display: flex; flex-direction: column; gap: 0; }
+.principle {
+  display: grid;
+  grid-template-columns: 60px 1fr;
+  gap: var(--s-5);
+  padding: var(--s-6) 0;
+  border-bottom: 1px solid var(--line);
+  align-items: start;
+}
+.principle:last-child { border-bottom: none; }
+.principle-num {
+  font-family: var(--display);
+  font-style: italic;
+  font-size: 28px;
+  color: var(--accent);
+  font-weight: 400;
+  line-height: 1;
+}
+.principle-title {
+  font-family: var(--display);
+  font-size: 28px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  margin-bottom: var(--s-3);
+  line-height: 1.1;
+}
+.principle-body { color: var(--ink-2); font-size: 16px; line-height: 1.55; max-width: 64ch; }
+
+/* ========================================================================
+   FOUNDATIONS
+   ======================================================================== */
+.swatch-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--s-3);
+}
+.swatch {
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  background: var(--surface);
+}
+.swatch-color {
+  height: 80px;
+}
+.swatch-meta {
+  padding: var(--s-3);
+  font-family: var(--mono);
+  font-size: 11px;
+  line-height: 1.5;
+}
+.swatch-meta .name { color: var(--ink); display: block; }
+.swatch-meta .hex { color: var(--ink-3); }
+
+.type-spec {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: var(--s-5);
+  padding: var(--s-5) 0;
+  border-bottom: 1px solid var(--line);
+  align-items: baseline;
+}
+.type-spec:last-child { border-bottom: none; }
+.type-spec .meta { font-family: var(--mono); font-size: 11px; color: var(--ink-3); line-height: 1.6; }
+.type-spec .sample { line-height: 1.1; color: var(--ink); }
+
+.scale-row {
+  display: grid;
+  grid-template-columns: 64px 80px 1fr;
+  gap: var(--s-4);
+  padding: var(--s-2) 0;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 12px;
+  border-bottom: 1px solid var(--line);
+}
+.scale-row:last-child { border-bottom: none; }
+.scale-row .name { color: var(--ink); font-weight: 500; }
+.scale-row .px { color: var(--ink-3); }
+.scale-row .bar { background: var(--accent); height: 8px; border-radius: 2px; }
+
+.radius-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: var(--s-3);
+}
+.radius-cell {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  padding: var(--s-3);
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 11px;
+}
+.radius-cell .box {
+  width: 56px;
+  height: 56px;
+  background: var(--ink);
+  margin: 0 auto var(--s-2);
+}
+
+/* ========================================================================
+   DEMO UI (composed agent interface)
+   ======================================================================== */
+.demo-frame {
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 220px 1fr 320px;
+  height: 660px;
+  font-size: 13px;
+}
+.demo-sidebar {
+  background: var(--surface-2);
+  border-right: 1px solid var(--line);
+  padding: var(--s-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  overflow-y: auto;
+}
+.demo-workspace {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: var(--s-2) var(--s-3);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  cursor: pointer;
+}
+.demo-section-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--ink-3);
+  padding: var(--s-2) var(--s-3) var(--s-1);
+}
+.demo-chat-list { display: flex; flex-direction: column; gap: 1px; }
+.demo-chat-item {
+  padding: 6px 10px;
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--ink-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.demo-chat-item:hover { background: var(--surface-3); }
+.demo-chat-item.active { background: var(--surface); color: var(--ink); border: 1px solid var(--line); padding: 5px 9px; }
+.demo-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.demo-main-head {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: var(--s-3) var(--s-5);
+  border-bottom: 1px solid var(--line);
+  font-size: 13px;
+}
+.demo-stream {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--s-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+}
+.demo-composer-wrap { padding: var(--s-3) var(--s-5) var(--s-4); border-top: 1px solid var(--line); }
+.demo-artifact { border-left: 1px solid var(--line); display: flex; flex-direction: column; }
+.demo-artifact .artifact { border-radius: 0; border: none; flex: 1; }
+.demo-artifact .artifact-head { background: var(--surface-2); }
+@media (max-width: 1024px) {
+  .demo-frame { grid-template-columns: 180px 1fr; }
+  .demo-artifact { display: none; }
+}
+
+/* ========================================================================
+   FOOTER
+   ======================================================================== */
+.footer {
+  border-top: 1px solid var(--line);
+  padding: var(--s-7) 0;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-3);
+}
+.footer-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--s-5);
+  flex-wrap: wrap;
+}
+
+/* ========================================================================
+   ICONS
+   ======================================================================== */
+.icon { width: 16px; height: 16px; flex-shrink: 0; stroke-width: 1.5; }
+.icon-sm { width: 14px; height: 14px; }
+.icon-lg { width: 20px; height: 20px; }
+
+/* ========================================================================
+   MISC
+   ======================================================================== */
+.stack { display: flex; flex-direction: column; gap: var(--s-3); }
+.row { display: flex; gap: var(--s-3); align-items: center; flex-wrap: wrap; }
+.spacer { flex: 1; }
+hr.rule { border: none; border-top: 1px solid var(--line); margin: var(--s-7) 0; }
+
+/* ========================================================================
+   SCENARIOS — storyboard treatment
+   ======================================================================== */
+.scenario {
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  margin-bottom: var(--s-6);
+  overflow: hidden;
+}
+.scenario-head {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: var(--s-5);
+  padding: var(--s-5) var(--s-6);
+  border-bottom: 1px solid var(--line);
+  background: var(--surface-2);
+  align-items: baseline;
+}
+.scenario-num {
+  font-family: var(--display);
+  font-size: 28px;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--accent);
+  line-height: 1;
+}
+.scenario-title {
+  font-family: var(--display);
+  font-size: 26px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  margin-bottom: var(--s-2);
+  line-height: 1.1;
+}
+.scenario-desc {
+  color: var(--ink-2);
+  font-size: 14.5px;
+  line-height: 1.55;
+  max-width: 64ch;
+}
+.scenario-when {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: var(--s-2);
+}
+.scenario-body {
+  padding: var(--s-6) var(--s-6) var(--s-6) calc(80px + var(--s-5) + var(--s-6));
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+}
+.scenario-step {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  gap: var(--s-4);
+  align-items: start;
+}
+.scenario-step-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-3);
+  padding-top: 4px;
+  line-height: 1.5;
+}
+.scenario-step-label .step-num { color: var(--accent); display: block; font-weight: 500; }
+.scenario-step-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+}
+.scenario-takeaway {
+  margin: var(--s-5) calc(-1 * var(--s-6)) calc(-1 * var(--s-6));
+  padding: var(--s-4) var(--s-6) var(--s-4) calc(80px + var(--s-5) + var(--s-6));
+  background: var(--surface-3);
+  font-size: 13px;
+  color: var(--ink-2);
+  line-height: 1.55;
+  border-top: 1px solid var(--line);
+}
+.scenario-takeaway strong { color: var(--ink); font-weight: 500; }
+@media (max-width: 760px) {
+  .scenario-head { grid-template-columns: 1fr; gap: var(--s-2); }
+  .scenario-body { padding: var(--s-5); }
+  .scenario-takeaway { margin: var(--s-4) calc(-1 * var(--s-5)) calc(-1 * var(--s-5)); padding: var(--s-4) var(--s-5); }
+  .scenario-step { grid-template-columns: 1fr; gap: var(--s-2); }
+}
+
+/* --- Clarification card (agent asks back) --- */
+.clarify-card {
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  padding: var(--s-4);
+  font-size: 13.5px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+  max-width: 560px;
+}
+.clarify-card-head {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+}
+.clarify-q { display: flex; flex-direction: column; gap: var(--s-2); }
+.clarify-q-label { font-weight: 500; font-size: 13.5px; }
+.clarify-q-hint { font-size: 12px; color: var(--ink-3); margin-top: -2px; }
+.clarify-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+.clarify-opt {
+  font-size: 13px;
+  padding: 5px 11px;
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.clarify-opt:hover { border-color: var(--ink); }
+.clarify-opt.selected {
+  background: var(--ink);
+  color: var(--surface);
+  border-color: var(--ink);
+}
+
+/* --- Inline form (data collection) --- */
+.inline-form {
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  padding: var(--s-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+  max-width: 540px;
+}
+.inline-form-head {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding-bottom: var(--s-3);
+  border-bottom: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+}
+.field { display: flex; flex-direction: column; gap: 4px; }
+.field-label {
+  font-size: 12px;
+  color: var(--ink-2);
+  font-weight: 500;
+}
+.field-label .req { color: var(--accent); margin-left: 2px; }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-3); }
+.field-help { font-family: var(--mono); font-size: 11px; color: var(--ink-3); }
+.field-upload {
+  border: 1px dashed var(--line-2);
+  border-radius: var(--r-md);
+  padding: var(--s-4);
+  text-align: center;
+  font-size: 12px;
+  color: var(--ink-3);
+  cursor: pointer;
+  background: var(--surface-2);
+}
+.inline-form-actions { display: flex; gap: var(--s-2); justify-content: flex-end; padding-top: var(--s-3); border-top: 1px solid var(--line); }
+
+/* --- Diff card (artifact iteration) --- */
+.diff-row {
+  display: flex;
+  gap: var(--s-3);
+  padding: var(--s-3);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  font-size: 13px;
+  align-items: flex-start;
+  background: var(--surface);
+}
+.diff-marker {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 500;
+  padding-top: 2px;
+  flex-shrink: 0;
+  width: 56px;
+}
+.diff-text { color: var(--ink-2); line-height: 1.55; flex: 1; }
+.diff-text del { color: var(--ink-3); text-decoration: line-through; background: var(--surface-3); padding: 0 2px; }
+.diff-text ins { color: var(--success-deep); background: var(--success-soft); padding: 0 3px; text-decoration: none; border-radius: 2px; }
+
+/* --- Version pip --- */
+.version-strip {
+  display: flex;
+  gap: var(--s-1);
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-3);
+}
+.version-pip {
+  width: 24px;
+  height: 24px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--line);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface);
+  font-size: 10px;
+  cursor: pointer;
+}
+.version-pip.active { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+
+/* ========================================================================
+   ARCHITECTURE
+   ======================================================================== */
+.arch-intro {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s-6);
+  margin-bottom: var(--s-7);
+}
+@media (max-width: 880px) { .arch-intro { grid-template-columns: 1fr; } }
+
+.arch-diagram {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  padding: var(--s-6);
+  margin-bottom: var(--s-7);
+}
+
+.layer-stack { display: flex; flex-direction: column; gap: var(--s-2); }
+.layer {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: var(--s-4);
+  align-items: stretch;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  background: var(--surface);
+}
+.layer-label {
+  background: var(--surface-2);
+  padding: var(--s-3) var(--s-4);
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-2);
+  border-right: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.layer-label .layer-num { color: var(--accent); font-size: 10px; margin-bottom: 2px; }
+.layer-label .layer-name { color: var(--ink); font-size: 13px; font-weight: 500; text-transform: none; letter-spacing: 0; font-family: var(--display); }
+.layer-content {
+  padding: var(--s-3) var(--s-4);
+  font-size: 13px;
+  color: var(--ink-2);
+  line-height: 1.5;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+.layer-tags { display: flex; gap: var(--s-2); flex-wrap: wrap; }
+.layer-tag {
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 2px 8px;
+  background: var(--surface-3);
+  border-radius: var(--r-sm);
+  color: var(--ink);
+}
+
+.block-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--s-3);
+}
+.block-card {
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: var(--s-4);
+  background: var(--surface);
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+.block-name {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--accent);
+}
+.block-title { font-family: var(--display); font-size: 17px; font-weight: 400; }
+.block-desc { color: var(--ink-2); font-size: 13px; line-height: 1.5; }
+.block-meta { font-family: var(--mono); font-size: 11px; color: var(--ink-3); margin-top: var(--s-1); }
+
+.flow-diagram { font-family: var(--mono); font-size: 12px; color: var(--ink-2); line-height: 1.8; }
+</style>
+</head>
+<body>
+
+<!-- ======================== TOP NAV ======================== -->
+<nav class="topnav">
+  <div class="topnav-inner">
+    <div class="topnav-brand">Conductor<em>.</em></div>
+    <div class="topnav-links">
+      <a href="#survey">Survey</a>
+      <a href="#principles">Principles</a>
+      <a href="#foundations">Foundations</a>
+      <a href="#components">Components</a>
+      <a href="#scenarios">Scenarios</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#demo">Demo</a>
+    </div>
+    <div class="topnav-meta">v0.1 · May 2026</div>
+  </div>
+</nav>
+
+<!-- ======================== HERO ======================== -->
+<header class="hero">
+  <div class="container-narrow">
+    <div class="hero-meta">
+      <span>A design system</span>
+      <span>For corporate AI agents</span>
+      <span>Internal draft</span>
+    </div>
+    <h1 class="hero-title">
+      Agent <em>UI</em>,<br>by design.
+    </h1>
+    <p class="hero-subtitle">
+      A walk through how a corporate AI agent actually gets used — the dialogues, clarifications, forms, and artifacts users move between — and the framework architecture that holds those interactions together.
+    </p>
+    <div class="hero-toc">
+      <a href="#survey"><span class="hero-toc-num">01</span> The field</a>
+      <a href="#principles"><span class="hero-toc-num">02</span> Principles</a>
+      <a href="#foundations"><span class="hero-toc-num">03</span> Foundations</a>
+      <a href="#components"><span class="hero-toc-num">04</span> Components</a>
+      <a href="#scenarios"><span class="hero-toc-num">05</span> Scenarios</a>
+      <a href="#architecture"><span class="hero-toc-num">06</span> Architecture</a>
+      <a href="#demo"><span class="hero-toc-num">07</span> Demo</a>
+    </div>
+  </div>
+</header>
+
+<!-- ======================== SECTION 01 — SURVEY ======================== -->
+<section id="survey" class="section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-num">01</div>
+      <div class="section-title-block">
+        <h2 class="section-title">The <em>field</em>.</h2>
+        <p class="section-intro">Six products defining how agent interfaces work today. Each makes different choices about where the chat ends and the work begins, how tools are surfaced, how trust is earned, and how output is presented. Worth borrowing from selectively — none of them are built for our context, but they've solved problems we'll face.</p>
+      </div>
+    </div>
+
+    <!-- Claude -->
+    <div class="survey-row">
+      <div class="survey-num">01.A</div>
+      <div>
+        <div class="survey-tag">Reference implementation</div>
+        <h3 class="survey-name">Claude</h3>
+        <div class="survey-meta">
+          <div class="row"><span class="key">Maker</span><span class="val">Anthropic</span></div>
+          <div class="row"><span class="key">Surface</span><span class="val">Web, desktop, mobile</span></div>
+          <div class="row"><span class="key">Defining</span><span class="val">Artifacts, Projects, MCP</span></div>
+        </div>
+      </div>
+      <div class="survey-content">
+        <p>Claude's most distinctive contribution is the <strong>Artifacts panel</strong> — a persistent canvas to the right of the conversation that holds substantive output (documents, code, interactive widgets) so the chat itself stays a transcript rather than a scrolling pile of generated content. Tool calls render inline as collapsible cards that expand to show inputs and outputs. The composer surfaces a tools menu rather than mode-switching the whole product. <strong>Projects</strong> bundle a chat history with shared instructions and uploaded knowledge — the closest thing to "workspaces" in a single-user product. <strong>MCP</strong> exposes a consistent shape for connectors: any external tool advertises a set of capabilities Claude can invoke, with the user reviewing what gets used.</p>
+        <div class="survey-takeaways">
+          <div class="survey-takeaway"><span class="label">Borrow</span><span class="text">The artifact panel pattern. Substantive output gets its own surface.</span></div>
+          <div class="survey-takeaway"><span class="label">Borrow</span><span class="text">Collapsible tool-call cards as the default trust mechanism.</span></div>
+          <div class="survey-takeaway"><span class="label">Adapt</span><span class="text">Projects → Workspaces. We need shared, multi-user, role-aware versions.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ChatGPT -->
+    <div class="survey-row">
+      <div class="survey-num">01.B</div>
+      <div>
+        <div class="survey-tag">Volume leader</div>
+        <h3 class="survey-name">ChatGPT</h3>
+        <div class="survey-meta">
+          <div class="row"><span class="key">Maker</span><span class="val">OpenAI</span></div>
+          <div class="row"><span class="key">Surface</span><span class="val">Web, desktop, mobile</span></div>
+          <div class="row"><span class="key">Defining</span><span class="val">Canvas, GPTs, Memory</span></div>
+        </div>
+      </div>
+      <div class="survey-content">
+        <p>ChatGPT introduced <strong>Canvas</strong> — the same idea as Artifacts under a different name — and leans heavily on <strong>suggestion chips</strong> as a follow-up affordance. Custom <strong>GPTs</strong> package an instruction set, knowledge files, and tool permissions into a named, shareable agent — a useful primitive even if the directory has been a mixed success. The tools menu is more prominent than in Claude (image gen, code interpreter, browse, deep research are toggles the user actively chooses). Cross-conversation <strong>memory</strong> is exposed as an editable panel — users can see and delete what's been remembered.</p>
+        <div class="survey-takeaways">
+          <div class="survey-takeaway"><span class="label">Borrow</span><span class="text">Suggestion chips as a navigation aid, not just decoration.</span></div>
+          <div class="survey-takeaway"><span class="label">Borrow</span><span class="text">Memory as an inspectable, user-editable list. Trust requires legibility.</span></div>
+          <div class="survey-takeaway"><span class="label">Caution</span><span class="text">Tool toggles in the composer can pile up. We'll need more careful disclosure.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cursor -->
+    <div class="survey-row">
+      <div class="survey-num">01.C</div>
+      <div>
+        <div class="survey-tag">Embedded paradigm</div>
+        <h3 class="survey-name">Cursor</h3>
+        <div class="survey-meta">
+          <div class="row"><span class="key">Maker</span><span class="val">Anysphere</span></div>
+          <div class="row"><span class="key">Surface</span><span class="val">IDE (forked VS Code)</span></div>
+          <div class="row"><span class="key">Defining</span><span class="val">Inline diffs, Composer mode</span></div>
+        </div>
+      </div>
+      <div class="survey-content">
+        <p>Cursor is the strongest argument that <strong>standalone chat is not the only shape an agent can take</strong>. The agent lives inside the IDE; its primary output is not text in a thread but <strong>inline diffs</strong> rendered in the file the user is already reading. The chat is a sidebar, less for conversation than for issuing commands and reviewing what changed. Composer mode runs multi-file edits with a review-and-accept gate per change. Worth studying because the underlying design question — how an agent presents structured output for review — is exactly ours, even if our delivery surface is different.</p>
+        <div class="survey-takeaways">
+          <div class="survey-takeaway"><span class="label">Borrow</span><span class="text">Inline review-and-accept patterns. Diff surfaces apply beyond code.</span></div>
+          <div class="survey-takeaway"><span class="label">Borrow</span><span class="text">Per-change granularity. Accept some, reject some, regenerate one.</span></div>
+          <div class="survey-takeaway"><span class="label">Question</span><span class="text">Is our agent a destination or an embed? Probably both, with a shared design language.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Perplexity -->
+    <div class="survey-row">
+      <div class="survey-num">01.D</div>
+      <div>
+        <div class="survey-tag">Citation-first</div>
+        <h3 class="survey-name">Perplexity</h3>
+        <div class="survey-meta">
+          <div class="row"><span class="key">Maker</span><span class="val">Perplexity AI</span></div>
+          <div class="row"><span class="key">Surface</span><span class="val">Web, mobile</span></div>
+          <div class="row"><span class="key">Defining</span><span class="val">Inline citations, Spaces</span></div>
+        </div>
+      </div>
+      <div class="survey-content">
+        <p>Perplexity treats <strong>citations as a first-class UI element</strong>, not an afterthought. Every claim carries a source chip; every source has a card with title, favicon, and excerpt. The product reads like a research tool with a chat affordance rather than a chat product with search bolted on. <strong>Spaces</strong> group threads by project and let users add their own files to scope the answer. Pro Search exposes the reasoning steps as expandable rows — a more readable take on chain-of-thought than the "thinking" panels in other products.</p>
+        <div class="survey-takeaways">
+          <div class="survey-takeaway"><span class="label">Borrow</span><span class="text">Inline citation chips as a non-negotiable. Every grounded claim links back.</span></div>
+          <div class="survey-takeaway"><span class="label">Borrow</span><span class="text">Source cards with favicon + title + excerpt. Aim for this density.</span></div>
+          <div class="survey-takeaway"><span class="label">Borrow</span><span class="text">Reasoning shown as expandable steps, not a wall of italic text.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Copilot -->
+    <div class="survey-row">
+      <div class="survey-num">01.E</div>
+      <div>
+        <div class="survey-tag">Enterprise embed</div>
+        <h3 class="survey-name">M365 Copilot</h3>
+        <div class="survey-meta">
+          <div class="row"><span class="key">Maker</span><span class="val">Microsoft</span></div>
+          <div class="row"><span class="key">Surface</span><span class="val">Embedded in Office apps</span></div>
+          <div class="row"><span class="key">Defining</span><span class="val">Graph context, DLP awareness</span></div>
+        </div>
+      </div>
+      <div class="survey-content">
+        <p>Copilot is the most directly relevant reference for an enterprise platform. The agent is <strong>embedded into the apps users already work in</strong> (Word, Excel, Outlook, Teams), with a standalone chat as a secondary surface. It reads context from the Microsoft Graph — emails, documents, meetings — and that context is <strong>visible</strong>, not hidden. Compliance is part of the product: the UI shows when something can't be cited because of permissions, when a response is bound by data-loss-prevention rules, and which sources are internal vs. external. The aesthetic is conservative on purpose; this is the right register for a tool that touches sensitive data.</p>
+        <div class="survey-takeaways">
+          <div class="survey-takeaway"><span class="label">Borrow</span><span class="text">Permission-awareness shown explicitly. "You don't have access to X" is its own state.</span></div>
+          <div class="survey-takeaway"><span class="label">Borrow</span><span class="text">Internal vs. external sources distinguished visually.</span></div>
+          <div class="survey-takeaway"><span class="label">Borrow</span><span class="text">Conservative register. Users with audit obligations don't want a quirky agent.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Glean -->
+    <div class="survey-row">
+      <div class="survey-num">01.F</div>
+      <div>
+        <div class="survey-tag">Workplace search</div>
+        <h3 class="survey-name">Glean</h3>
+        <div class="survey-meta">
+          <div class="row"><span class="key">Maker</span><span class="val">Glean</span></div>
+          <div class="row"><span class="key">Surface</span><span class="val">Web, mobile, embeds</span></div>
+          <div class="row"><span class="key">Defining</span><span class="val">Connector-first, ACL-aware</span></div>
+        </div>
+      </div>
+      <div class="survey-content">
+        <p>Glean was a search product that grew into an agent platform — its UI bears the marks of that lineage. The <strong>connector ecosystem is the product</strong>: a settings page that looks like a logo wall of every SaaS the company uses, with status, last-sync, and permission scope per connector. Every result respects ACLs — users see only what they're authorized to see, and the UI surfaces this rather than hiding it. <strong>Agents</strong> in Glean are named workflows users can invoke (e.g. "summarize last week's customer calls") with explicit scope and source list.</p>
+        <div class="survey-takeaways">
+          <div class="survey-takeaway"><span class="label">Borrow</span><span class="text">Connector grid as a primary admin surface. List, status, scope.</span></div>
+          <div class="survey-takeaway"><span class="label">Borrow</span><span class="text">ACL-aware results. The agent shows what each user is allowed to see.</span></div>
+          <div class="survey-takeaway"><span class="label">Borrow</span><span class="text">Named agents as reusable, scoped workflows — not just freeform chats.</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ======================== SECTION 02 — PRINCIPLES ======================== -->
+<section id="principles" class="section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-num">02</div>
+      <div class="section-title-block">
+        <h2 class="section-title"><em>Principles.</em></h2>
+        <p class="section-intro">Six commitments the design system encodes. These are the answers we've already made — when a component decision feels ambiguous, return here.</p>
+      </div>
+    </div>
+
+    <div class="principles">
+
+      <div class="principle">
+        <div class="principle-num">i.</div>
+        <div>
+          <h3 class="principle-title">The conversation is the spine.</h3>
+          <p class="principle-body">Chat is not a feature, it's the substrate. Every other surface — artifacts, connectors, audit logs, settings — is a side door off the conversation. The interface should feel like the user is in one continuous dialogue, not navigating a multi-page application that occasionally shows them an LLM response. Cards, panels, and modals all serve the chat; they never replace it.</p>
+        </div>
+      </div>
+
+      <div class="principle">
+        <div class="principle-num">ii.</div>
+        <div>
+          <h3 class="principle-title">Show the work, always.</h3>
+          <p class="principle-body">Tool calls render as cards. Citations resolve to source previews. Reasoning is exposable on demand. When the agent reaches into a connector, the user sees which one, with what query, and what came back. Hidden work is the fastest way to lose enterprise trust — not because users will read every trace, but because they need to know they could.</p>
+        </div>
+      </div>
+
+      <div class="principle">
+        <div class="principle-num">iii.</div>
+        <div>
+          <h3 class="principle-title">Permission boundaries are visible.</h3>
+          <p class="principle-body">The agent operates inside an ACL graph. When a user lacks access to something, the UI says so explicitly rather than producing a thinner answer. "Three sources excluded — you don't have access" is more trustworthy than a quietly-degraded response. This applies to source citations, connector calls, and shared workspaces alike.</p>
+        </div>
+      </div>
+
+      <div class="principle">
+        <div class="principle-num">iv.</div>
+        <div>
+          <h3 class="principle-title">Substantive output gets a canvas.</h3>
+          <p class="principle-body">If the user is going to copy it, edit it, share it, or come back to it, it doesn't belong inline in the message stream where it'll scroll away. Documents, code, decks, dashboards, structured plans all open in the artifact panel — persistent, addressable, version-tracked. The chat keeps the dialogue clean; the canvas keeps the work.</p>
+        </div>
+      </div>
+
+      <div class="principle">
+        <div class="principle-num">v.</div>
+        <div>
+          <h3 class="principle-title">Iteration is a first-class action.</h3>
+          <p class="principle-body">No agent gets it right the first time, every time. Regenerate, edit, branch, undo, and accept-this-but-not-that should be available wherever they make sense — at the message level, the artifact level, the per-edit level. The user should never feel locked into a response or have to start over to refine.</p>
+        </div>
+      </div>
+
+      <div class="principle">
+        <div class="principle-num">vi.</div>
+        <div>
+          <h3 class="principle-title">Everything the agent does is recoverable.</h3>
+          <p class="principle-body">In an enterprise context, the agent acts on behalf of someone — that someone is accountable. Every tool call, every connector touch, every artifact edit is logged to an audit trail the user (and admins, where appropriate) can inspect. Destructive actions require explicit confirmation. The system should make it impossible for an agent action to disappear silently.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ======================== SECTION 03 — FOUNDATIONS ======================== -->
+<section id="foundations" class="section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-num">03</div>
+      <div class="section-title-block">
+        <h2 class="section-title"><em>Foundations.</em></h2>
+        <p class="section-intro">The atomic decisions everything else builds on. Tokens are exposed as CSS custom properties so themes (light, dark, customer-branded) layer cleanly without forking the system.</p>
+      </div>
+    </div>
+
+    <!-- 03.A — Color -->
+    <div class="subhead">
+      <span class="subhead-num">03.A</span>
+      <h3 class="subhead-title">Color</h3>
+    </div>
+    <p class="prose" style="margin-bottom: var(--s-5);">A warm neutral base does the heavy lifting. Color is reserved for meaning — accent for brand and active state, semantic ramps for status. Avoid using more than two ramps in any single view.</p>
+
+    <div class="minihead">Neutral · ink + paper</div>
+    <div class="swatch-grid" style="margin-bottom: var(--s-6);">
+      <div class="swatch"><div class="swatch-color" style="background:#1F1B16"></div><div class="swatch-meta"><span class="name">Ink</span><span class="hex">#1F1B16</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#5C5852"></div><div class="swatch-meta"><span class="name">Ink 2</span><span class="hex">#5C5852</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#8C8782"></div><div class="swatch-meta"><span class="name">Ink 3</span><span class="hex">#8C8782</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#E0DAC8"></div><div class="swatch-meta"><span class="name">Line</span><span class="hex">#E0DAC8</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#F5F1E8"></div><div class="swatch-meta"><span class="name">Background</span><span class="hex">#F5F1E8</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#FFFFFF; border-bottom: 1px solid var(--line);"></div><div class="swatch-meta"><span class="name">Surface</span><span class="hex">#FFFFFF</span></div></div>
+    </div>
+
+    <div class="minihead">Brand · accent</div>
+    <div class="swatch-grid" style="margin-bottom: var(--s-6);">
+      <div class="swatch"><div class="swatch-color" style="background:#6B2406"></div><div class="swatch-meta"><span class="name">Accent deep</span><span class="hex">#6B2406</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#B7410E"></div><div class="swatch-meta"><span class="name">Accent</span><span class="hex">#B7410E</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#F4E1D6"></div><div class="swatch-meta"><span class="name">Accent soft</span><span class="hex">#F4E1D6</span></div></div>
+    </div>
+
+    <div class="minihead">Semantic · status ramps</div>
+    <div class="swatch-grid">
+      <div class="swatch"><div class="swatch-color" style="background:#1D4ED8"></div><div class="swatch-meta"><span class="name">Info</span><span class="hex">#1D4ED8</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#15803D"></div><div class="swatch-meta"><span class="name">Success</span><span class="hex">#15803D</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#B45309"></div><div class="swatch-meta"><span class="name">Warning</span><span class="hex">#B45309</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#B91C1C"></div><div class="swatch-meta"><span class="name">Danger</span><span class="hex">#B91C1C</span></div></div>
+    </div>
+
+    <!-- 03.B — Typography -->
+    <div class="subhead">
+      <span class="subhead-num">03.B</span>
+      <h3 class="subhead-title">Typography</h3>
+    </div>
+    <p class="prose" style="margin-bottom: var(--s-5);">Three typefaces. <strong>Fraunces</strong> for display — variable serif, characterful at large sizes, restrained at small. <strong>IBM Plex Sans</strong> for body — engineered, readable, a long history in enterprise contexts. <strong>IBM Plex Mono</strong> for metadata, labels, code, and audit trails — anything that wants to read as machine-emitted.</p>
+
+    <div class="type-spec">
+      <div class="meta">Display 64<br>Fraunces 300</div>
+      <div class="sample display" style="font-size: 64px;">Conductor</div>
+    </div>
+    <div class="type-spec">
+      <div class="meta">Display 36<br>Fraunces 400</div>
+      <div class="sample display" style="font-size: 36px; font-weight: 400;">A design system for agents</div>
+    </div>
+    <div class="type-spec">
+      <div class="meta">Heading 22<br>Fraunces 400</div>
+      <div class="sample display" style="font-size: 22px; font-weight: 400;">Permission boundaries are visible</div>
+    </div>
+    <div class="type-spec">
+      <div class="meta">Body 15<br>Plex Sans 400</div>
+      <div class="sample" style="font-family: var(--sans); font-size: 15px; line-height: 1.6;">The agent operates inside an ACL graph. When a user lacks access to something, the UI says so explicitly rather than producing a thinner answer.</div>
+    </div>
+    <div class="type-spec">
+      <div class="meta">Small 13<br>Plex Sans 400</div>
+      <div class="sample" style="font-family: var(--sans); font-size: 13px; line-height: 1.5;">Used for secondary text, captions, and component metadata.</div>
+    </div>
+    <div class="type-spec">
+      <div class="meta">Mono label 11<br>Plex Mono 500 · uppercase</div>
+      <div class="sample mono" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.14em; color: var(--ink-3);">Last sync · 2 minutes ago</div>
+    </div>
+    <div class="type-spec">
+      <div class="meta">Mono code 13<br>Plex Mono 400</div>
+      <div class="sample mono" style="font-size: 13px; color: var(--ink-2);">{ "permission": "read", "scope": "workspace.documents" }</div>
+    </div>
+
+    <!-- 03.C — Spacing -->
+    <div class="subhead">
+      <span class="subhead-num">03.C</span>
+      <h3 class="subhead-title">Spacing scale</h3>
+    </div>
+    <p class="prose" style="margin-bottom: var(--s-5);">Eight steps on a roughly geometric ramp. Use <code class="mono" style="font-size: 13px; background: var(--surface-3); padding: 1px 6px; border-radius: 3px;">--s-3</code> through <code class="mono" style="font-size: 13px; background: var(--surface-3); padding: 1px 6px; border-radius: 3px;">--s-5</code> for component-internal spacing, larger steps for layout rhythm.</p>
+
+    <div class="surface-card" style="padding: var(--s-5);">
+      <div class="scale-row"><span class="name">--s-1</span><span class="px">4 px</span><div class="bar" style="width:4px;"></div></div>
+      <div class="scale-row"><span class="name">--s-2</span><span class="px">8 px</span><div class="bar" style="width:8px;"></div></div>
+      <div class="scale-row"><span class="name">--s-3</span><span class="px">12 px</span><div class="bar" style="width:12px;"></div></div>
+      <div class="scale-row"><span class="name">--s-4</span><span class="px">16 px</span><div class="bar" style="width:16px;"></div></div>
+      <div class="scale-row"><span class="name">--s-5</span><span class="px">24 px</span><div class="bar" style="width:24px;"></div></div>
+      <div class="scale-row"><span class="name">--s-6</span><span class="px">32 px</span><div class="bar" style="width:32px;"></div></div>
+      <div class="scale-row"><span class="name">--s-7</span><span class="px">48 px</span><div class="bar" style="width:48px;"></div></div>
+      <div class="scale-row"><span class="name">--s-8</span><span class="px">64 px</span><div class="bar" style="width:64px;"></div></div>
+      <div class="scale-row"><span class="name">--s-9</span><span class="px">96 px</span><div class="bar" style="width:96px;"></div></div>
+      <div class="scale-row"><span class="name">--s-10</span><span class="px">128 px</span><div class="bar" style="width:128px;"></div></div>
+    </div>
+
+    <!-- 03.D — Radius -->
+    <div class="subhead">
+      <span class="subhead-num">03.D</span>
+      <h3 class="subhead-title">Radius</h3>
+    </div>
+    <p class="prose" style="margin-bottom: var(--s-5);">Five steps. <code class="mono" style="font-size: 13px; background: var(--surface-3); padding: 1px 6px; border-radius: 3px;">--r-md</code> is the default for components; <code class="mono" style="font-size: 13px; background: var(--surface-3); padding: 1px 6px; border-radius: 3px;">--r-lg</code> for cards and surfaces; <code class="mono" style="font-size: 13px; background: var(--surface-3); padding: 1px 6px; border-radius: 3px;">--r-pill</code> for chips and badges.</p>
+
+    <div class="radius-grid">
+      <div class="radius-cell"><div class="box" style="border-radius: 4px;"></div>--r-sm · 4</div>
+      <div class="radius-cell"><div class="box" style="border-radius: 8px;"></div>--r-md · 8</div>
+      <div class="radius-cell"><div class="box" style="border-radius: 12px;"></div>--r-lg · 12</div>
+      <div class="radius-cell"><div class="box" style="border-radius: 16px;"></div>--r-xl · 16</div>
+      <div class="radius-cell"><div class="box" style="border-radius: 999px;"></div>--r-pill</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ======================== SECTION 04 — COMPONENTS ======================== -->
+<section id="components" class="section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-num">04</div>
+      <div class="section-title-block">
+        <h2 class="section-title"><em>Components.</em></h2>
+        <p class="section-intro">The vocabulary of the system. Each component below is shown in its primary state with the variants that matter. Components compose into patterns (§05), and patterns compose into the demo (§06).</p>
+      </div>
+    </div>
+
+    <!-- ============== 04.A PRIMITIVES ============== -->
+    <div class="subhead">
+      <span class="subhead-num">04.A</span>
+      <h3 class="subhead-title">Primitives</h3>
+    </div>
+
+    <div class="showcase">
+      <div class="showcase-meta">
+        <div class="showcase-name">Button</div>
+        <span class="showcase-tag">Primitive · 5 variants</span>
+        <p class="showcase-desc">Primary for the single committed action per view. Secondary for alternates. Ghost for low-emphasis utility. Accent for brand moments. Danger for destructive paths.</p>
+      </div>
+      <div class="showcase-canvas row">
+        <button class="btn btn-primary">Send message</button>
+        <button class="btn btn-secondary">Cancel</button>
+        <button class="btn btn-ghost">Skip</button>
+        <button class="btn btn-accent">
+          <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          Connect
+        </button>
+        <button class="btn btn-danger">Revoke access</button>
+      </div>
+    </div>
+
+    <div class="showcase">
+      <div class="showcase-meta">
+        <div class="showcase-name">Input</div>
+        <span class="showcase-tag">Primitive · text · search</span>
+        <p class="showcase-desc">Quiet by default; the dark focus ring is the only emphatic state. Search variant carries a leading icon to differentiate from generic text fields at a glance.</p>
+      </div>
+      <div class="showcase-canvas">
+        <input class="input" placeholder="Workspace name" value="Operations" style="max-width: 320px;">
+        <input class="input input-search" placeholder="Search across connectors..." style="max-width: 320px;">
+      </div>
+    </div>
+
+    <div class="showcase">
+      <div class="showcase-meta">
+        <div class="showcase-name">Badge</div>
+        <span class="showcase-tag">Primitive · 6 variants</span>
+        <p class="showcase-desc">Status communication at the smallest legible scale. Use semantic colors only when the meaning matches; default-stone for neutral metadata. Outline variant when the surface itself already carries color.</p>
+      </div>
+      <div class="showcase-canvas row">
+        <span class="badge badge-default">draft</span>
+        <span class="badge badge-info badge-dot">connected</span>
+        <span class="badge badge-success badge-dot">synced</span>
+        <span class="badge badge-warning">2 pending</span>
+        <span class="badge badge-danger badge-dot">access denied</span>
+        <span class="badge badge-accent">enterprise</span>
+        <span class="badge badge-outline">public</span>
+      </div>
+    </div>
+
+    <div class="showcase">
+      <div class="showcase-meta">
+        <div class="showcase-name">Avatar</div>
+        <span class="showcase-tag">Primitive · 3 sizes · status</span>
+        <p class="showcase-desc">Initials over images is the default — faster to render, less identifying, fewer broken-image states. Color is assigned deterministically from a hash of the user id so the same person reads consistently across views.</p>
+      </div>
+      <div class="showcase-canvas row">
+        <span class="avatar avatar-sm avatar-blue">AC</span>
+        <span class="avatar avatar-accent">MR</span>
+        <span class="avatar avatar-green avatar-status">LK</span>
+        <span class="avatar avatar-lg avatar-stone">JT</span>
+      </div>
+    </div>
+
+    <div class="showcase">
+      <div class="showcase-meta">
+        <div class="showcase-name">Toggle</div>
+        <span class="showcase-tag">Primitive · binary state</span>
+        <p class="showcase-desc">For settings that take effect immediately. If the change requires a save action, use a checkbox inside a form instead — toggles imply that the state has already changed.</p>
+      </div>
+      <div class="showcase-canvas row">
+        <div style="display: flex; align-items: center; gap: var(--s-3);">
+          <span class="toggle on"></span><span style="font-size: 14px;">Citations required</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: var(--s-3);">
+          <span class="toggle"></span><span style="font-size: 14px; color: var(--ink-2);">Allow external sources</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="showcase">
+      <div class="showcase-meta">
+        <div class="showcase-name">Menu</div>
+        <span class="showcase-tag">Primitive · contextual</span>
+        <p class="showcase-desc">Anchored to a trigger. Items are 14px regular, with optional shortcut hints in mono on the right. Use dividers to group destructive items at the bottom.</p>
+      </div>
+      <div class="showcase-canvas">
+        <div class="menu" style="max-width: 220px;">
+          <div class="menu-item">
+            <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy message <span class="shortcut">⌘C</span>
+          </div>
+          <div class="menu-item">
+            <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>
+            Regenerate <span class="shortcut">⌘R</span>
+          </div>
+          <div class="menu-item">
+            <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 3v12"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="6" r="3"/><path d="M18 9v3a3 3 0 0 1-3 3h-3"/></svg>
+            Branch from here
+          </div>
+          <div class="menu-divider"></div>
+          <div class="menu-item" style="color: var(--danger);">
+            <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            Delete thread
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============== 04.B CONVERSATION ============== -->
+    <div class="subhead">
+      <span class="subhead-num">04.B</span>
+      <h3 class="subhead-title">Conversation</h3>
+    </div>
+
+    <div class="showcase">
+      <div class="showcase-meta">
+        <div class="showcase-name">User message</div>
+        <span class="showcase-tag">Conversation · right-aligned</span>
+        <p class="showcase-desc">Right-aligned, stone bubble, asymmetric corner radius (sharper bottom-right edge to anchor it). Stays compact; long messages wrap rather than overflow.</p>
+      </div>
+      <div class="showcase-canvas">
+        <div style="width: 100%; display: flex; flex-direction: column; gap: var(--s-3);">
+          <div class="msg-user">Pull last quarter's renewal pipeline from Salesforce and flag anything stalled past 60 days.</div>
+          <div class="msg-user">Then draft a follow-up email I can send to each account owner.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="showcase">
+      <div class="showcase-meta">
+        <div class="showcase-name">Assistant message</div>
+        <span class="showcase-tag">Conversation · streamed</span>
+        <p class="showcase-desc">Full-width prose, no bubble. Inline citations resolve to source cards. Streams word-by-word during generation; suggestion chips appear after the response settles.</p>
+      </div>
+      <div class="showcase-canvas">
+        <div class="msg-assistant">
+          Found <strong>17 renewals</strong> in the Q4 pipeline, with <strong>4 stalled</strong> past 60 days<span class="cite">1</span>. Two are large accounts (Acme, Northwind) where the last contact was a discovery call in mid-October. Drafting follow-up emails now — they'll appear in the artifact panel as you can review.
+        </div>
+      </div>
+    </div>
+
+    <div class="showcase">
+      <div class="showcase-meta">
+        <div class="showcase-name">Tool call</div>
+        <span class="showcase-tag">Conversation · 3 states</span>
+        <p class="showcase-desc">Collapsed by default. The header is the contract — name, target, brief metadata. Click expands to show the actual query and response. Errors get a red border and surface the failure inline.</p>
+      </div>
+      <div class="showcase-canvas">
+        <div style="width: 100%; display: flex; flex-direction: column; gap: var(--s-3);">
+          <div class="tool-card">
+            <div class="tool-card-head">
+              <span class="spinner"></span>
+              <span class="tool-name">Salesforce</span>
+              <span style="color: var(--ink-3);">querying renewals pipeline...</span>
+              <span class="tool-meta">running</span>
+            </div>
+          </div>
+          <div class="tool-card expanded">
+            <div class="tool-card-head">
+              <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="1.8"><path d="M20 6 9 17l-5-5"/></svg>
+              <span class="tool-name">Salesforce</span>
+              <span style="color: var(--ink-3);">17 records returned</span>
+              <span class="tool-meta">2.4s</span>
+            </div>
+            <div class="tool-card-body">SELECT Id, Name, Amount, CloseDate, StageName<br>FROM Opportunity<br>WHERE Type = 'Renewal' AND CloseDate &gt;= 2025-10-01</div>
+          </div>
+          <div class="tool-card error">
+            <div class="tool-card-head">
+              <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+              <span class="tool-name">Notion</span>
+              <span>workspace.read permission missing</span>
+              <span class="tool-meta">failed</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="showcase">
+      <div class="showcase-meta">
+        <div class="showcase-name">Status indicator</div>
+        <span class="showcase-tag">Conversation · ephemeral</span>
+        <p class="showcase-desc">Used during multi-step or long-running operations to signal liveness. Replaces itself with the next step rather than stacking. Pulses subtly so the surface never feels frozen.</p>
+      </div>
+      <div class="showcase-canvas">
+        <div class="status-line">Reading 4 documents from Google Drive</div>
+      </div>
+    </div>
+
+    <div class="showcase">
+      <div class="showcase-meta">
+        <div class="showcase-name">Citation</div>
+        <span class="showcase-tag">Conversation · inline + popover</span>
+        <p class="showcase-desc">Tiny mono chip inline with the claim it supports. On hover, a card reveals title, URL, and excerpt — and whether the source is internal (workspace document) or external (web).</p>
+      </div>
+      <div class="showcase-canvas">
+        <div style="width: 100%; display: flex; flex-direction: column; gap: var(--s-4);">
+          <div class="msg-assistant">Annual recurring revenue grew 34% year-over-year<span class="cite">1</span>, with the strongest gains in the EMEA region<span class="cite">2</span>.</div>
+          <div class="cite-source">
+            <span class="cite-source-num">1</span>
+            <div>
+              <div class="cite-source-title">Q4 Board Deck — Final.pdf</div>
+              <div class="cite-source-url">drive.google.com · slide 12 · internal</div>
+              <div class="cite-source-snippet">"ARR grew from $42.3M to $56.7M, a 34% increase driven primarily by enterprise renewals and new EMEA logos."</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="showcase">
+      <div class="showcase-meta">
+        <div class="showcase-name">Suggestion chip</div>
+        <span class="showcase-tag">Conversation · follow-up</span>
+        <p class="showcase-desc">Appears after a response, never before. Three or four maximum — beyond that the user reads them as filler. Phrased as the user's voice ("compare to last quarter"), not the agent's ("I can compare...").</p>
+      </div>
+      <div class="showcase-canvas row">
+        <button class="suggest">Compare to last quarter <span class="arrow">→</span></button>
+        <button class="suggest">Draft a board update <span class="arrow">→</span></button>
+        <button class="suggest">Show stalled accounts <span class="arrow">→</span></button>
+      </div>
+    </div>
+
+    <div class="showcase">
+      <div class="showcase-meta">
+        <div class="showcase-name">File card</div>
+        <span class="showcase-tag">Conversation · 4 type variants</span>
+        <p class="showcase-desc">Used when files are referenced in messages — both attached by the user and produced by the agent. Color-coded icon by type. Clicking opens an inline preview; the meta row carries page count, size, or row count as appropriate.</p>
+      </div>
+      <div class="showcase-canvas">
+        <div style="width: 100%; display: flex; flex-direction: column; gap: var(--s-3);">
+          <div class="file-card">
+            <div class="file-icon pdf">PDF</div>
+            <div>
+              <div class="file-name">Q4-Board-Deck.pdf</div>
+              <div class="file-meta">24 pages · 3.4 MB</div>
+            </div>
+          </div>
+          <div class="file-card">
+            <div class="file-icon csv">CSV</div>
+            <div>
+              <div class="file-name">renewals-2025-q4.csv</div>
+              <div class="file-meta">17 rows · 8 columns</div>
+            </div>
+          </div>
+          <div class="file-card">
+            <div class="file-icon doc">DOC</div>
+            <div>
+              <div class="file-name">Customer-Success-Playbook.docx</div>
+              <div class="file-meta">12 pages · 84 KB</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="showcase">
+      <div class="showcase-meta">
+        <div class="showcase-name">Code block</div>
+        <span class="showcase-tag">Conversation · with header</span>
+        <p class="showcase-desc">Dark surface to differentiate from prose; mono syntax highlighting in restrained tones. Header carries language and copy action. Wraps horizontally rather than overflowing the column.</p>
+      </div>
+      <div class="showcase-canvas">
+        <div class="code-block" style="width: 100%;">
+          <div class="code-block-head">
+            <span>SQL · Salesforce</span>
+            <span style="cursor: pointer;">Copy</span>
+          </div>
+          <div class="code-block-body">
+<span class="kw">SELECT</span> Id, Name, Amount, StageName<br>
+<span class="kw">FROM</span> Opportunity<br>
+<span class="kw">WHERE</span> Type = <span class="str">'Renewal'</span><br>
+&nbsp;&nbsp;<span class="kw">AND</span> CloseDate &gt;= <span class="str">'2025-10-01'</span><br>
+<span class="com">-- ordered by amount, descending</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============== 04.C COMPOSER ============== -->
+    <div class="subhead">
+      <span class="subhead-num">04.C</span>
+      <h3 class="subhead-title">Composer</h3>
+    </div>
+
+    <div class="showcase">
+      <div class="showcase-meta">
+        <div class="showcase-name">Composer</div>
+        <span class="showcase-tag">Composer · with attachments</span>
+        <p class="showcase-desc">The single most-used component. Auto-grows as the user types; attachments stack as chips above the input; tools (web, deep research, voice) live as toggles in the action bar; the model picker is a compact pill so it stays out of the way until needed.</p>
+      </div>
+      <div class="showcase-canvas">
+        <div class="composer">
+          <div class="composer-attachments">
+            <div class="composer-attach-chip">
+              <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+              Q4-Board-Deck.pdf
+              <span class="x">×</span>
+            </div>
+            <div class="composer-attach-chip">
+              <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+              renewals-2025-q4.csv
+              <span class="x">×</span>
+            </div>
+          </div>
+          <div contenteditable="true" class="composer-textarea" style="outline: none;">Compare these two and flag any accounts that appear in both</div>
+          <div class="composer-actions">
+            <div class="composer-tools">
+              <button class="composer-tool-btn" title="Attach file">
+                <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+              </button>
+              <button class="composer-tool-btn active" title="Web search on">
+                <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+              </button>
+              <button class="composer-tool-btn" title="Deep research">
+                <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+              </button>
+              <button class="composer-tool-btn" title="Voice">
+                <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M19 10a7 7 0 0 1-14 0M12 18v4"/></svg>
+              </button>
+            </div>
+            <span class="composer-mode-pill">Sonnet 4.7</span>
+            <button class="composer-send" aria-label="Send">
+              <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============== 04.D ARTIFACT ============== -->
+    <div class="subhead">
+      <span class="subhead-num">04.D</span>
+      <h3 class="subhead-title">Artifact panel</h3>
+    </div>
+
+    <div class="showcase">
+      <div class="showcase-meta">
+        <div class="showcase-name">Artifact</div>
+        <span class="showcase-tag">Canvas · persistent</span>
+        <p class="showcase-desc">The home for substantive output. Header carries title, view tabs (rendered/source for code-shaped output), and per-version actions. Footer carries version number, last-modified time, and a link to history. Stays mounted across messages — it's how the user watches work evolve.</p>
+      </div>
+      <div class="showcase-canvas tight">
+        <div class="artifact" style="width: 100%; max-width: 460px; height: 360px;">
+          <div class="artifact-head">
+            <span class="artifact-title">Q4-renewal-followups.md</span>
+            <div class="artifact-tabs">
+              <span class="artifact-tab active">Rendered</span>
+              <span class="artifact-tab">Source</span>
+            </div>
+            <div class="artifact-actions">
+              <button class="artifact-action-btn" title="Copy"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+              <button class="artifact-action-btn" title="Download"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></button>
+            </div>
+          </div>
+          <div class="artifact-body">
+            <div style="font-family: var(--display); font-size: 20px; font-weight: 400; margin-bottom: var(--s-3);">Renewal follow-ups · Q4</div>
+            <div style="color: var(--ink-2); margin-bottom: var(--s-4);">Drafts for 4 stalled accounts. Edit individually before sending.</div>
+            <div style="border-top: 1px solid var(--line); padding-top: var(--s-3); margin-bottom: var(--s-3);">
+              <div style="font-weight: 500; margin-bottom: 4px;">Acme Industries</div>
+              <div style="font-family: var(--mono); font-size: 11px; color: var(--ink-3); margin-bottom: var(--s-2);">to: m.lewis@acme.com · last contact: Oct 14</div>
+              <div style="font-size: 13px; color: var(--ink-2); line-height: 1.6;">Hi Marcus, following up on our discovery call last month. We've been thinking about the migration timeline you mentioned and I wanted to share a couple of...</div>
+            </div>
+          </div>
+          <div class="artifact-foot">
+            <span>v3 · 2 minutes ago</span>
+            <span style="cursor: pointer;">History →</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============== 04.E CONNECTORS & TRUST ============== -->
+    <div class="subhead">
+      <span class="subhead-num">04.E</span>
+      <h3 class="subhead-title">Connectors &amp; trust</h3>
+    </div>
+
+    <div class="showcase">
+      <div class="showcase-meta">
+        <div class="showcase-name">Connector card</div>
+        <span class="showcase-tag">Trust · status + scope</span>
+        <p class="showcase-desc">Used in the connector grid (admin) and in inline pickers (when the agent asks "which Notion workspace?"). Shows the brand mark, name, last-sync time, and current scope. Status badge is dot-prefixed so it scans at peripheral vision.</p>
+      </div>
+      <div class="showcase-canvas">
+        <div style="width: 100%; display: flex; flex-direction: column; gap: var(--s-3);">
+          <div class="connector-card">
+            <div class="connector-icon" style="background:#0FA3B1; color: white;">SF</div>
+            <div class="connector-info">
+              <div class="connector-name">Salesforce</div>
+              <div class="connector-desc">Production · acme.my.salesforce.com</div>
+            </div>
+            <span class="badge badge-success badge-dot">synced 2m ago</span>
+          </div>
+          <div class="connector-card">
+            <div class="connector-icon" style="background:#000; color: white;">N</div>
+            <div class="connector-info">
+              <div class="connector-name">Notion</div>
+              <div class="connector-desc">Engineering workspace · 4 databases</div>
+            </div>
+            <span class="badge badge-warning badge-dot">scope incomplete</span>
+          </div>
+          <div class="connector-card">
+            <div class="connector-icon" style="background:#34A853; color: white;">G</div>
+            <div class="connector-info">
+              <div class="connector-name">Google Drive</div>
+              <div class="connector-desc">Not connected — set up to read team files</div>
+            </div>
+            <button class="btn btn-secondary btn-sm">Connect</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="showcase">
+      <div class="showcase-meta">
+        <div class="showcase-name">Permission dialog</div>
+        <span class="showcase-tag">Trust · destructive confirm</span>
+        <p class="showcase-desc">Required before the agent commits any action with a side effect — sending email, updating a record, deleting data, granting access. Always shows the exact payload in mono so the user is approving what's actually about to happen, not a paraphrase.</p>
+      </div>
+      <div class="showcase-canvas">
+        <div class="dialog">
+          <div class="dialog-icon">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3z"/><path d="M12 9v4M12 17h.01"/></svg>
+          </div>
+          <h4 class="dialog-title">Send 4 emails on your behalf?</h4>
+          <p class="dialog-desc">The agent will send these from your account. Review the recipients and subjects before approving.</p>
+          <div class="dialog-payload">
+            <div class="dialog-payload-row"><span class="key">action</span><span>send_email × 4</span></div>
+            <div class="dialog-payload-row"><span class="key">from</span><span>you@acme.com</span></div>
+            <div class="dialog-payload-row"><span class="key">to</span><span>m.lewis@acme.com, +3 others</span></div>
+            <div class="dialog-payload-row"><span class="key">subject</span><span>"Following up on Q4 timeline"</span></div>
+          </div>
+          <div class="dialog-actions">
+            <button class="btn btn-ghost">Cancel</button>
+            <button class="btn btn-secondary">Edit drafts</button>
+            <button class="btn btn-primary">Send 4 emails</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="showcase">
+      <div class="showcase-meta">
+        <div class="showcase-name">Reasoning trace</div>
+        <span class="showcase-tag">Trust · expandable</span>
+        <p class="showcase-desc">The agent's intermediate thinking, surfaced as an indented mono block above the response. Collapsed by default — power users and auditors expand; everyone else ignores. Never the first thing in the message.</p>
+      </div>
+      <div class="showcase-canvas">
+        <div class="trace">Plan: query Salesforce for Q4 renewal opps where stage isn't closed.
+Filter for last_activity_date older than 60 days.
+Cross-reference with account size to prioritize follow-ups.
+For each, draft a personalized email referencing the most recent prior interaction.</div>
+      </div>
+    </div>
+
+    <div class="showcase">
+      <div class="showcase-meta">
+        <div class="showcase-name">Compliance banner</div>
+        <span class="showcase-tag">Trust · ambient state</span>
+        <p class="showcase-desc">Persistent strip at the top of a thread when policy state matters — a connector in restricted mode, a workspace under DLP review, a session being recorded. Read-only; it informs rather than asks.</p>
+      </div>
+      <div class="showcase-canvas">
+        <div class="compliance-banner" style="width: 100%;">
+          <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          This workspace is under DLP review. External sources are disabled and outputs are logged.
+        </div>
+      </div>
+    </div>
+
+    <div class="showcase">
+      <div class="showcase-meta">
+        <div class="showcase-name">Audit log entry</div>
+        <span class="showcase-tag">Trust · admin surface</span>
+        <p class="showcase-desc">Lives in the audit panel and on the per-action history view. Three columns: timestamp, action description, and a status pill. Action verbs in body text; resource identifiers in mono.</p>
+      </div>
+      <div class="showcase-canvas">
+        <div style="width: 100%;">
+          <div class="audit-row">
+            <span class="audit-time">14:32:08</span>
+            <div class="audit-action"><span class="verb">Agent queried </span><span class="what">Salesforce.opportunity</span><span class="verb"> on behalf of </span><span class="what">m.chen@acme.com</span></div>
+            <span class="badge badge-success badge-dot">ok</span>
+          </div>
+          <div class="audit-row">
+            <span class="audit-time">14:32:11</span>
+            <div class="audit-action"><span class="verb">Drafted artifact </span><span class="what">Q4-renewal-followups.md</span></div>
+            <span class="badge badge-default">v1</span>
+          </div>
+          <div class="audit-row">
+            <span class="audit-time">14:33:42</span>
+            <div class="audit-action"><span class="verb">User approved action </span><span class="what">send_email × 4</span></div>
+            <span class="badge badge-info badge-dot">approved</span>
+          </div>
+          <div class="audit-row">
+            <span class="audit-time">14:33:45</span>
+            <div class="audit-action"><span class="verb">Connector </span><span class="what">Notion</span><span class="verb"> denied — scope.write missing</span></div>
+            <span class="badge badge-danger badge-dot">denied</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ======================== SECTION 05 — SCENARIOS ======================== -->
+<section id="scenarios" class="section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-num">05</div>
+      <div class="section-title-block">
+        <h2 class="section-title"><em>Scenarios.</em></h2>
+        <p class="section-intro">Four ways the agent gets used in practice — the shapes a turn can take. The dialogue is the bedrock; the others are what the agent reaches for when a plain answer isn't the right response. Each scenario is built from the components in §04, and together they define what the framework in §06 has to support.</p>
+      </div>
+    </div>
+
+    <!-- ============== 05.A — DIALOGUE ============== -->
+    <div class="scenario">
+      <div class="scenario-head">
+        <div class="scenario-num">i.</div>
+        <div>
+          <div class="scenario-when">When the answer is the work</div>
+          <h3 class="scenario-title">The dialogue</h3>
+          <p class="scenario-desc">A user asks something. The agent grounds the answer in workspace data and replies in prose with citations. The user follows up; the thread accrues context. No artifact, no form, no destructive action — just a conversation about what the workspace knows.</p>
+        </div>
+      </div>
+      <div class="scenario-body">
+
+        <div class="scenario-step">
+          <div class="scenario-step-label"><span class="step-num">Step 1</span>User asks</div>
+          <div class="scenario-step-content">
+            <div style="display: flex; justify-content: flex-end;">
+              <div class="msg-user">What's our parental leave policy for new hires? My team is hiring someone whose partner is due in March.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="scenario-step">
+          <div class="scenario-step-label"><span class="step-num">Step 2</span>Agent grounds the answer</div>
+          <div class="scenario-step-content">
+            <div class="status-line">Searching HR Knowledge Base</div>
+            <div class="tool-card expanded">
+              <div class="tool-card-head">
+                <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="1.8"><path d="M20 6 9 17l-5-5"/></svg>
+                <span class="tool-name">Knowledge Base</span>
+                <span style="color: var(--ink-3);">3 documents matched</span>
+                <span class="tool-meta">0.8s</span>
+              </div>
+              <div class="tool-card-body">query: parental leave policy new hire eligibility<br>scope: HR Policies (workspace-scoped)<br>filters: current year, employee handbook</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="scenario-step">
+          <div class="scenario-step-label"><span class="step-num">Step 3</span>Agent responds with citations</div>
+          <div class="scenario-step-content">
+            <div class="msg-assistant">Eligible employees get <strong>16 weeks paid leave</strong> regardless of role or tenure<span class="cite">1</span>. New hires qualify from <strong>day one</strong> — there's no waiting period<span class="cite">1</span>. Leave can be taken any time within the first year after the birth or adoption, and can be split into up to two blocks<span class="cite">2</span>.</div>
+            <div class="cite-source">
+              <span class="cite-source-num">1</span>
+              <div>
+                <div class="cite-source-title">Employee Handbook 2026 · §4.2 Parental Leave</div>
+                <div class="cite-source-url">notion.so/acme/handbook · last updated Feb 12 · internal</div>
+                <div class="cite-source-snippet">"All employees, regardless of tenure, are eligible for 16 weeks of fully paid parental leave starting from their first day of employment."</div>
+              </div>
+            </div>
+            <div class="row" style="gap: var(--s-2);">
+              <button class="suggest">How does it interact with PTO? <span class="arrow">→</span></button>
+              <button class="suggest">Draft a note for the new hire <span class="arrow">→</span></button>
+            </div>
+          </div>
+        </div>
+
+        <div class="scenario-step">
+          <div class="scenario-step-label"><span class="step-num">Step 4</span>User follows up</div>
+          <div class="scenario-step-content">
+            <div style="display: flex; justify-content: flex-end;">
+              <div class="msg-user">Does adoption count?</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="scenario-step">
+          <div class="scenario-step-label"><span class="step-num">Step 5</span>Agent extends</div>
+          <div class="scenario-step-content">
+            <div class="msg-assistant">Yes — the policy treats <strong>adoption and surrogacy the same as biological birth</strong>, including same-sex partners and non-primary caregivers<span class="cite">3</span>. The 16-week clock starts at placement rather than birth.</div>
+          </div>
+        </div>
+
+      </div>
+      <div class="scenario-takeaway">
+        <strong>Why it matters.</strong> The dialogue is the default — the agent should reach for it first, not for forms or artifacts. Every claim is grounded in a source the user could open. Suggestion chips invite a follow-up without forcing the user to type one.
+      </div>
+    </div>
+
+    <!-- ============== 05.B — CLARIFICATION ============== -->
+    <div class="scenario">
+      <div class="scenario-head">
+        <div class="scenario-num">ii.</div>
+        <div>
+          <div class="scenario-when">When the request is ambiguous</div>
+          <h3 class="scenario-title">Clarifying the ask</h3>
+          <p class="scenario-desc">Some requests are too underspecified to answer well. Rather than guess and produce something the user has to reject, the agent asks structured questions back. Not a free-form "could you tell me more?" — a bounded card with the actual choices that disambiguate the request.</p>
+        </div>
+      </div>
+      <div class="scenario-body">
+
+        <div class="scenario-step">
+          <div class="scenario-step-label"><span class="step-num">Step 1</span>Underspecified request</div>
+          <div class="scenario-step-content">
+            <div style="display: flex; justify-content: flex-end;">
+              <div class="msg-user">Build me a quarterly summary I can send to the board.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="scenario-step">
+          <div class="scenario-step-label"><span class="step-num">Step 2</span>Agent asks back</div>
+          <div class="scenario-step-content">
+            <div class="msg-assistant">A few things would change what I produce — quickest if you pick:</div>
+            <div class="clarify-card">
+              <div class="clarify-card-head">
+                <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01"/></svg>
+                3 quick questions
+              </div>
+
+              <div class="clarify-q">
+                <div class="clarify-q-label">Which quarter?</div>
+                <div class="clarify-options">
+                  <span class="clarify-opt">Q1 2026</span>
+                  <span class="clarify-opt selected">Q4 2025</span>
+                  <span class="clarify-opt">Q3 2025</span>
+                  <span class="clarify-opt">YTD</span>
+                </div>
+              </div>
+
+              <div class="clarify-q">
+                <div class="clarify-q-label">Audience focus</div>
+                <div class="clarify-q-hint">The board has a finance lens by default — toggle if it should lean elsewhere.</div>
+                <div class="clarify-options">
+                  <span class="clarify-opt selected">Financial performance</span>
+                  <span class="clarify-opt">Product &amp; roadmap</span>
+                  <span class="clarify-opt">People &amp; org</span>
+                  <span class="clarify-opt">Mixed — all three</span>
+                </div>
+              </div>
+
+              <div class="clarify-q">
+                <div class="clarify-q-label">Length</div>
+                <div class="clarify-options">
+                  <span class="clarify-opt">One pager</span>
+                  <span class="clarify-opt selected">Memo (2–3 pages)</span>
+                  <span class="clarify-opt">Full deck</span>
+                </div>
+              </div>
+
+              <div style="border-top: 1px solid var(--line); padding-top: var(--s-3); display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-family: var(--mono); font-size: 11px; color: var(--ink-3);">or just type a free-form clarification ↓</span>
+                <button class="btn btn-primary btn-sm">Use these answers</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="scenario-step">
+          <div class="scenario-step-label"><span class="step-num">Step 3</span>Agent confirms</div>
+          <div class="scenario-step-content">
+            <div class="msg-assistant">Got it — <strong>Q4 2025, financial focus, memo-length</strong>. Pulling the numbers and drafting now.</div>
+            <div class="status-line">Reading Salesforce, NetSuite, and the board folder</div>
+          </div>
+        </div>
+
+      </div>
+      <div class="scenario-takeaway">
+        <strong>Why it matters.</strong> Clarification is cheaper than rework. The card is bounded — three questions, no more — so it doesn't feel like an interrogation. Pre-selected defaults represent the agent's best guess; the user can leave them or override. A free-form fallback is always available.
+      </div>
+    </div>
+
+    <!-- ============== 05.C — FORM ============== -->
+    <div class="scenario">
+      <div class="scenario-head">
+        <div class="scenario-num">iii.</div>
+        <div>
+          <div class="scenario-when">When structured data is required</div>
+          <h3 class="scenario-title">Collecting structured input</h3>
+          <p class="scenario-desc">Some tasks require fields a chat conversation handles poorly — dates, currencies, file attachments, controlled vocabularies. The agent presents an inline form, the user fills it, the agent submits to a downstream system. Forms appear in the conversation stream, not in a separate page.</p>
+        </div>
+      </div>
+      <div class="scenario-body">
+
+        <div class="scenario-step">
+          <div class="scenario-step-label"><span class="step-num">Step 1</span>User intent</div>
+          <div class="scenario-step-content">
+            <div style="display: flex; justify-content: flex-end;">
+              <div class="msg-user">I need to file an expense for last week's client dinner with the Acme team.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="scenario-step">
+          <div class="scenario-step-label"><span class="step-num">Step 2</span>Agent presents form</div>
+          <div class="scenario-step-content">
+            <div class="msg-assistant">Got it — I'll file this in Concur. A few details to fill in:</div>
+            <div class="inline-form">
+              <div class="inline-form-head">
+                <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+                Expense report · client meal
+              </div>
+
+              <div class="field-row">
+                <div class="field">
+                  <label class="field-label">Date <span class="req">*</span></label>
+                  <input class="input" value="Apr 25, 2026">
+                </div>
+                <div class="field">
+                  <label class="field-label">Amount (USD) <span class="req">*</span></label>
+                  <input class="input" placeholder="0.00">
+                </div>
+              </div>
+
+              <div class="field">
+                <label class="field-label">Vendor</label>
+                <input class="input" value="Atelier Crenn">
+              </div>
+
+              <div class="field">
+                <label class="field-label">Category <span class="req">*</span></label>
+                <div class="clarify-options">
+                  <span class="clarify-opt selected">Client meal</span>
+                  <span class="clarify-opt">Team meal</span>
+                  <span class="clarify-opt">Travel</span>
+                  <span class="clarify-opt">Other</span>
+                </div>
+              </div>
+
+              <div class="field">
+                <label class="field-label">Attendees <span class="req">*</span></label>
+                <input class="input" placeholder="Add by name or email">
+                <div class="field-help">3 added: m.lewis@acme.com, you, j.park@acme.com</div>
+              </div>
+
+              <div class="field">
+                <label class="field-label">Receipt <span class="req">*</span></label>
+                <div class="field-upload">
+                  <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin: 0 auto 6px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+                  <div>Drop file or click to upload</div>
+                </div>
+              </div>
+
+              <div class="inline-form-actions">
+                <button class="btn btn-ghost">Cancel</button>
+                <button class="btn btn-primary">Submit to Concur</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="scenario-step">
+          <div class="scenario-step-label"><span class="step-num">Step 3</span>Agent submits</div>
+          <div class="scenario-step-content">
+            <div class="tool-card expanded">
+              <div class="tool-card-head">
+                <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="1.8"><path d="M20 6 9 17l-5-5"/></svg>
+                <span class="tool-name">Concur</span>
+                <span style="color: var(--ink-3);">expense filed · approval pending</span>
+                <span class="tool-meta">EXP-4421</span>
+              </div>
+              <div class="tool-card-body">action: create_expense<br>amount: $487.20 USD · category: client_meal<br>routed_to: l.singh@acme.com (manager)</div>
+            </div>
+            <div class="msg-assistant">Filed as <strong>EXP-4421</strong>. It's with Lina for approval — she usually clears these within a day. I'll let you know when it goes through.</div>
+          </div>
+        </div>
+
+      </div>
+      <div class="scenario-takeaway">
+        <strong>Why it matters.</strong> When the downstream system has a schema, honor the schema. Asking the user "what's the date, vendor, amount, category, attendees..." in chat is worse than presenting fields. Forms inside the conversation keep context (the user doesn't navigate away) while accepting that some inputs aren't prose.
+      </div>
+    </div>
+
+    <!-- ============== 05.D — ARTIFACT LOOP ============== -->
+    <div class="scenario">
+      <div class="scenario-head">
+        <div class="scenario-num">iv.</div>
+        <div>
+          <div class="scenario-when">When the output is the work</div>
+          <h3 class="scenario-title">The artifact loop</h3>
+          <p class="scenario-desc">For substantive output the user will edit, share, or send — documents, emails, code, decks, plans. The artifact opens in the canvas. The user reviews, requests revisions in the chat, and the agent updates the artifact in place. Versions are persistent. Sending or committing requires explicit approval.</p>
+        </div>
+      </div>
+      <div class="scenario-body">
+
+        <div class="scenario-step">
+          <div class="scenario-step-label"><span class="step-num">Step 1</span>User asks for a draft</div>
+          <div class="scenario-step-content">
+            <div style="display: flex; justify-content: flex-end;">
+              <div class="msg-user">Draft a renewal email for Acme — Marcus is the contact.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="scenario-step">
+          <div class="scenario-step-label"><span class="step-num">Step 2</span>Agent generates v1 in canvas</div>
+          <div class="scenario-step-content">
+            <div class="msg-assistant">Drafted in the canvas <span style="color: var(--accent);">→</span> The first paragraph references your March intro. Tell me what to adjust.</div>
+            <div class="artifact" style="max-width: 480px;">
+              <div class="artifact-head">
+                <span class="artifact-title">acme-renewal-email.md</span>
+                <div class="version-strip" style="margin-left: auto;">
+                  <span class="version-pip active">v1</span>
+                </div>
+              </div>
+              <div class="artifact-body" style="padding: var(--s-4);">
+                <div style="font-family: var(--mono); font-size: 11px; color: var(--ink-3); margin-bottom: var(--s-3);">to: m.lewis@acme.com · subject: Renewal — let's talk timing</div>
+                <div style="color: var(--ink-2); font-size: 13px; line-height: 1.65;">Hi Marcus,<br><br>It's been about a year since we first spoke in March, and I wanted to reach out as your renewal date approaches. The team has been heads-down on the migration scope you mentioned, and I think we're in a good place to talk through what makes sense for the next term…</div>
+              </div>
+              <div class="artifact-foot">
+                <span>v1 · just now</span>
+                <span>484 words</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="scenario-step">
+          <div class="scenario-step-label"><span class="step-num">Step 3</span>User requests changes</div>
+          <div class="scenario-step-content">
+            <div style="display: flex; justify-content: flex-end;">
+              <div class="msg-user">Make the tone warmer and reference the lunch we had in October instead. Drop the line about scope — too sales-y.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="scenario-step">
+          <div class="scenario-step-label"><span class="step-num">Step 4</span>Agent revises, shows diff</div>
+          <div class="scenario-step-content">
+            <div class="msg-assistant">Updated to v2 — three changes:</div>
+            <div style="display: flex; flex-direction: column; gap: var(--s-2); max-width: 540px;">
+              <div class="diff-row">
+                <span class="diff-marker">opening</span>
+                <div class="diff-text"><del>It's been about a year since we first spoke in March</del> <ins>It was great catching up over lunch in October — felt like we picked up right where the spring conversation left off</ins></div>
+              </div>
+              <div class="diff-row">
+                <span class="diff-marker">tone</span>
+                <div class="diff-text"><del>I wanted to reach out as your renewal date approaches</del> <ins>I figured I'd reach out before the calendar gets ahead of us</ins></div>
+              </div>
+              <div class="diff-row">
+                <span class="diff-marker">cut</span>
+                <div class="diff-text"><del>The team has been heads-down on the migration scope you mentioned, and I think we're in a good place to talk through what makes sense for the next term.</del></div>
+              </div>
+            </div>
+            <div class="artifact" style="max-width: 480px;">
+              <div class="artifact-head">
+                <span class="artifact-title">acme-renewal-email.md</span>
+                <div class="version-strip" style="margin-left: auto;">
+                  <span class="version-pip">v1</span>
+                  <span class="version-pip active">v2</span>
+                </div>
+              </div>
+              <div class="artifact-foot">
+                <span>v2 · just now · 3 edits</span>
+                <span>421 words</span>
+              </div>
+            </div>
+            <div class="row" style="gap: var(--s-2);">
+              <button class="suggest">Send it <span class="arrow">→</span></button>
+              <button class="suggest">Revert to v1 <span class="arrow">→</span></button>
+              <button class="suggest">One more pass <span class="arrow">→</span></button>
+            </div>
+          </div>
+        </div>
+
+        <div class="scenario-step">
+          <div class="scenario-step-label"><span class="step-num">Step 5</span>User approves &amp; sends</div>
+          <div class="scenario-step-content">
+            <div style="display: flex; justify-content: flex-end;">
+              <div class="msg-user">Perfect, send it.</div>
+            </div>
+            <div class="dialog" style="max-width: 480px;">
+              <div class="dialog-icon">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+              </div>
+              <h4 class="dialog-title">Send email on your behalf?</h4>
+              <p class="dialog-desc">From your account to Marcus Lewis. The email will not be cc'd to anyone else.</p>
+              <div class="dialog-payload">
+                <div class="dialog-payload-row"><span class="key">to</span><span>m.lewis@acme.com</span></div>
+                <div class="dialog-payload-row"><span class="key">from</span><span>you@acme.com</span></div>
+                <div class="dialog-payload-row"><span class="key">subject</span><span>"Renewal — let's talk timing"</span></div>
+                <div class="dialog-payload-row"><span class="key">body</span><span>v2 of acme-renewal-email.md</span></div>
+              </div>
+              <div class="dialog-actions">
+                <button class="btn btn-ghost">Cancel</button>
+                <button class="btn btn-primary">Send</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="scenario-step">
+          <div class="scenario-step-label"><span class="step-num">Step 6</span>Confirmation &amp; audit</div>
+          <div class="scenario-step-content">
+            <div class="tool-card expanded">
+              <div class="tool-card-head">
+                <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="1.8"><path d="M20 6 9 17l-5-5"/></svg>
+                <span class="tool-name">Gmail</span>
+                <span style="color: var(--ink-3);">sent</span>
+                <span class="tool-meta">14:32:08</span>
+              </div>
+              <div class="tool-card-body">action: send_email<br>artifact: acme-renewal-email.md@v2<br>logged_to: audit · entry #4421-08</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="scenario-takeaway">
+        <strong>Why it matters.</strong> Substantive output belongs in the canvas, where it's persistent, addressable, and version-tracked. Iteration happens in the chat — the agent shows what changed in plain language and updates the artifact in place. Anything with a side effect (sending, committing) goes through an explicit approval gate, with the exact payload visible.
+      </div>
+    </div>
+
+    <!-- ============== 05.E — CONNECTOR (compact) ============== -->
+    <div class="scenario">
+      <div class="scenario-head">
+        <div class="scenario-num">v.</div>
+        <div>
+          <div class="scenario-when">When the agent needs new access</div>
+          <h3 class="scenario-title">Connecting a source mid-thread</h3>
+          <p class="scenario-desc">Rather than fail with "I don't have access to that," the agent surfaces the connector it needs and walks the user through scoped authorization without leaving the conversation. The thread resumes from where it paused.</p>
+        </div>
+      </div>
+      <div class="scenario-body">
+
+        <div class="scenario-step">
+          <div class="scenario-step-label"><span class="step-num">Step 1</span>Request needs a missing source</div>
+          <div class="scenario-step-content">
+            <div style="display: flex; justify-content: flex-end;">
+              <div class="msg-user">Pull the engineering OKRs from Notion and tell me which are off-track.</div>
+            </div>
+            <div class="msg-assistant">I don't have access to your Notion workspace yet. Authorize it to continue — I'll only read the databases you select.</div>
+            <div class="connector-card" style="max-width: 480px;">
+              <div class="connector-icon" style="background:#000; color: white;">N</div>
+              <div class="connector-info">
+                <div class="connector-name">Notion</div>
+                <div class="connector-desc">Read-only · scope-limited to selected databases</div>
+              </div>
+              <button class="btn btn-accent btn-sm">Authorize</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="scenario-step">
+          <div class="scenario-step-label"><span class="step-num">Step 2</span>User scopes access</div>
+          <div class="scenario-step-content">
+            <div class="dialog" style="max-width: 480px;">
+              <div class="minihead" style="margin-bottom: var(--s-2);">Step 2 of 2 · Choose scope</div>
+              <h4 class="dialog-title">What can the agent read?</h4>
+              <p class="dialog-desc">You can change this any time in connector settings.</p>
+              <div style="display: flex; flex-direction: column; gap: var(--s-2);">
+                <label style="display: flex; align-items: center; gap: var(--s-3); padding: var(--s-3); border: 1px solid var(--accent); border-radius: var(--r-md); background: var(--accent-soft); cursor: pointer;">
+                  <span class="toggle on"></span>
+                  <div><div style="font-weight: 500; font-size: 14px;">Engineering OKRs</div><div style="font-family: var(--mono); font-size: 11px; color: var(--ink-3);">62 entries</div></div>
+                </label>
+                <label style="display: flex; align-items: center; gap: var(--s-3); padding: var(--s-3); border: 1px solid var(--line); border-radius: var(--r-md); cursor: pointer;">
+                  <span class="toggle"></span>
+                  <div><div style="font-weight: 500; font-size: 14px;">Product roadmap</div><div style="font-family: var(--mono); font-size: 11px; color: var(--ink-3);">128 entries</div></div>
+                </label>
+              </div>
+              <div class="dialog-actions">
+                <button class="btn btn-ghost">Back</button>
+                <button class="btn btn-primary">Authorize 1 database</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="scenario-step">
+          <div class="scenario-step-label"><span class="step-num">Step 3</span>Thread resumes</div>
+          <div class="scenario-step-content">
+            <div class="msg-assistant">Connected. Reading 62 OKR entries…</div>
+            <div class="status-line">Scoring against Q1 commitments</div>
+          </div>
+        </div>
+
+      </div>
+      <div class="scenario-takeaway">
+        <strong>Why it matters.</strong> Authorization is part of the conversation, not a detour. Scope is explicit at the moment of granting, not buried in admin. The thread holds its place; the user resumes from where they paused.
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ======================== SECTION 06 — ARCHITECTURE ======================== -->
+<section id="architecture" class="section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-num">06</div>
+      <div class="section-title-block">
+        <h2 class="section-title">Framework <em>architecture.</em></h2>
+        <p class="section-intro">The scenarios in §05 share a structure. A turn is a sequence of typed blocks; a thread is a sequence of turns; a workspace defines what the thread can reach. Everything else — connectors, artifacts, audit, policy — hangs off these primitives. This section names them.</p>
+      </div>
+    </div>
+
+    <!-- 06.A — Layers -->
+    <div class="subhead">
+      <span class="subhead-num">06.A</span>
+      <h3 class="subhead-title">Layers</h3>
+    </div>
+    <p class="prose" style="margin-bottom: var(--s-5);">Five layers, bottom to top. Each one assumes the layers below it and is rendered by the layers above it. A clean break between them means UI changes don't touch orchestration logic, and connector changes don't touch UI.</p>
+
+    <div class="arch-diagram">
+      <div class="layer-stack">
+
+        <div class="layer">
+          <div class="layer-label">
+            <span class="layer-num">Layer 5</span>
+            <span class="layer-name">Surface</span>
+          </div>
+          <div class="layer-content">
+            <div>The rendered UI — components from §04, composed into the patterns from §05. Pure presentation; no business logic.</div>
+            <div class="layer-tags">
+              <span class="layer-tag">message</span>
+              <span class="layer-tag">tool-card</span>
+              <span class="layer-tag">artifact-panel</span>
+              <span class="layer-tag">composer</span>
+              <span class="layer-tag">dialog</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="layer">
+          <div class="layer-label">
+            <span class="layer-num">Layer 4</span>
+            <span class="layer-name">Composition</span>
+          </div>
+          <div class="layer-content">
+            <div>The block / turn / thread model. A turn is an ordered list of typed blocks. A thread is an ordered list of turns. Branching, undo, and version history live here.</div>
+            <div class="layer-tags">
+              <span class="layer-tag">Block</span>
+              <span class="layer-tag">Turn</span>
+              <span class="layer-tag">Thread</span>
+              <span class="layer-tag">Artifact</span>
+              <span class="layer-tag">Workspace</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="layer">
+          <div class="layer-label">
+            <span class="layer-num">Layer 3</span>
+            <span class="layer-name">Orchestration</span>
+          </div>
+          <div class="layer-content">
+            <div>The agent loop: planning, tool routing, intermediate state, retries, human-in-the-loop checkpoints. Decides which blocks to emit next given the thread state and the user's last input.</div>
+            <div class="layer-tags">
+              <span class="layer-tag">planner</span>
+              <span class="layer-tag">router</span>
+              <span class="layer-tag">checkpoint</span>
+              <span class="layer-tag">retry-policy</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="layer">
+          <div class="layer-label">
+            <span class="layer-num">Layer 2</span>
+            <span class="layer-name">Capability</span>
+          </div>
+          <div class="layer-content">
+            <div>Connectors and tools the agent can call. Each one declares its actions, inputs, outputs, and required permissions. MCP-shaped where possible — a capability is a contract, not a hard-coded integration.</div>
+            <div class="layer-tags">
+              <span class="layer-tag">Connector</span>
+              <span class="layer-tag">Action</span>
+              <span class="layer-tag">Schema</span>
+              <span class="layer-tag">Scope</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="layer">
+          <div class="layer-label">
+            <span class="layer-num">Layer 1</span>
+            <span class="layer-name">Trust</span>
+          </div>
+          <div class="layer-content">
+            <div>The substrate everything else respects: identity, ACLs, policy enforcement, audit. Every action and read passes through here. Without this layer, none of the others can be exposed to enterprise users.</div>
+            <div class="layer-tags">
+              <span class="layer-tag">Identity</span>
+              <span class="layer-tag">ACL</span>
+              <span class="layer-tag">Policy</span>
+              <span class="layer-tag">Audit</span>
+              <span class="layer-tag">DLP</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 06.B — Block taxonomy -->
+    <div class="subhead">
+      <span class="subhead-num">06.B</span>
+      <h3 class="subhead-title">The block taxonomy</h3>
+    </div>
+    <p class="prose" style="margin-bottom: var(--s-5);">Every visible thing in a turn is a <em>block</em> with a known type. New scenarios are new arrangements of existing blocks; only rarely do we add new types. This list is the closed set the framework supports today — additions require a deliberate review.</p>
+
+    <div class="block-grid">
+
+      <div class="block-card">
+        <div class="block-name">text</div>
+        <div class="block-title">Prose</div>
+        <div class="block-desc">Free-form text from the user or the agent. The default block; everything else is what you reach for when prose isn't enough.</div>
+        <div class="block-meta">role: user | agent · streamable</div>
+      </div>
+
+      <div class="block-card">
+        <div class="block-name">tool_call</div>
+        <div class="block-title">Tool invocation</div>
+        <div class="block-desc">An agent action that touches a connector. Carries the target, query, status, and result. Always logged; expandable on demand.</div>
+        <div class="block-meta">states: pending · running · ok · error</div>
+      </div>
+
+      <div class="block-card">
+        <div class="block-name">status</div>
+        <div class="block-title">Status indicator</div>
+        <div class="block-desc">Ephemeral progress signal during long operations. Replaces itself with the next status rather than stacking.</div>
+        <div class="block-meta">lifetime: until next block</div>
+      </div>
+
+      <div class="block-card">
+        <div class="block-name">clarify</div>
+        <div class="block-title">Clarification card</div>
+        <div class="block-desc">Structured questions back to the user. Mix of single-select, multi-select, and free-form — bounded to keep the friction low.</div>
+        <div class="block-meta">max questions: 3 · with defaults</div>
+      </div>
+
+      <div class="block-card">
+        <div class="block-name">form</div>
+        <div class="block-title">Inline form</div>
+        <div class="block-desc">Schema-bound data collection. Field types, validation, and required markers come from the connector that will consume the data.</div>
+        <div class="block-meta">schema: json-schema · downstream-driven</div>
+      </div>
+
+      <div class="block-card">
+        <div class="block-name">artifact_ref</div>
+        <div class="block-title">Artifact reference</div>
+        <div class="block-desc">A pointer to addressable canvas content. Carries id, version, and a thumbnail so it survives in the thread when the canvas closes.</div>
+        <div class="block-meta">addressed: artifact_id @ version</div>
+      </div>
+
+      <div class="block-card">
+        <div class="block-name">citation</div>
+        <div class="block-title">Citation + source</div>
+        <div class="block-desc">Inline mark on a claim plus a resolvable source card. Sources can be internal (workspace docs) or external (web).</div>
+        <div class="block-meta">resolves to: source_id</div>
+      </div>
+
+      <div class="block-card">
+        <div class="block-name">confirmation</div>
+        <div class="block-title">Action approval</div>
+        <div class="block-desc">A gate the agent must pass through before any side-effecting action. Shows the exact payload, never a paraphrase.</div>
+        <div class="block-meta">required for: write | send | delete</div>
+      </div>
+
+      <div class="block-card">
+        <div class="block-name">picker</div>
+        <div class="block-title">Selection chip set</div>
+        <div class="block-desc">Suggestion chips, follow-ups, branchable options. Single- or multi-select; phrased in the user's voice.</div>
+        <div class="block-meta">limit: 4 visible</div>
+      </div>
+
+      <div class="block-card">
+        <div class="block-name">file_ref</div>
+        <div class="block-title">File card</div>
+        <div class="block-desc">A pointer to a file the user attached or the agent produced. Renders inline; opens in a preview.</div>
+        <div class="block-meta">types: pdf · doc · csv · img</div>
+      </div>
+
+      <div class="block-card">
+        <div class="block-name">trace</div>
+        <div class="block-title">Reasoning trace</div>
+        <div class="block-desc">Optional, collapsed by default. The agent's intermediate reasoning, surfaced for power users and auditors.</div>
+        <div class="block-meta">visibility: opt-in per workspace</div>
+      </div>
+
+      <div class="block-card">
+        <div class="block-name">connector_ref</div>
+        <div class="block-title">Connector card</div>
+        <div class="block-desc">Inline connector authorization request — the inline shape of the admin connector grid, used when a thread needs new access.</div>
+        <div class="block-meta">renders: in-flow auth</div>
+      </div>
+
+    </div>
+
+    <!-- 06.C — Turn anatomy -->
+    <div class="subhead">
+      <span class="subhead-num">06.C</span>
+      <h3 class="subhead-title">Anatomy of a turn</h3>
+    </div>
+    <p class="prose" style="margin-bottom: var(--s-5);">A turn is the unit of agent activity in response to a user input. It owns blocks, references artifacts, and emits audit entries. Concretely:</p>
+
+    <div class="surface-card" style="padding: var(--s-6); margin-bottom: var(--s-7);">
+      <div class="code-block">
+        <div class="code-block-head">
+          <span>Turn schema · simplified</span>
+        </div>
+        <div class="code-block-body">
+<span class="kw">type</span> Turn = {<br>
+&nbsp;&nbsp;id: TurnId<br>
+&nbsp;&nbsp;thread_id: ThreadId<br>
+&nbsp;&nbsp;parent_turn_id: TurnId | <span class="kw">null</span>&nbsp;&nbsp;<span class="com">// supports branching</span><br>
+&nbsp;&nbsp;input: { role: <span class="str">'user'</span>, blocks: Block[] }<br>
+&nbsp;&nbsp;output: { role: <span class="str">'agent'</span>, blocks: Block[], status: TurnStatus }<br>
+&nbsp;&nbsp;artifacts_touched: ArtifactRef[]&nbsp;&nbsp;<span class="com">// created or updated</span><br>
+&nbsp;&nbsp;actions_taken: ActionRef[]&nbsp;&nbsp;<span class="com">// all logged to audit</span><br>
+&nbsp;&nbsp;sources_cited: SourceRef[]<br>
+&nbsp;&nbsp;policy_decisions: PolicyDecision[]&nbsp;&nbsp;<span class="com">// permits, denies, redactions</span><br>
+&nbsp;&nbsp;timing: { started_at, finished_at, tokens, cost }<br>
+}
+        </div>
+      </div>
+    </div>
+
+    <!-- 06.D — Lifecycle -->
+    <div class="subhead">
+      <span class="subhead-num">06.D</span>
+      <h3 class="subhead-title">The lifecycle of a request</h3>
+    </div>
+    <p class="prose" style="margin-bottom: var(--s-5);">When a user sends a message, this is the path it walks. The diagram is read top-to-bottom; each step is gated by the trust layer.</p>
+
+    <div class="arch-diagram">
+      <div style="display: grid; grid-template-columns: 200px 1fr; gap: var(--s-5);">
+
+        <div style="font-family: var(--mono); font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.1em; padding-top: 4px;">1 · Receive</div>
+        <div style="font-size: 14px; color: var(--ink-2); line-height: 1.55; padding-bottom: var(--s-4); border-bottom: 1px solid var(--line);"><strong style="color: var(--ink);">Validate input.</strong> Check identity, workspace, and policy. Reject before reaching the agent if the user can't be in this thread, or if the workspace is locked. Emit an audit entry either way.</div>
+
+        <div style="font-family: var(--mono); font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.1em; padding-top: 4px;">2 · Plan</div>
+        <div style="font-size: 14px; color: var(--ink-2); line-height: 1.55; padding-bottom: var(--s-4); border-bottom: 1px solid var(--line);"><strong style="color: var(--ink);">Decide the shape of the response.</strong> Dialogue, clarification, form, or artifact loop? Which connectors will this need? The planner output is itself a turn-shape: the ordered list of block types the agent intends to emit.</div>
+
+        <div style="font-family: var(--mono); font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.1em; padding-top: 4px;">3 · Authorize</div>
+        <div style="font-size: 14px; color: var(--ink-2); line-height: 1.55; padding-bottom: var(--s-4); border-bottom: 1px solid var(--line);"><strong style="color: var(--ink);">Resolve missing access before execution.</strong> If the plan calls for a connector the user hasn't authorized, emit a <code class="mono" style="font-size: 12px;">connector_ref</code> block and pause. The thread resumes once the user grants scope.</div>
+
+        <div style="font-family: var(--mono); font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.1em; padding-top: 4px;">4 · Execute</div>
+        <div style="font-size: 14px; color: var(--ink-2); line-height: 1.55; padding-bottom: var(--s-4); border-bottom: 1px solid var(--line);"><strong style="color: var(--ink);">Run the plan, streaming blocks as they're produced.</strong> Tool calls happen here, gated by the trust layer per call. Artifacts are created or updated. Side-effecting actions stop and emit a <code class="mono" style="font-size: 12px;">confirmation</code> block instead of executing.</div>
+
+        <div style="font-family: var(--mono); font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.1em; padding-top: 4px;">5 · Cite</div>
+        <div style="font-size: 14px; color: var(--ink-2); line-height: 1.55; padding-bottom: var(--s-4); border-bottom: 1px solid var(--line);"><strong style="color: var(--ink);">Attach sources to claims.</strong> Citations resolve against the documents the agent actually read in step 4. Claims without a source either get phrased as inference or removed.</div>
+
+        <div style="font-family: var(--mono); font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.1em; padding-top: 4px;">6 · Settle</div>
+        <div style="font-size: 14px; color: var(--ink-2); line-height: 1.55;"><strong style="color: var(--ink);">Close the turn.</strong> Write to audit: actions taken, artifacts touched, sources cited, policy decisions. Suggest follow-ups. The thread is ready for the next input.</div>
+
+      </div>
+    </div>
+
+    <!-- 06.E — Workspace -->
+    <div class="subhead">
+      <span class="subhead-num">06.E</span>
+      <h3 class="subhead-title">The workspace as the unit of policy</h3>
+    </div>
+
+    <div class="arch-intro">
+      <div>
+        <p class="prose" style="margin-bottom: var(--s-3);">A <strong>workspace</strong> is more than a folder of threads. It's the scope inside which the agent operates: which connectors are bound, which members can see which threads, which DLP rules are in force, what the audit retention is.</p>
+        <p class="prose">Threads belong to a workspace. Switching workspaces is not switching context — it's switching what the agent is allowed to see and do. This is the boundary at which most enterprise deployment decisions get made.</p>
+      </div>
+      <div class="surface-card" style="padding: var(--s-5);">
+        <div class="minihead">A workspace declares</div>
+        <div style="display: flex; flex-direction: column; gap: var(--s-2); font-size: 13px; color: var(--ink-2);">
+          <div style="display: grid; grid-template-columns: 110px 1fr; gap: var(--s-3); padding: var(--s-2) 0; border-bottom: 1px solid var(--line);"><span class="mono" style="font-size: 11px; color: var(--ink-3);">members</span><span>Identities + roles allowed in</span></div>
+          <div style="display: grid; grid-template-columns: 110px 1fr; gap: var(--s-3); padding: var(--s-2) 0; border-bottom: 1px solid var(--line);"><span class="mono" style="font-size: 11px; color: var(--ink-3);">connectors</span><span>Bound sources with per-scope permissions</span></div>
+          <div style="display: grid; grid-template-columns: 110px 1fr; gap: var(--s-3); padding: var(--s-2) 0; border-bottom: 1px solid var(--line);"><span class="mono" style="font-size: 11px; color: var(--ink-3);">policies</span><span>DLP rules, external-source allowance, model selection</span></div>
+          <div style="display: grid; grid-template-columns: 110px 1fr; gap: var(--s-3); padding: var(--s-2) 0; border-bottom: 1px solid var(--line);"><span class="mono" style="font-size: 11px; color: var(--ink-3);">audit</span><span>Retention period, who can read the log</span></div>
+          <div style="display: grid; grid-template-columns: 110px 1fr; gap: var(--s-3); padding: var(--s-2) 0;"><span class="mono" style="font-size: 11px; color: var(--ink-3);">defaults</span><span>System prompt, tone, named agents available</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 06.F — Composition -->
+    <div class="subhead">
+      <span class="subhead-num">06.F</span>
+      <h3 class="subhead-title">How scenarios compose from blocks</h3>
+    </div>
+    <p class="prose" style="margin-bottom: var(--s-5);">Each scenario from §05 is a recurring shape — an ordered sequence of block types — that the framework knows how to render and orchestrate. New scenarios don't require new code; they require new sequences.</p>
+
+    <div class="surface-card" style="padding: var(--s-5);">
+      <div class="flow-diagram">
+        <div style="margin-bottom: var(--s-4);">
+          <div style="font-family: var(--display); font-size: 17px; color: var(--ink); font-weight: 400; margin-bottom: 4px;">i. The dialogue</div>
+          <div>text<sub style="color: var(--ink-3);">user</sub> → status → tool_call → text<sub style="color: var(--ink-3);">agent</sub> + citation* → picker</div>
+        </div>
+        <div style="margin-bottom: var(--s-4);">
+          <div style="font-family: var(--display); font-size: 17px; color: var(--ink); font-weight: 400; margin-bottom: 4px;">ii. Clarifying the ask</div>
+          <div>text<sub style="color: var(--ink-3);">user</sub> → text<sub style="color: var(--ink-3);">agent</sub> → clarify → text<sub style="color: var(--ink-3);">user</sub><sup style="color: var(--ink-3);">selections</sup> → text<sub style="color: var(--ink-3);">agent</sub> → status → ...</div>
+        </div>
+        <div style="margin-bottom: var(--s-4);">
+          <div style="font-family: var(--display); font-size: 17px; color: var(--ink); font-weight: 400; margin-bottom: 4px;">iii. Collecting structured input</div>
+          <div>text<sub style="color: var(--ink-3);">user</sub> → text<sub style="color: var(--ink-3);">agent</sub> → form → text<sub style="color: var(--ink-3);">user</sub><sup style="color: var(--ink-3);">submission</sup> → tool_call → text<sub style="color: var(--ink-3);">agent</sub></div>
+        </div>
+        <div style="margin-bottom: var(--s-4);">
+          <div style="font-family: var(--display); font-size: 17px; color: var(--ink); font-weight: 400; margin-bottom: 4px;">iv. The artifact loop</div>
+          <div>text<sub style="color: var(--ink-3);">user</sub> → text<sub style="color: var(--ink-3);">agent</sub> + artifact_ref → text<sub style="color: var(--ink-3);">user</sub><sup style="color: var(--ink-3);">edits</sup> → diff + artifact_ref<sub style="color: var(--ink-3);">v2</sub> → text<sub style="color: var(--ink-3);">user</sub> → confirmation → tool_call</div>
+        </div>
+        <div>
+          <div style="font-family: var(--display); font-size: 17px; color: var(--ink); font-weight: 400; margin-bottom: 4px;">v. Connecting a source</div>
+          <div>text<sub style="color: var(--ink-3);">user</sub> → text<sub style="color: var(--ink-3);">agent</sub> → connector_ref → <em style="color: var(--accent);">[scope dialog]</em> → status → ...resume original plan</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ======================== SECTION 07 — DEMO ======================== -->
+<section id="demo" class="section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-num">07</div>
+      <div class="section-title-block">
+        <h2 class="section-title">The <em>whole</em> thing.</h2>
+        <p class="section-intro">Every component in §04, every scenario shape in §05, every framework layer in §06 — composed into one screen at the proportions a real user would see. This is the target: a chat as the spine, a canvas for the work, every surface that asks the user to act doing so visibly.</p>
+      </div>
+    </div>
+
+    <div class="demo-frame">
+
+      <!-- SIDEBAR -->
+      <aside class="demo-sidebar">
+        <div class="demo-workspace">
+          <span class="avatar avatar-sm avatar-accent">AC</span>
+          <div style="flex: 1; min-width: 0;">
+            <div style="font-size: 13px; font-weight: 500; line-height: 1.2;">Acme — Operations</div>
+            <div style="font-family: var(--mono); font-size: 10px; color: var(--ink-3);">enterprise · 24 members</div>
+          </div>
+          <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color: var(--ink-3);"><path d="m6 9 6 6 6-6"/></svg>
+        </div>
+
+        <button class="btn btn-secondary btn-sm" style="justify-content: flex-start;">
+          <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 5v14M5 12h14"/></svg>
+          New thread
+        </button>
+
+        <div>
+          <div class="demo-section-label">Today</div>
+          <div class="demo-chat-list">
+            <div class="demo-chat-item active">Q4 renewal follow-ups</div>
+            <div class="demo-chat-item">Customer health scoring</div>
+            <div class="demo-chat-item">Pricing experiment recap</div>
+          </div>
+        </div>
+
+        <div>
+          <div class="demo-section-label">Earlier</div>
+          <div class="demo-chat-list">
+            <div class="demo-chat-item">Board prep — Nov</div>
+            <div class="demo-chat-item">Onboarding playbook v2</div>
+            <div class="demo-chat-item">EMEA expansion notes</div>
+          </div>
+        </div>
+
+        <div style="margin-top: auto; padding-top: var(--s-4); border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: var(--s-1);">
+          <div class="demo-chat-item" style="display: flex; align-items: center; gap: var(--s-2);">
+            <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            Audit log
+          </div>
+          <div class="demo-chat-item" style="display: flex; align-items: center; gap: var(--s-2);">
+            <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            Settings
+          </div>
+        </div>
+      </aside>
+
+      <!-- MAIN -->
+      <div class="demo-main">
+        <div class="demo-main-head">
+          <div style="font-family: var(--display); font-size: 17px; font-weight: 400;">Q4 renewal follow-ups</div>
+          <span class="badge badge-default" style="margin-left: var(--s-2);">v3 · 2m ago</span>
+          <div style="margin-left: auto; display: flex; gap: var(--s-1);">
+            <button class="composer-tool-btn"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+          </div>
+        </div>
+
+        <div class="demo-stream">
+
+          <div class="compliance-banner">
+            <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Workspace policy: external sources disabled. All actions logged to audit.
+          </div>
+
+          <div style="display: flex; flex-direction: column; align-items: flex-end; gap: var(--s-2);">
+            <div class="msg-user">Pull last quarter's renewal pipeline from Salesforce and flag anything stalled past 60 days. Then draft a follow-up email I can send to each account owner.</div>
+          </div>
+
+          <div class="status-line" style="display: none;">Querying Salesforce…</div>
+
+          <div class="tool-card expanded">
+            <div class="tool-card-head">
+              <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="1.8"><path d="M20 6 9 17l-5-5"/></svg>
+              <span class="tool-name">Salesforce</span>
+              <span style="color: var(--ink-3);">17 records returned</span>
+              <span class="tool-meta">2.4s</span>
+            </div>
+            <div class="tool-card-body">SELECT Id, Name, Amount, CloseDate, StageName, LastActivityDate<br>FROM Opportunity WHERE Type = 'Renewal' AND CloseDate &gt;= 2025-10-01</div>
+          </div>
+
+          <div class="msg-assistant">
+            Found <strong>17 renewals</strong> in the Q4 pipeline, with <strong>4 stalled</strong> past 60 days<span class="cite">1</span>. The two largest are <strong>Acme Industries</strong> ($420K) and <strong>Northwind Trading</strong> ($310K), both with last contact dating to mid-October discovery calls<span class="cite">2</span>. Drafting personalized follow-ups now — they're appearing in the artifact panel. Each references the most recent prior thread and proposes a concrete next step.
+          </div>
+
+          <div class="cite-source">
+            <span class="cite-source-num">1</span>
+            <div>
+              <div class="cite-source-title">Salesforce · Opportunity table</div>
+              <div class="cite-source-url">acme.my.salesforce.com · 17 records · internal</div>
+              <div class="cite-source-snippet">Filtered query: Type = 'Renewal' AND CloseDate ≥ 2025-10-01. 4 records have LastActivityDate older than 60 days.</div>
+            </div>
+          </div>
+
+          <div class="row" style="gap: var(--s-2);">
+            <button class="suggest">Send all 4 emails <span class="arrow">→</span></button>
+            <button class="suggest">Edit drafts first <span class="arrow">→</span></button>
+            <button class="suggest">Show full pipeline <span class="arrow">→</span></button>
+          </div>
+
+          <div style="display: flex; flex-direction: column; align-items: flex-end; gap: var(--s-2);">
+            <div class="msg-user">Edit drafts first — start with Acme.</div>
+          </div>
+
+          <div class="msg-assistant">
+            Acme's draft is open in the canvas. The opening references Marcus's note from Oct 14 about the migration timeline. Tell me what to adjust and I'll update it in place.
+          </div>
+
+        </div>
+
+        <div class="demo-composer-wrap">
+          <div class="composer">
+            <div contenteditable="true" class="composer-textarea" style="outline: none; color: var(--ink-3);">Reply to Q4 renewal follow-ups…</div>
+            <div class="composer-actions">
+              <div class="composer-tools">
+                <button class="composer-tool-btn"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button>
+                <button class="composer-tool-btn active"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></button>
+                <button class="composer-tool-btn"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v4M4.93 4.93l2.83 2.83M2 12h4M4.93 19.07l2.83-2.83M12 18v4M16.24 16.24l2.83 2.83M18 12h4M16.24 7.76l2.83-2.83"/></svg></button>
+              </div>
+              <span class="composer-mode-pill">Sonnet 4.7</span>
+              <button class="composer-send"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ARTIFACT -->
+      <aside class="demo-artifact">
+        <div class="artifact">
+          <div class="artifact-head">
+            <span class="artifact-title">Q4-renewal-followups.md</span>
+            <div class="artifact-tabs">
+              <span class="artifact-tab active">Rendered</span>
+              <span class="artifact-tab">Source</span>
+            </div>
+            <div class="artifact-actions">
+              <button class="artifact-action-btn"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+              <button class="artifact-action-btn"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></button>
+            </div>
+          </div>
+          <div class="artifact-body">
+            <div style="font-family: var(--display); font-size: 22px; font-weight: 400; margin-bottom: var(--s-2); letter-spacing: -0.01em;">Renewal follow-ups · Q4</div>
+            <div style="color: var(--ink-3); font-family: var(--mono); font-size: 11px; margin-bottom: var(--s-5); text-transform: uppercase; letter-spacing: 0.1em;">4 drafts · edit before sending</div>
+
+            <div style="border-top: 1px solid var(--line); padding-top: var(--s-4); margin-bottom: var(--s-5);">
+              <div style="display: flex; gap: var(--s-2); align-items: baseline; margin-bottom: var(--s-1);">
+                <span class="cite-source-num" style="font-size: 10px;">01</span>
+                <div style="font-weight: 500; font-size: 14px;">Acme Industries</div>
+                <span class="badge badge-warning" style="margin-left: auto; font-size: 10px;">$420K</span>
+              </div>
+              <div style="font-family: var(--mono); font-size: 10.5px; color: var(--ink-3); margin-bottom: var(--s-3); line-height: 1.6;">to: m.lewis@acme.com<br>last contact: Oct 14 · discovery call</div>
+              <div style="font-size: 12.5px; color: var(--ink-2); line-height: 1.65;">Hi Marcus,<br><br>Following up on our discovery call last month — I've been thinking about the migration timeline you mentioned and wanted to share a couple of paths that might fit your Q1 window…</div>
+            </div>
+
+            <div style="border-top: 1px solid var(--line); padding-top: var(--s-4); margin-bottom: var(--s-5);">
+              <div style="display: flex; gap: var(--s-2); align-items: baseline; margin-bottom: var(--s-1);">
+                <span class="cite-source-num" style="font-size: 10px;">02</span>
+                <div style="font-weight: 500; font-size: 14px;">Northwind Trading</div>
+                <span class="badge badge-warning" style="margin-left: auto; font-size: 10px;">$310K</span>
+              </div>
+              <div style="font-family: var(--mono); font-size: 10.5px; color: var(--ink-3); margin-bottom: var(--s-3); line-height: 1.6;">to: priya.s@northwind.io<br>last contact: Oct 19 · email thread</div>
+              <div style="font-size: 12.5px; color: var(--ink-2); line-height: 1.65;">Hi Priya,<br><br>Quick check-in on where we landed after the Oct 19 thread. You mentioned procurement was the bottleneck — happy to jump on a call with your team to walk through…</div>
+            </div>
+
+            <div style="border-top: 1px solid var(--line); padding-top: var(--s-4); opacity: 0.7;">
+              <div style="display: flex; gap: var(--s-2); align-items: baseline; margin-bottom: var(--s-1);">
+                <span class="cite-source-num" style="font-size: 10px;">03</span>
+                <div style="font-weight: 500; font-size: 14px;">Initech Systems</div>
+                <span class="badge badge-default" style="margin-left: auto; font-size: 10px;">$110K</span>
+              </div>
+              <div style="font-family: var(--mono); font-size: 10.5px; color: var(--ink-3);">to: ops@initech.com · last contact: Oct 22</div>
+            </div>
+          </div>
+          <div class="artifact-foot">
+            <span>v3 · edited 2 minutes ago</span>
+            <span style="cursor: pointer;">History →</span>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+
+    <p class="prose" style="margin-top: var(--s-6); color: var(--ink-3); font-size: 14px;">A composed reference. Every visible piece is a component documented in §04 — the workspace switcher, the compliance banner, the tool card, the citation chip and source card, the suggestion chips, the composer, the artifact panel. Swap the scenario and the same surfaces handle expense reports, contract review, ticket triage, board prep.</p>
+
+  </div>
+</section>
+
+<!-- INSERT_NEXT_SECTION -->
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-inner">
+      <div>Conductor — internal design system, v0.1</div>
+      <div>Drafted May 2026 · iterate freely</div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
