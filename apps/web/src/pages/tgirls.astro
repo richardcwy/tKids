@@ -5,6 +5,7 @@
 // page-scoped to this URL only.
 //
 // Self-hosted fonts via @fontsource per DESIGN.md (no Google Fonts CDN).
+import GoogleAnalytics from "../components/GoogleAnalytics.astro";
 import "@fontsource/bagel-fat-one";
 import "@fontsource/fraunces/400-italic.css";
 import "@fontsource/fraunces/600.css";
@@ -41,6 +42,7 @@ const ogImage = "/og-default.png";
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="canonical" href="https://tkids.tw/tgirls" />
+    <GoogleAnalytics />
   </head>
   <body>
     <div class="bg-atmosphere"></div>

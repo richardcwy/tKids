@@ -5,8 +5,9 @@
 // ?raw import — same pattern as /design-system-demo. The portrait references
 // /tcoach/albert.png, served directly from apps/web/public/tcoach/.
 import demoHtml from "../_static/tcoach-landing.html?raw";
+import { injectGA } from "../lib/inject-ga";
 
-return new Response(demoHtml, {
+return new Response(injectGA(demoHtml), {
   headers: {
     "content-type": "text/html; charset=utf-8",
     "cache-control": "public, max-age=300",

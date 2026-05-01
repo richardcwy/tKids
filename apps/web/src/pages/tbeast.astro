@@ -2,6 +2,7 @@
 // Standalone teaser landing for tBeast, the fourth pillar of the t-universe
 // (companions). Lives at /tbeast. Same pattern as /tgirls and /tplanet —
 // bypasses Layout.astro, page-scoped palette + cursor via is:global.
+import GoogleAnalytics from "../components/GoogleAnalytics.astro";
 import "@fontsource/fredoka/400.css";
 import "@fontsource/fredoka/500.css";
 import "@fontsource/fredoka/600.css";
@@ -41,6 +42,7 @@ const ogImage = "/og-default.png";
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="canonical" href="https://tkids.tw/tbeast" />
+    <GoogleAnalytics />
   </head>
   <body>
     <div class="bg-atmosphere"></div>

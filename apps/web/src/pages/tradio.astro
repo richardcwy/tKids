@@ -8,6 +8,7 @@
 //     wrapping the iframe.
 //   - Nominations grid renders an honest empty-state with arrow pointing
 //     at the sign-in CTA. No mock user data, no fake listener counts.
+import GoogleAnalytics from "../components/GoogleAnalytics.astro";
 import "@fontsource/inter/400.css";
 import "@fontsource/inter/500.css";
 import "@fontsource/inter/600.css";
@@ -58,6 +59,7 @@ const spotifyIconPath =
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="canonical" href="https://tkids.tw/tradio" />
+    <GoogleAnalytics />
   </head>
   <body>
     <div class="bg-atmosphere">
